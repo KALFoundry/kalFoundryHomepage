@@ -100,6 +100,14 @@
 
 .site-work-card__media {
   width: 100%;
+  overflow: hidden;
+}
+
+.site-work-card__gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .site-work-card--featured .site-work-card__media { height: 320px; }
