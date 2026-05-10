@@ -1,0 +1,132 @@
+/* ════════════════════════════════════════════════════════════════
+   KAL FOUNDRY · BASE STYLES · v1.0
+   Page reset + typography + selection + link defaults.
+   Load AFTER tokens.css.
+   ════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--kf-bg);
+  color: var(--kf-ink);
+}
+
+body {
+  font-family: var(--kf-font);
+  font-size: var(--kf-t-body);
+  line-height: 1.55;
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+h1, h2, h3, h4, p, span, dt, dd, li { overflow-wrap: anywhere; }
+img, svg { max-width: 100%; height: auto; }
+
+::selection {
+  background: var(--kf-brass-400);
+  color: var(--kf-obsidian-950);
+}
+
+/* ── HEADINGS ──────────────────────────────────────────────────── */
+.kf-display {
+  font-size: var(--kf-t-display);
+  line-height: 0.92;
+  letter-spacing: -0.025em;
+  font-weight: 500;
+  margin: 0;
+  text-wrap: balance;
+}
+.kf-h1 {
+  font-size: var(--kf-t-h1);
+  line-height: 1.0;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  margin: 0;
+  text-wrap: balance;
+}
+.kf-h2 {
+  font-size: var(--kf-t-h2);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  margin: 0;
+  text-wrap: balance;
+}
+.kf-h3 {
+  font-size: var(--kf-t-h3);
+  line-height: 1.3;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* ── BODY TEXT ─────────────────────────────────────────────────── */
+.kf-body  { font-size: 16px; line-height: 1.6; color: var(--kf-ink-2); }
+.kf-small { font-size: var(--kf-t-small); line-height: 1.5; color: var(--kf-ink-2); }
+.kf-lede  { font-size: 18px; line-height: 1.55; color: var(--kf-ink-2); max-width: 62ch; text-wrap: pretty; }
+
+/* ── MONO / EYEBROW / METADATA ─────────────────────────────────── */
+.kf-mono {
+  font-family: var(--kf-font-mono);
+}
+.kf-eyebrow {
+  font-family: var(--kf-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kf-ink-3);
+}
+.kf-eyebrow--accent { color: var(--kf-accent); }
+.kf-eyebrow--rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.kf-eyebrow--rule::before {
+  content: "";
+  width: 36px;
+  height: 2px;
+  background: var(--kf-accent);
+}
+
+/* ── NUMERIC / TABULAR ─────────────────────────────────────────── */
+.kf-num {
+  font-family: var(--kf-font-mono);
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+}
+
+/* ── LINKS ─────────────────────────────────────────────────────── */
+.kf-link {
+  color: var(--kf-accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--kf-hairline-strong);
+  transition: color var(--kf-d-fast) var(--kf-ease-stamp),
+              border-color var(--kf-d-fast) var(--kf-ease-stamp);
+}
+.kf-link:hover {
+  color: var(--kf-accent-h);
+  border-bottom-color: var(--kf-accent-h);
+}
+
+/* ── PAGE SHELL ────────────────────────────────────────────────── */
+.kf-page {
+  max-width: var(--kf-page-max);
+  margin: 0 auto;
+  padding: 0 var(--kf-page-pad);
+}
+
+/* ── DIVIDERS ──────────────────────────────────────────────────── */
+.kf-hr {
+  border: 0;
+  height: 1px;
+  background: var(--kf-hairline);
+  margin: var(--kf-s-7) 0;
+}
+.kf-hr--accent {
+  background: linear-gradient(to right, var(--kf-accent) 36px, var(--kf-hairline) 36px);
+}

@@ -1,0 +1,276 @@
+/* ════════════════════════════════════════════════════════════════
+   KAL FOUNDRY · COMPONENTS · v1.0
+   Buttons, inputs, badges, cards, tables.
+   Load AFTER tokens.css and base.css.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ── BUTTON ────────────────────────────────────────────────────── */
+.kf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  font-family: var(--kf-font);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--kf-ink);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+  transition:
+    background var(--kf-d-fast) var(--kf-ease-stamp),
+    color var(--kf-d-fast) var(--kf-ease-stamp),
+    border-color var(--kf-d-fast) var(--kf-ease-stamp),
+    box-shadow var(--kf-d-fast) var(--kf-ease-stamp),
+    transform var(--kf-d-fast) var(--kf-ease-stamp);
+}
+.kf-btn:active { transform: translateY(1px); }
+.kf-btn:focus-visible {
+  outline: 2px solid var(--kf-accent);
+  outline-offset: 2px;
+}
+
+.kf-btn--primary {
+  background: var(--kf-brass-400);
+  color: var(--kf-obsidian-950);
+  border-color: var(--kf-brass-400);
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+}
+.kf-btn--primary:hover {
+  background: var(--kf-brass-300);
+  border-color: var(--kf-brass-300);
+}
+.kf-btn--primary:active {
+  background: var(--kf-brass-500);
+  border-color: var(--kf-brass-500);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.22);
+}
+
+.kf-btn--secondary {
+  border-color: var(--kf-brass-700);
+  background: var(--kf-obsidian-800);
+  color: var(--kf-ink);
+}
+.kf-btn--secondary:hover {
+  border-color: var(--kf-accent);
+  color: var(--kf-accent);
+  background: var(--kf-obsidian-700);
+}
+
+.kf-btn--ghost {
+  color: var(--kf-accent);
+  padding-left: 14px;
+  padding-right: 14px;
+  border: 1px dashed var(--kf-hairline-strong);
+}
+.kf-btn--ghost:hover {
+  color: var(--kf-obsidian-950);
+  background: var(--kf-accent);
+  border-color: var(--kf-accent);
+  border-style: solid;
+}
+
+.kf-btn--danger {
+  background: var(--kf-ember);
+  color: #fff;
+  border-color: var(--kf-ember);
+}
+.kf-btn--danger:hover { filter: brightness(1.1); }
+
+.kf-btn--sm { padding: 8px 14px; font-size: 13px; }
+.kf-btn--lg { padding: 16px 28px; font-size: 15px; }
+
+.kf-btn[disabled],
+.kf-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── INPUT / FIELD ─────────────────────────────────────────────── */
+.kf-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--kf-s-2);
+}
+
+.kf-field-label {
+  font-family: var(--kf-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kf-ink-3);
+}
+
+.kf-input,
+.kf-textarea,
+.kf-select {
+  background: var(--kf-obsidian-1000);
+  border: 1px solid var(--kf-hairline-strong);
+  color: var(--kf-ink);
+  padding: 12px 14px;
+  font-family: var(--kf-font);
+  font-size: 14px;
+  width: 100%;
+  transition:
+    border-color var(--kf-d-fast) var(--kf-ease-stamp),
+    background var(--kf-d-fast) var(--kf-ease-stamp);
+}
+.kf-input:focus,
+.kf-textarea:focus,
+.kf-select:focus {
+  outline: none;
+  border-color: var(--kf-accent);
+  background: var(--kf-obsidian-900);
+}
+.kf-input::placeholder,
+.kf-textarea::placeholder {
+  color: var(--kf-bone-400);
+}
+
+.kf-textarea { min-height: 96px; resize: vertical; }
+
+/* ── BADGE ─────────────────────────────────────────────────────── */
+.kf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--kf-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid var(--kf-hairline-strong);
+  color: var(--kf-ink-2);
+  background: var(--kf-obsidian-1000);
+}
+.kf-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: var(--kf-accent);
+  flex-shrink: 0;
+}
+.kf-badge--patina::before   { background: var(--kf-patina); }
+.kf-badge--ember::before    { background: var(--kf-ember); }
+.kf-badge--crucible::before { background: var(--kf-crucible); }
+.kf-badge--steel::before    { background: var(--kf-steel); }
+
+/* ── CARD ──────────────────────────────────────────────────────── */
+.kf-card {
+  background: var(--kf-surface);
+  border: var(--kf-border);
+  padding: var(--kf-s-6);
+  position: relative;
+}
+
+.kf-card--stamped {
+  /* Card with chiseled corner marks — use for hero/system surfaces */
+}
+.kf-card--stamped::before,
+.kf-card--stamped::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--kf-brass-700);
+}
+.kf-card--stamped::before {
+  top: -1px; left: -1px;
+  border-right: 0; border-bottom: 0;
+}
+.kf-card--stamped::after {
+  bottom: -1px; right: -1px;
+  border-left: 0; border-top: 0;
+}
+
+/* ── STAT BLOCK (mono numerics, mono caption) ──────────────────── */
+.kf-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kf-stat .v {
+  font-family: var(--kf-font-mono);
+  font-size: 22px;
+  color: var(--kf-ink);
+  letter-spacing: -0.02em;
+  font-feature-settings: "tnum";
+}
+.kf-stat .k {
+  font-family: var(--kf-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kf-ink-3);
+}
+
+/* ── TABLE ─────────────────────────────────────────────────────── */
+.kf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.kf-table th,
+.kf-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--kf-hairline);
+}
+.kf-table th {
+  font-family: var(--kf-font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--kf-ink-3);
+  font-weight: 500;
+  border-bottom: 1px solid var(--kf-hairline-strong);
+}
+.kf-table td.kf-num-cell {
+  font-family: var(--kf-font-mono);
+  font-feature-settings: "tnum";
+  text-align: right;
+  letter-spacing: -0.01em;
+}
+
+/* ── RAIL (top app bar) ────────────────────────────────────────── */
+.kf-rail {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px var(--kf-page-pad);
+  background: rgba(10, 9, 7, 0.78);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--kf-hairline);
+}
+
+/* ── CHECKBOX / RADIO ──────────────────────────────────────────── */
+.kf-check {
+  appearance: none;
+  width: 16px; height: 16px;
+  border: 1px solid var(--kf-hairline-strong);
+  background: var(--kf-obsidian-1000);
+  cursor: pointer;
+  position: relative;
+  transition: border-color var(--kf-d-fast) var(--kf-ease-stamp);
+}
+.kf-check:hover { border-color: var(--kf-accent); }
+.kf-check:checked {
+  background: var(--kf-brass-400);
+  border-color: var(--kf-brass-400);
+}
+.kf-check:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--kf-obsidian-950);
+}
+.kf-check[type="radio"] { border-radius: 50%; }
+.kf-check[type="radio"]:checked::after { border-radius: 50%; }

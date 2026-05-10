@@ -1,77 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>KAL Foundry</title>
+  <link rel="icon" type="image/png" sizes="64x64" href="KALFoundryFavicon64.png" />
+  <link rel="icon" type="image/png" href="KALFoundryFavicon.png" />
+  <link rel="apple-touch-icon" href="KALFoundryFavicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/png" href="KALFoundryFavicon64.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tokens.css" />
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="components.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="nav">
-    <div class="nav__inner">
-      <a href="#" class="nav__logo">
-        <img src="KALFoundryJustLogo.png" alt="KAL Foundry" class="nav__logo-img" />
-      </a>
-      <ul class="nav__links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#work">Work</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <button class="nav__cta">Get in Touch</button>
-    </div>
-  </nav>
+  <!-- Nav -->
+  <header class="kf-rail" id="top">
+    <a href="#top" class="site-logo">
+      <img src="KALFoundryJustLogo.png" alt="KAL Foundry" />
+    </a>
+    <nav class="site-nav">
+      <a href="#about" class="kf-eyebrow">About</a>
+      <a href="#services" class="kf-eyebrow">Services</a>
+      <a href="#work" class="kf-eyebrow">Work</a>
+      <a href="#contact" class="kf-eyebrow">Contact</a>
+    </nav>
+    <button class="kf-btn kf-btn--primary kf-btn--sm js-contact-cta">Get in Touch</button>
+  </header>
 
   <!-- Hero -->
-  <section class="hero" id="home">
-    <div class="hero__content">
-      <p class="hero__eyebrow">Crafted with intention</p>
-      <h1 class="hero__headline">We build things<br />that <em>last</em>.</h1>
-      <p class="hero__sub">KAL Foundry is a team dedicated to forging bold ideas into lasting digital and physical experiences.</p>
-      <div class="hero__actions">
-        <a href="#work" class="btn btn--primary">See Our Work</a>
-        <a href="#about" class="btn btn--ghost">Learn More</a>
+  <section class="site-hero" id="home">
+    <div class="kf-page site-hero__inner">
+      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Crafted with intention</div>
+      <h1 class="kf-display" style="margin-bottom:var(--kf-s-5);">We build things<br>that <span style="color:var(--kf-accent);">last</span>.</h1>
+      <p class="kf-lede" style="margin-bottom:var(--kf-s-7);">KAL Foundry is a creative studio dedicated to forging bold ideas into lasting digital and physical experiences.</p>
+      <div class="site-hero__actions">
+        <a href="#work" class="kf-btn kf-btn--primary kf-btn--lg">See Our Work</a>
+        <a href="#about" class="kf-btn kf-btn--secondary kf-btn--lg">Learn More</a>
       </div>
-    </div>
-    <div class="hero__graphic" aria-hidden="true">
-      <div class="glyph glyph--1"></div>
-      <div class="glyph glyph--2"></div>
-      <div class="glyph glyph--3"></div>
     </div>
   </section>
 
   <!-- About -->
-  <section class="about section" id="about">
-    <div class="container">
-      <div class="about__grid">
-        <div class="about__text">
-          <p class="label">Who We Are</p>
-          <h2 class="section__heading">A foundry for ideas worth building.</h2>
-          <p>We partner with founders, brands, and builders to turn visions into tangible reality. From strategy to execution, we forge every detail with precision and purpose.</p>
-          <p>KAL Foundry was born from the belief that great work requires both craft and thought. With an emphasis on AI, next-gen solutions, and end to end execution guidance, the team is able to assist customers ranging in size from fortune 500 to single person businesses.</p>
+  <section class="site-section" id="about">
+    <div class="kf-page">
+      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Who We Are</div>
+      <div class="site-about__grid">
+        <div class="site-about__text">
+          <h2 class="kf-h2" style="margin-bottom:var(--kf-s-5);">A foundry for ideas worth building.</h2>
+          <p class="kf-body" style="margin-bottom:var(--kf-s-4);">We partner with founders, brands, and builders to turn ambitious visions into tangible reality. From strategy to execution, we forge every detail with precision and purpose.</p>
+          <p class="kf-body">KAL Foundry was born from the belief that great work requires both craft and conviction — we bring both to every project.</p>
         </div>
-        <div class="about__stats">
-          <div class="stat">
-            <span class="stat__number">100+</span>
-            <span class="stat__label">Patents Held by the Team</span>
+        <div class="site-stats">
+          <div class="kf-card">
+            <div class="kf-stat"><div class="v">50+</div><div class="k">Projects Delivered</div></div>
           </div>
-          <div class="stat">
-            <span class="stat__number">20+</span>
-            <span class="stat__label">Years of Craft</span>
+          <div class="kf-card">
+            <div class="kf-stat"><div class="v">8+</div><div class="k">Years of Craft</div></div>
           </div>
-          <div class="stat">
-            <span class="stat__number">15+</span>
-            <span class="stat__label">AI Initiatives participated in</span>
+          <div class="kf-card">
+            <div class="kf-stat"><div class="v">100%</div><div class="k">Client Retention</div></div>
           </div>
-          <div class="stat">
-            <span class="stat__number">Less than 24 hour</span>
-            <span class="stat__label">Response Time</span>
+          <div class="kf-card">
+            <div class="kf-stat"><div class="v">3</div><div class="k">Industry Awards</div></div>
           </div>
         </div>
       </div>
@@ -79,140 +73,149 @@
   </section>
 
   <!-- Services -->
-  <section class="services section" id="services">
-    <div class="container">
-      <p class="label label--center">What We Do</p>
-      <h2 class="section__heading section__heading--center">Our capabilities.</h2>
-      <div class="services__grid">
-        <div class="service-card">
-          <div class="service-card__icon">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="2.5"/>
-              <path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+  <section class="site-section site-section--alt" id="services">
+    <div class="kf-page">
+      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">What We Do</div>
+      <h2 class="kf-h2" style="margin-bottom:var(--kf-s-7);">Our capabilities.</h2>
+      <div class="site-services__grid">
+
+        <article class="kf-card">
+          <div class="site-service__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+              <rect x="3" y="3" width="18" height="18"/>
+              <path d="M8 12h8M12 8v8"/>
             </svg>
           </div>
-          <h3>Design &amp; Brand</h3>
-          <p>Visual identities, systems, and experiences that communicate with clarity and command attention.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 36L18 26l8 8 14-20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="8" cy="36" r="2" fill="currentColor"/>
-              <circle cx="18" cy="26" r="2" fill="currentColor"/>
-              <circle cx="26" cy="34" r="2" fill="currentColor"/>
-              <circle cx="40" cy="14" r="2" fill="currentColor"/>
+          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Design &amp; Brand</h3>
+          <p class="kf-small">Visual identities, systems, and experiences that communicate with clarity and command attention.</p>
+        </article>
+
+        <article class="kf-card">
+          <div class="site-service__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+              <polyline points="4,18 9,13 14,17 20,7"/>
             </svg>
           </div>
-          <h3>Strategy &amp; AI Consulting</h3>
-          <p>From market positioning to product roadmaps, we help you cut through complexity and move with confidence involving next-generation technology for the best in breed solutions.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <polyline points="8,14 24,6 40,14 40,34 24,42 8,34 8,14" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-              <line x1="24" y1="6" x2="24" y2="42" stroke="currentColor" stroke-width="2.5"/>
-              <line x1="8" y1="14" x2="40" y2="14" stroke="currentColor" stroke-width="2.5"/>
-              <line x1="8" y1="34" x2="40" y2="34" stroke="currentColor" stroke-width="2.5"/>
+          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Strategy &amp; Consulting</h3>
+          <p class="kf-small">From market positioning to product roadmaps, we help you cut through complexity and move with confidence.</p>
+        </article>
+
+        <article class="kf-card">
+          <div class="site-service__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+              <polyline points="4,7 12,3 20,7 20,17 12,21 4,17 4,7"/>
+              <line x1="12" y1="3" x2="12" y2="21"/>
+              <line x1="4" y1="7" x2="20" y2="7"/>
+              <line x1="4" y1="17" x2="20" y2="17"/>
             </svg>
           </div>
-          <h3>Digital Products</h3>
-          <p>Web apps, platforms, and interfaces built with performance and people at the center.</p>
-        </div>
-        <div class="service-card">
-          <div class="service-card__icon">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5"/>
-              <path d="M24 14v10l7 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Digital Products</h3>
+          <p class="kf-small">Web apps, platforms, and interfaces built with performance and people at the center.</p>
+        </article>
+
+        <article class="kf-card">
+          <div class="site-service__icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+              <rect x="3" y="3" width="18" height="18"/>
+              <polyline points="3,9 21,9"/>
+              <line x1="9" y1="9" x2="9" y2="21"/>
             </svg>
           </div>
-          <h3>Production &amp; Launch</h3>
-          <p>End-to-end execution for campaigns, product launches, and physical fabrication projects.</p>
-        </div>
+          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Production &amp; Launch</h3>
+          <p class="kf-small">End-to-end execution for campaigns, product launches, and physical fabrication projects.</p>
+        </article>
+
       </div>
     </div>
   </section>
 
   <!-- Work -->
-  <section class="work section" id="work">
-    <div class="container">
-      <p class="label">Selected Work</p>
-      <h2 class="section__heading">Projects we're proud of.</h2>
-      <div class="work__grid">
-        <article class="work-card work-card--featured">
-          <div class="work-card__media work-card__media--1"></div>
-          <div class="work-card__info">
-            <span class="work-card__tag">Brand / Digital</span>
-            <h3>Atlas Platform</h3>
-            <p>Complete rebrand and digital overhaul for a growing infrastructure company.</p>
+  <section class="site-section" id="work">
+    <div class="kf-page">
+      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Selected Work</div>
+      <h2 class="kf-h2" style="margin-bottom:var(--kf-s-7);">Projects we're proud of.</h2>
+      <div class="site-work__grid">
+
+        <article class="kf-card kf-card--stamped site-work-card site-work-card--featured">
+          <div class="site-work-card__media site-work-card__media--1"></div>
+          <div class="site-work-card__info">
+            <span class="kf-eyebrow kf-eyebrow--accent">Brand / Digital</span>
+            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">Atlas Platform</h3>
+            <p class="kf-small">Complete rebrand and digital overhaul for a growing infrastructure company.</p>
           </div>
         </article>
-        <article class="work-card">
-          <div class="work-card__media work-card__media--2"></div>
-          <div class="work-card__info">
-            <span class="work-card__tag">Product Design</span>
-            <h3>Meridian App</h3>
-            <p>End-to-end design for a B2B logistics SaaS platform.</p>
+
+        <article class="kf-card site-work-card">
+          <div class="site-work-card__media site-work-card__media--2"></div>
+          <div class="site-work-card__info">
+            <span class="kf-eyebrow kf-eyebrow--accent">Product Design</span>
+            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">Meridian App</h3>
+            <p class="kf-small">End-to-end design for a B2B logistics SaaS platform.</p>
           </div>
         </article>
-        <article class="work-card">
-          <div class="work-card__media work-card__media--3"></div>
-          <div class="work-card__info">
-            <span class="work-card__tag">Fabrication</span>
-            <h3>Ironwork Series</h3>
-            <p>Bespoke architectural metalwork installations for commercial spaces.</p>
+
+        <article class="kf-card site-work-card">
+          <div class="site-work-card__media site-work-card__media--3"></div>
+          <div class="site-work-card__info">
+            <span class="kf-eyebrow kf-eyebrow--accent">Fabrication</span>
+            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">Ironwork Series</h3>
+            <p class="kf-small">Bespoke architectural metalwork installations for commercial spaces.</p>
           </div>
         </article>
+
       </div>
     </div>
   </section>
 
   <!-- Contact -->
-  <section class="contact section" id="contact">
-    <div class="container">
-      <div class="contact__inner">
-        <div class="contact__text">
-          <p class="label">Get in Touch</p>
-          <h2 class="section__heading">Let's build something together.</h2>
-          <p>Have a project in mind? We'd love to hear about it. Reach out and we'll be in touch within 24 hours.</p>
-          <ul class="contact__meta">
-            <li>
-              <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
-              team@kalfoundry.com
-            </li>
-          </ul>
+  <section class="site-section site-section--alt" id="contact">
+    <div class="kf-page">
+      <div class="site-contact__grid">
+        <div class="site-contact__text">
+          <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Get in Touch</div>
+          <h2 class="kf-h2" style="margin-bottom:var(--kf-s-5);">Let's build something together.</h2>
+          <p class="kf-body" style="margin-bottom:var(--kf-s-6);">Have a project in mind? We'd love to hear about it. Reach out and we'll be in touch within 24 hours.</p>
+          <div class="site-contact__meta">
+            <div class="site-contact__meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+                <rect x="2" y="4" width="20" height="16"/>
+                <polyline points="2,4 12,13 22,4"/>
+              </svg>
+              <span class="kf-small">kalfoundry@protonmail.com</span>
+            </div>
+          </div>
         </div>
-        <form class="contact__form" onsubmit="handleSubmit(event)">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name" required />
+        <form class="kf-card kf-card--stamped" onsubmit="handleSubmit(event)">
+          <div class="kf-field" style="margin-bottom:var(--kf-s-5);">
+            <label class="kf-field-label" for="name">Name</label>
+            <input class="kf-input" type="text" id="name" name="name" placeholder="Your name" required />
           </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="you@email.com" required />
+          <div class="kf-field" style="margin-bottom:var(--kf-s-5);">
+            <label class="kf-field-label" for="email">Email</label>
+            <input class="kf-input" type="email" id="email" name="email" placeholder="you@email.com" required />
           </div>
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="5" placeholder="Tell us about your project..." required></textarea>
+          <div class="kf-field" style="margin-bottom:var(--kf-s-6);">
+            <label class="kf-field-label" for="message">Message</label>
+            <textarea class="kf-textarea" id="message" name="message" placeholder="Tell us about your project..." required></textarea>
           </div>
-          <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+          <button type="submit" class="kf-btn kf-btn--primary" style="width:100%;justify-content:center;">Send Message</button>
         </form>
       </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer__inner">
-        <a href="#" class="footer__logo">
-          <img src="KALFoundryJustLogo.png" alt="KAL Foundry" class="footer__logo-img" />
+  <footer class="site-footer">
+    <div class="kf-page">
+      <div class="site-footer__inner">
+        <a href="#top" class="site-footer__logo">
+          <img src="KALFoundryJustLogo.png" alt="KAL Foundry" />
         </a>
-        <p class="footer__copy">&copy; 2026 KAL Foundry. All rights reserved.</p>
-        <nav class="footer__nav">
-          <a href="#about">About</a>
-          <a href="#services">Services</a>
-          <a href="#contact">Contact</a>
+        <p class="kf-eyebrow" style="color:var(--kf-ink-3);">&copy; 2026 KAL Foundry. All rights reserved.</p>
+        <nav class="site-footer__nav">
+          <a href="#about" class="kf-eyebrow">About</a>
+          <a href="#services" class="kf-eyebrow">Services</a>
+          <a href="#contact" class="kf-eyebrow">Contact</a>
         </nav>
       </div>
     </div>
