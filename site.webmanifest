@@ -1,0 +1,14 @@
+{
+  "name": "KAL Foundry",
+  "short_name": "kalfoundry",
+  "description": "A digital foundry for design, AI, and digital products — strategy through fabrication.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "minimal-ui",
+  "background_color": "#f4efe6",
+  "theme_color": "#1c1c1e",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}

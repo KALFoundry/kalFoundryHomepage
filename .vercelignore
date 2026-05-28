@@ -1,0 +1,22 @@
+# Files in the repo but NOT uploaded to Vercel at deploy time.
+# These stay version-controlled in git so they're visible on GitHub,
+# but they aren't publicly served at kalfoundry.com.
+
+# Source materials (never deployed)
+_source/
+*.icns
+
+# Original loganlabs template (kept locally for reference; never deployed)
+loganlabs-ai-main/
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Internal documentation (lives on GitHub, not the live site)
+PROJECT_REPORT.md
+CLAUDE.md
+docs/
+
+# Note: README.md and LICENSE are intentionally still deployed
+# (industry convention to serve /LICENSE on a public site).

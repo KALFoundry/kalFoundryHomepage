@@ -1,0 +1,11 @@
+{
+  "name": "kalfoundry-website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "KAL Foundry · static site + Vercel Edge Functions for ask_foundry and contact",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  }
+}

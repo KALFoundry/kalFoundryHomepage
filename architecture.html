@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>architecture — ask_foundry</title>
+  <meta name="description" content="How ask_foundry works — Vercel Edge Function, six function-calling tools, five defense layers, MCP server.">
+  <meta name="theme-color" content="#1c1c1e">
+  <link rel="canonical" href="https://www.kalfoundry.com/architecture.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+  <meta property="og:url" content="https://www.kalfoundry.com/architecture.html">
+  <meta property="og:title" content="architecture · ask_foundry — KAL Foundry">
+  <meta property="og:description" content="How Forge works: Vercel Edge Function, six function-calling tools, five defense layers, MCP server.">
+  <meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for design, AI, and digital products.">
+  <meta property="og:image:width" content="2400">
+  <meta property="og:image:height" content="1260">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="architecture · ask_foundry — KAL Foundry">
+  <meta name="twitter:description" content="How Forge works: Vercel Edge Function, six function-calling tools, five defense layers, MCP server.">
+  <meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for design, AI, and digital products.">
+  <script>
+    if (self !== top) {
+      document.documentElement.classList.add('is-embedded');
+      addEventListener('DOMContentLoaded', () => {
+        const b = document.querySelector('.lb-brand');
+        if (b) b.addEventListener('click', (e) => {
+          e.preventDefault();
+          parent.postMessage({ type: 'closeApp' }, '*');
+        });
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="/assets/styles/style.css" />
+  <style>
+    .arch-hero { padding: var(--s-20) var(--gutter) var(--s-6); }
+    .arch-hero-inner { max-width: 920px; margin: 0 auto; }
+    .arch-hero .stamp {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.16em; color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+    .arch-hero .stamp .pulse {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); margin-right: 8px; vertical-align: middle;
+      animation: archPulse 1.6s ease-in-out infinite;
+    }
+    @keyframes archPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.35;transform:scale(0.85);} }
+    .arch-hero h1 {
+      font-family: var(--font-mono); font-weight: 600;
+      font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+      letter-spacing: -0.04em; line-height: 1;
+      margin: 14px 0 12px;
+    }
+    .arch-hero h1 em {
+      font-family: var(--font-serif); font-style: italic;
+      font-weight: 400; color: var(--accent); display: block;
+    }
+    .arch-hero p {
+      font-family: var(--font-sans); font-size: 15px;
+      line-height: 1.6; color: var(--ink-2);
+      max-width: 60ch; margin: 0;
+    }
+
+    .arch-body { max-width: 920px; margin: 0 auto; padding: 0 var(--gutter) var(--s-10); }
+
+    .arch-diagram {
+      margin: var(--s-8) 0 var(--s-10);
+      padding: 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--hair);
+      border-radius: 12px;
+    }
+    .arch-diagram svg { width: 100%; height: auto; display: block; }
+    .arch-diagram-caption {
+      margin-top: 12px;
+      font-family: var(--font-mono); font-size: 10.5px;
+      letter-spacing: 0.08em; color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+
+    .arch-block { padding: var(--s-6) 0; border-top: 1px solid var(--hair); }
+    .arch-block:first-of-type { border-top: 1px solid var(--ink); }
+    .arch-block h2 {
+      font-family: var(--font-mono); font-weight: 600;
+      font-size: 13px; letter-spacing: 0.16em;
+      color: var(--ink-muted); text-transform: uppercase;
+      margin: 0 0 var(--s-3);
+    }
+    .arch-block h2::before { content: "// "; color: var(--accent); }
+    .arch-block .lede {
+      font-family: var(--font-sans); font-size: 15px;
+      line-height: 1.6; color: var(--ink);
+      margin: 0 0 var(--s-3);
+    }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: var(--s-4);
+      padding: 10px 0;
+      border-top: 1px dashed var(--hair);
+    }
+    .arch-grid:first-of-type { border-top: none; }
+    .arch-grid .k {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--ink-muted); letter-spacing: 0.06em;
+      padding-top: 2px;
+    }
+    .arch-grid .v {
+      font-family: var(--font-sans); font-size: 14px;
+      color: var(--ink-2); line-height: 1.55;
+    }
+    .arch-grid .v code {
+      font-family: var(--font-mono); font-size: 12px;
+      color: var(--accent);
+      background: var(--surface-2);
+      border: 1px solid var(--hair);
+      border-radius: 4px; padding: 1px 5px;
+    }
+
+    .arch-defenses { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 6px; }
+    .arch-defense {
+      padding: 12px 14px;
+      background: var(--surface);
+      border: 1px solid var(--hair);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+    }
+    .arch-defense h3 {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: 0.1em; color: var(--ink);
+      margin: 0 0 4px; text-transform: uppercase;
+    }
+    .arch-defense p {
+      font-family: var(--font-sans); font-size: 13px;
+      color: var(--ink-2); line-height: 1.5; margin: 0;
+    }
+
+    @media (max-width: 700px) {
+      .arch-hero { padding: var(--s-12) var(--gutter-sm) var(--s-4); }
+      .arch-body { padding: 0 var(--gutter-sm) var(--s-8); }
+      .arch-grid { grid-template-columns: 1fr; gap: 4px; }
+      .arch-defenses { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+<header class="lb-nav">
+  <a class="lb-brand" href="index.html"><span class="br">[</span>kal_foundry<span class="br">]</span></a>
+  <span class="lb-nav-spacer"></span>
+  <a href="work.html">work</a>
+  <a href="patents.html">patents</a>
+  <a href="about.html">about</a>
+  <a href="now.html">now</a>
+  <a href="resume.html" class="is-signal">team ↗</a>
+</header>
+
+<section class="arch-hero">
+  <div class="arch-hero-inner">
+    <div class="stamp"><span class="pulse"></span>architecture · ask_foundry</div>
+    <h1>how forge works<em>edge function, six tools, five defenses.</em></h1>
+    <p>
+      ask_foundry is the chat in <a href="/messages.html">messages</a> — a Vercel Edge Function calling OpenAI gpt-4.1 with function-calling tools, defended in depth, and also exposed as a local Model Context Protocol server. This page documents the moving parts.
+    </p>
+  </div>
+</section>
+
+<section class="arch-body">
+
+  <div class="arch-diagram" aria-label="request flow diagram">
+    <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arch-svg-title">
+      <title id="arch-svg-title">ask_foundry request flow</title>
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L10,5 L0,10 z" fill="#d97757"/>
+        </marker>
+        <style>
+          .b { fill: #fafaf6; stroke: #1c1c1e; stroke-width: 1.25; }
+          .b-accent { fill: #fafaf6; stroke: #d97757; stroke-width: 1.5; }
+          .b-side { fill: #ece6d8; stroke: #cfc8b5; stroke-width: 1; }
+          .lbl { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; fill: #1c1c1e; }
+          .lbl-mono-sm { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 9.5px; fill: #6b6557; letter-spacing: 0.08em; text-transform: uppercase; }
+          .lbl-accent { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; fill: #d97757; letter-spacing: 0.06em; text-transform: uppercase; }
+          .line { stroke: #d97757; stroke-width: 1.5; fill: none; }
+          .line-dashed { stroke: #6b6557; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+        </style>
+      </defs>
+
+      <!-- browser -->
+      <rect class="b" x="20" y="40" width="130" height="58" rx="6"/>
+      <text class="lbl-mono-sm" x="32" y="58">client</text>
+      <text class="lbl" x="32" y="80">messages.html</text>
+
+      <!-- edge function -->
+      <rect class="b-accent" x="200" y="20" width="380" height="270" rx="10"/>
+      <text class="lbl-accent" x="216" y="42">vercel edge · /api/ask</text>
+
+      <!-- pipeline stages inside edge -->
+      <rect class="b" x="220" y="56" width="160" height="36" rx="4"/>
+      <text class="lbl" x="232" y="78">① session cookie</text>
+
+      <rect class="b" x="400" y="56" width="160" height="36" rx="4"/>
+      <text class="lbl" x="412" y="78">② sanitize input</text>
+
+      <rect class="b" x="220" y="104" width="160" height="36" rx="4"/>
+      <text class="lbl" x="232" y="126">③ openai moderation</text>
+
+      <rect class="b" x="400" y="104" width="160" height="36" rx="4"/>
+      <text class="lbl" x="412" y="126">④ rate limit (10/d, 3/m)</text>
+
+      <rect class="b" x="220" y="152" width="340" height="60" rx="4"/>
+      <text class="lbl" x="232" y="174">⑤ openai chat-completions</text>
+      <text class="lbl-mono-sm" x="232" y="194">gpt-4.1 · stream · 6 tools · max_tokens 700</text>
+
+      <rect class="b" x="220" y="224" width="340" height="50" rx="4"/>
+      <text class="lbl" x="232" y="246">⑥ tool dispatch loop</text>
+      <text class="lbl-mono-sm" x="232" y="262">max 2 rounds · scrub output</text>
+
+      <!-- sidecars -->
+      <rect class="b-side" x="620" y="56" width="120" height="36" rx="4"/>
+      <text class="lbl-mono-sm" x="628" y="74">upstash</text>
+      <text class="lbl" x="628" y="86" font-size="10">vector · redis</text>
+
+      <rect class="b-side" x="620" y="104" width="120" height="36" rx="4"/>
+      <text class="lbl-mono-sm" x="628" y="122">openai</text>
+      <text class="lbl" x="628" y="134" font-size="10">embeddings · gpt-4.1</text>
+
+      <rect class="b-side" x="620" y="152" width="120" height="36" rx="4"/>
+      <text class="lbl-mono-sm" x="628" y="170">resend</text>
+      <text class="lbl" x="628" y="182" font-size="10">/api/contact</text>
+
+      <!-- arrows -->
+      <path class="line" d="M150,69 L200,69" marker-end="url(#arrow)"/>
+      <path class="line" d="M580,180 C620,180 590,180 620,128" marker-end="url(#arrow)"/>
+      <path class="line" d="M580,243 C610,243 605,243 620,170" marker-end="url(#arrow)"/>
+      <path class="line" d="M560,184 L620,170" marker-end="url(#arrow)"/>
+      <path class="line-dashed" d="M390,180 C390,180 600,75 620,74"/>
+
+      <!-- response back -->
+      <path class="line" d="M200,260 C150,260 130,260 85,140 L85,98" marker-end="url(#arrow)"/>
+      <text class="lbl-mono-sm" x="35" y="190">sse stream</text>
+      <text class="lbl" x="35" y="208">delta · reasoning</text>
+      <text class="lbl" x="35" y="222">tool_call · tool_result</text>
+      <text class="lbl" x="35" y="236">meta · refusal · debug</text>
+
+      <!-- mcp -->
+      <rect class="b-accent" x="200" y="310" width="380" height="50" rx="10"/>
+      <text class="lbl-accent" x="216" y="330">mcp server · stdio</text>
+      <text class="lbl-mono-sm" x="216" y="348">same six tools · local node binary · claude desktop</text>
+    </svg>
+    <div class="arch-diagram-caption">request flow · one round trip = 1 budget unit · all five defense layers fail open on dependency failure</div>
+  </div>
+
+  <div class="arch-block">
+    <h2>request pipeline</h2>
+    <p class="lede">A POST to <code>/api/ask</code> runs through six stages on Vercel Edge before responding with a typed SSE stream.</p>
+    <div class="arch-grid"><div class="k">① session</div><div class="v"><code>HMAC-SHA256(uuid, SESSION_SECRET)</code> signed cookie. <code>HttpOnly</code>, <code>SameSite=Lax</code>, 30-day Max-Age. Verified or re-issued per request.</div></div>
+    <div class="arch-grid"><div class="k">② sanitize</div><div class="v">Strip control chars and zero-width unicode (homoglyph / instruction-smuggling). Cap each turn at 4000 chars; keep last 20.</div></div>
+    <div class="arch-grid"><div class="k">③ moderation</div><div class="v">OpenAI <code>omni-moderation-latest</code> pre-screen on the latest user turn. Flagged content returns <code>400 content_policy</code> without spending an LLM completion.</div></div>
+    <div class="arch-grid"><div class="k">④ rate limit</div><div class="v">Upstash Redis pipelined <code>INCR</code> + <code>EXPIRE</code>. Three windows per request — session/day (10), IP/day (50), session/minute (3).</div></div>
+    <div class="arch-grid"><div class="k">⑤ openai</div><div class="v">Streaming chat-completions, <code>gpt-4.1</code>, <code>stream_options.include_usage</code>, six tools declared. System prompt: ~3K-token curated knowledge base + nine absolute rules.</div></div>
+    <div class="arch-grid"><div class="k">⑥ dispatch</div><div class="v">Up to two tool-call rounds. Each tool_call emits a reasoning preview, then a tool_call event, then a tool_result. Output scrubber runs both mid-stream and at finalize.</div></div>
+  </div>
+
+  <div class="arch-block">
+    <h2>tools</h2>
+    <p class="lede">All six tools share the OpenAI function-calling schema and the MCP server schema — one source of truth in <code>api/_knowledge.js</code>.</p>
+    <div class="arch-grid"><div class="k">send_contact_email</div><div class="v">Drafts an email via <code>/api/contact</code> → Resend. Tagged <code>via:chat</code> or <code>via:mcp</code>.</div></div>
+    <div class="arch-grid"><div class="k">lookup_patent</div><div class="v">Embeds the query (<code>text-embedding-3-small</code>) and cosine-searches an Upstash Vector index of the foundry's patent portfolio. Falls back to token overlap if the vector store is unavailable.</div></div>
+    <div class="arch-grid"><div class="k">link_to_page</div><div class="v">Closed-enum page lookup. Frontend renders the result as a clickable card.</div></div>
+    <div class="arch-grid"><div class="k">recommend_next_page</div><div class="v">Token-overlap score over hand-tagged page keywords. Returns 1–2 hrefs ranked by relevance.</div></div>
+    <div class="arch-grid"><div class="k">get_career_timeline</div><div class="v">Returns the foundry's structured experience timeline. Frontend renders it as a vertical timeline.</div></div>
+    <div class="arch-grid"><div class="k">compare_engagements</div><div class="v">Filters the foundry's anonymized engagement summaries by domain or topic.</div></div>
+  </div>
+
+  <div class="arch-block">
+    <h2>five defenses</h2>
+    <p class="lede">No single layer is bulletproof. Together they raise the cost of abuse well above the value of bypassing them.</p>
+    <div class="arch-defenses">
+      <div class="arch-defense"><h3>input sanitization</h3><p>Strip control + zero-width unicode. Cap length. Annotate (don't refuse) on prompt-injection signal words so the model is on notice.</p></div>
+      <div class="arch-defense"><h3>defensive system prompt</h3><p>Nine absolute rules appended last in the prompt (highest recency). Cover prompt-leak refusal, third-person enforcement, no fabrication, scope limits.</p></div>
+      <div class="arch-defense"><h3>moderation pre-screen</h3><p>OpenAI moderations API. Reject abusive content before the LLM is invoked. Adds ~30ms; near-zero cost.</p></div>
+      <div class="arch-defense"><h3>output scrubber</h3><p>Mid-stream and final-output regex pass. Catches leaked prompt content or first-person foundry impersonation. Replaces with fallback.</p></div>
+      <div class="arch-defense"><h3>rate limit</h3><p>Three sliding budgets via Upstash Redis. 10/session/day, 50/IP/day, 3/session/minute.</p></div>
+      <div class="arch-defense"><h3>CORS lockdown</h3><p>Explicit origin allowlist. Pinned to <code>kalfoundry.com</code> + <code>www.kalfoundry.com</code> + localhost. Cross-origin requests outside the list return 403.</p></div>
+    </div>
+  </div>
+
+  <div class="arch-block">
+    <h2>mcp server</h2>
+    <p class="lede">The same six tools are also published over the Model Context Protocol so any MCP host (Claude Desktop, Claude Code, etc.) can attach.</p>
+    <div class="arch-grid"><div class="k">transport</div><div class="v">stdio — local Node binary at <code>mcp-server/server.js</code>.</div></div>
+    <div class="arch-grid"><div class="k">share</div><div class="v">Imports <code>api/_knowledge.js</code> directly. No duplication; tool definitions and search logic stay in sync.</div></div>
+    <div class="arch-grid"><div class="k">resource</div><div class="v">Exposes the curated knowledge base as <code>ask-foundry://knowledge</code> for hosts that prefer reading over calling.</div></div>
+    <div class="arch-grid"><div class="k">install</div><div class="v">See <a href="/now.html#mcp" style="color:var(--accent)">the snippet on /now</a> or the <code>mcp-server/README.md</code>.</div></div>
+  </div>
+
+  <div class="arch-block">
+    <h2>stack</h2>
+    <div class="arch-grid"><div class="k">runtime</div><div class="v">Vercel Edge functions · Node 18 stdlib · zero external dependencies in the API layer.</div></div>
+    <div class="arch-grid"><div class="k">model</div><div class="v">OpenAI <code>gpt-4.1</code> for chat · <code>text-embedding-3-small</code> for vector · <code>omni-moderation-latest</code> for moderation.</div></div>
+    <div class="arch-grid"><div class="k">state</div><div class="v">Upstash Redis (rate limit) · Upstash Vector (patent search) · signed cookie (session id) · localStorage (client thread history).</div></div>
+    <div class="arch-grid"><div class="k">contact</div><div class="v">Resend transactional email · <code>/api/contact</code> endpoint tagged with provenance (chat / mcp / direct).</div></div>
+    <div class="arch-grid"><div class="k">frontend</div><div class="v">Vanilla HTML / CSS / JS · no build step · custom typed-event SSE parser · hand-rolled markdown renderer.</div></div>
+  </div>
+
+</section>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> digital foundry · design · ai · digital products</span>
+  <span class="signoff">— the foundry</span>
+</footer>
+
+</body>
+</html>

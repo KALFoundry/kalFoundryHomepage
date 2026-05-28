@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>now — kal_foundry</title>
+    <meta name="description" content="Q2 2026. What KAL Foundry is building now — agentic systems, digital products, and design work shipping from strategy to fabrication.">
+    <meta name="theme-color" content="#1c1c1e">
+    <link rel="canonical" href="https://www.kalfoundry.com/now.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+    <meta property="og:url" content="https://www.kalfoundry.com/now.html">
+    <meta property="og:title" content="now — KAL Foundry">
+    <meta property="og:description" content="Q2 2026. What KAL Foundry is building now — agentic systems, digital products, and design work shipping from strategy to fabrication.">
+    <meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1260">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="now — KAL Foundry">
+    <meta name="twitter:description" content="Q2 2026. What KAL Foundry is building now — agentic systems, digital products, and design work shipping from strategy to fabrication.">
+    <meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+    <script>
+      if (self !== top) {
+        document.documentElement.classList.add("is-embedded");
+        addEventListener("DOMContentLoaded", () => {
+          const b = document.querySelector(".lb-brand");
+          if (b)
+            b.addEventListener("click", (e) => {
+              e.preventDefault();
+              parent.postMessage({ type: "closeApp" }, "*");
+            });
+        });
+      }
+    </script>
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+    <style>
+      .now-hero {
+        padding: var(--s-20) var(--gutter) var(--s-8);
+      }
+      .now-hero-inner {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .now-hero h1 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        letter-spacing: -0.04em;
+        line-height: 0.98;
+        margin: 14px 0 16px;
+      }
+      .now-hero h1 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+        display: block;
+      }
+      .now-hero .stamp {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+      }
+      .now-hero .stamp .pulse {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        margin-right: 8px;
+        vertical-align: middle;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.35;
+          transform: scale(0.85);
+        }
+      }
+
+      .now-body {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 var(--gutter) var(--s-10);
+      }
+      .now-block {
+        padding: var(--s-6) 0;
+        border-top: 1px solid var(--hair);
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        gap: var(--s-5);
+      }
+      .now-block:first-of-type {
+        border-top: 1px solid var(--ink);
+      }
+      .now-block:last-of-type {
+        border-bottom: 1px solid var(--hair);
+      }
+      .now-block dt {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        padding-top: 4px;
+      }
+      .now-block dd {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.65;
+        color: var(--ink);
+      }
+      .now-block dd .moment {
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--accent);
+      }
+      .now-block dd ul {
+        padding: 0;
+        margin: 6px 0 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .now-block dd ul li::before {
+        content: "→ ";
+        color: var(--accent);
+        font-family: var(--font-mono);
+      }
+      .now-block dd ul li {
+        font-size: 15px;
+        color: var(--ink-2);
+      }
+      @media (max-width: 700px) {
+        .now-block {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ── mcp showcase block ── */
+      .mcp-snippet {
+        margin: 12px 0 8px;
+        border: 1px solid var(--hair);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+      .mcp-snippet-head {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px;
+        padding: 6px 12px;
+        background: var(--surface-2);
+        border-bottom: 1px solid var(--hair);
+      }
+      .mcp-snippet-label {
+        font-family: var(--font-mono); font-size: 10px;
+        letter-spacing: 0.06em; color: var(--ink-muted);
+        overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .mcp-snippet-copy {
+        appearance: none;
+        font-family: var(--font-mono); font-size: 10px;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        color: var(--ink-2); background: transparent;
+        border: 1px solid var(--hair); border-radius: 4px;
+        padding: 3px 10px; cursor: pointer; flex-shrink: 0;
+      }
+      .mcp-snippet-copy:hover { border-color: var(--accent); color: var(--accent); }
+      .mcp-snippet-copy.is-copied { color: var(--ok); border-color: var(--ok); }
+      .mcp-snippet-body {
+        margin: 0;
+        padding: 12px 14px;
+        font-family: var(--font-mono); font-size: 11.5px;
+        line-height: 1.6; color: var(--ink);
+        background: var(--surface);
+        overflow-x: auto; white-space: pre;
+      }
+      .mcp-link {
+        display: inline-block; margin-top: 4px;
+        font-family: var(--font-mono); font-size: 11px;
+        color: var(--accent); text-decoration: none;
+        letter-spacing: 0.04em;
+      }
+      .mcp-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+      .now-block dd code {
+        font-family: var(--font-mono); font-size: 11.5px;
+        background: var(--surface-2);
+        border: 1px solid var(--hair);
+        border-radius: 4px; padding: 1px 5px;
+      }
+
+      .now-track {
+        padding: var(--s-10) var(--gutter);
+        background: var(--surface-2);
+        border-top: 1px solid var(--hair);
+      }
+      .now-track-inner {
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .now-track h2 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 22px;
+        letter-spacing: -0.02em;
+        margin: 0 0 var(--s-5);
+      }
+      .now-track h2::before {
+        content: "// ";
+        color: var(--accent);
+      }
+      .now-log {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        color: var(--ink-2);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .now-log .row {
+        display: grid;
+        grid-template-columns: 100px 116px 1fr;
+        gap: var(--s-3);
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--hair);
+      }
+      .now-log .row .d {
+        color: var(--ink-muted);
+        letter-spacing: 0.1em;
+      }
+      .now-log .row .t {
+        color: var(--accent);
+      }
+      .now-log .row.is-warn .t {
+        color: var(--warn, #c98a3a);
+      }
+      .now-log .row.is-ok .t {
+        color: var(--ok, #5a7a4d);
+      }
+      .now-log .row .m {
+        color: var(--ink);
+      }
+
+      /* mobile · earlier reflow + stack changelog row vertically */
+      @media (max-width: 600px) {
+        .now-hero {
+          padding: var(--s-12) var(--gutter-sm) var(--s-6);
+        }
+        .now-hero h1 {
+          font-size: clamp(2rem, 8vw, 2.5rem);
+        }
+        .now-body {
+          padding: 0 var(--gutter-sm) var(--s-8);
+        }
+        .now-block {
+          grid-template-columns: 1fr;
+          gap: 6px;
+          padding: var(--s-4) 0;
+        }
+        .now-block dt {
+          font-size: 10px;
+        }
+        .now-block dd {
+          font-size: 15px;
+        }
+      }
+      @media (max-width: 480px) {
+        .now-track {
+          padding: var(--s-8) var(--gutter-sm);
+        }
+        .now-log .row {
+          grid-template-columns: 1fr;
+          gap: 2px;
+          padding: 10px 0;
+        }
+        .now-log .row .d,
+        .now-log .row .t {
+          font-size: 10px;
+        }
+        .now-log .row .m {
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+    <header class="lb-nav">
+      <a class="lb-brand" href="index.html"
+        ><span class="br">[</span>kal_foundry<span class="br">]</span></a
+      >
+      <span class="lb-nav-spacer"></span>
+      <a href="work.html">work</a>
+      <a href="patents.html">patents</a>
+      <a href="about.html">about</a>
+      <a href="now.html" class="is-active">now</a>
+      <a href="resume.html" class="is-signal">team ↗</a>
+    </header>
+
+    <section class="now-hero">
+      <div class="now-hero-inner">
+        <div class="stamp">
+          <span class="pulse"></span>now · in flight · q2 2026
+        </div>
+        <h1>
+          what the foundry is building now<em
+            >from strategy to fabrication.</em
+          >
+        </h1>
+      </div>
+    </section>
+
+    <section class="now-body">
+      <dl>
+        <div class="now-block">
+          <dt>current focus</dt>
+          <dd>
+            Forging <span class="moment">things that last</span> — design,
+            AI, and digital products, from strategy to fabrication.
+            <ul>
+              <li>Design &amp; brand.</li>
+              <li>Strategy &amp; AI consulting.</li>
+              <li>Digital products.</li>
+              <li>Production &amp; launch.</li>
+            </ul>
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>products in progress</dt>
+          <dd>
+            The foundry's own products — built end to end.
+            <ul>
+              <li>Armory Hub — security-first inventory, in your pocket.</li>
+              <li>backgClear — background removal, made simple.</li>
+              <li>Ironwork Series — architectural metalwork.</li>
+            </ul>
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>growing into</dt>
+          <dd>
+            — more soon —
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>reading &amp; studying</dt>
+          <dd>
+            — more soon —
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>side experiments</dt>
+          <dd>
+            A steady cadence of in-house builds — mostly
+            <span class="moment">MCP tooling</span> and coding-agent tuning. The
+            goal is craft: get faster at the parts of the loop that are ours to
+            control.
+            <ul>
+              <li>
+                Custom MCP servers — wiring local context, internal docs, and
+                project state into the agents the team uses daily.
+              </li>
+              <li>
+                Coding-agent optimization — prompt scaffolds, subagent
+                orchestration, memory and planning patterns that hold up across
+                long sessions.
+              </li>
+              <li>
+                Eval harnesses for our own workflows — measuring agent
+                reliability on real tasks instead of trusting vibes.
+              </li>
+              <li>
+                Full-stack scratch builds (React, Node, Flask) and a few
+                distributed-systems holdovers — smaller scope, useful for
+                thinking.
+              </li>
+            </ul>
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>ask_foundry · mcp</dt>
+          <dd>
+            <span class="moment">ask_foundry</span> — the chat in
+            <a href="/messages.html">messages</a> — also runs as a local
+            <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer">Model Context Protocol</a>
+            server. Attach it to Claude Desktop or any MCP host to call the
+            same three tools from your own agent.
+            <ul>
+              <li><code>send_contact_email</code> — drafts an email to the foundry</li>
+              <li><code>link_to_page</code> · <code>recommend_next_page</code></li>
+            </ul>
+            <div class="mcp-snippet">
+              <div class="mcp-snippet-head">
+                <span class="mcp-snippet-label">~/Library/Application Support/Claude/claude_desktop_config.json</span>
+                <button type="button" class="mcp-snippet-copy" id="mcp-copy" aria-label="copy config">copy</button>
+              </div>
+<pre class="mcp-snippet-body" id="mcp-config">{
+  "mcpServers": {
+    "ask_foundry": {
+      "command": "node",
+      "args": ["/absolute/path/to/kalfoundry_website/mcp-server/server.js"]
+    }
+  }
+}</pre>
+            </div>
+            <a class="mcp-link" href="/architecture.html">see how this is built →</a>
+          </dd>
+        </div>
+
+        <div class="now-block">
+          <dt>open to</dt>
+          <dd>
+            New engagements — design &amp; brand, strategy &amp; AI consulting,
+            digital products, and production &amp; launch.
+            <span class="moment">Open to conversations</span> on workshops,
+            partnerships, and new builds.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="now-track">
+      <div class="now-track-inner">
+        <h2>change log</h2>
+        <div class="now-log">
+          <div class="row">
+            <span class="d">—</span><span class="t">+ soon</span>
+            <span class="m">change log coming soon</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="lb-footer">
+      <span
+        ><span class="live">●</span> digital foundry · design
+        · ai · product</span
+      >
+      <span class="signoff">— the foundry</span>
+    </footer>
+
+    <script>
+      (() => {
+        const btn = document.getElementById('mcp-copy');
+        const cfg = document.getElementById('mcp-config');
+        if (!btn || !cfg) return;
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(cfg.textContent.trim());
+            btn.textContent = 'copied';
+            btn.classList.add('is-copied');
+            setTimeout(() => {
+              btn.textContent = 'copy';
+              btn.classList.remove('is-copied');
+            }, 1600);
+          } catch {
+            btn.textContent = 'select all manually';
+            setTimeout(() => { btn.textContent = 'copy'; }, 2000);
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

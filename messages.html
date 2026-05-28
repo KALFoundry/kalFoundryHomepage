@@ -1,0 +1,2712 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,interactive-widget=resizes-content"
+    />
+    <title>messages — kal_foundry</title>
+    <style>
+      /* Lock the chat surface to the light-mode design tokens regardless of
+         system dark-mode preference. Matches the iconic iMessage aesthetic
+         and the mobile @media block (which already hardcodes light values). */
+      :root {
+        color-scheme: only light;
+        --surface:    #f4f1ea;
+        --surface-2:  #ebe7dd;
+        --surface-3:  #e3dfd3;
+        --ink:        #13141a;
+        --ink-2:      #3a3a44;
+        --ink-muted:  #7f7d76;
+        --hair:       rgba(19, 20, 26, 0.10);
+        --rule:       rgba(19, 20, 26, 0.20);
+      }
+    </style>
+    <meta name="description" content="ask_foundry — AI assistant that answers questions about KAL Foundry's work. Design, AI, and digital products from a digital foundry.">
+    <meta name="theme-color" content="#1c1c1e">
+    <link rel="canonical" href="https://www.kalfoundry.com/messages.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+    <meta property="og:url" content="https://www.kalfoundry.com/messages.html">
+    <meta property="og:title" content="ask_foundry — chat with Forge">
+    <meta property="og:description" content="AI assistant grounded in KAL Foundry's work. Design, AI, and digital products from a team with enterprise-AI pedigree.">
+    <meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="KAL Foundry — a digital foundry for design, AI, and digital products.">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1260">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ask_foundry — chat with Forge">
+    <meta name="twitter:description" content="AI assistant grounded in KAL Foundry's work. Design, AI, and digital products from a team with enterprise-AI pedigree.">
+    <meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+    <meta name="twitter:image:alt" content="KAL Foundry — a digital foundry for design, AI, and digital products.">
+    <script>
+      if (self !== top) {
+        document.documentElement.classList.add("is-embedded");
+        addEventListener("DOMContentLoaded", () => {
+          const b = document.querySelector(".lb-brand");
+          if (b)
+            b.addEventListener("click", (e) => {
+              e.preventDefault();
+              parent.postMessage({ type: "closeApp" }, "*");
+            });
+        });
+      }
+    </script>
+    <link rel="stylesheet" href="/assets/styles/tokens.css" />
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+    <style>
+      body {
+        background: var(--surface-2);
+      }
+
+      .msg-window {
+        max-width: 1000px;
+        margin: var(--s-8) auto;
+        border: 1px solid var(--hair);
+        background: var(--surface);
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 70vh;
+        overflow: hidden;
+      }
+      @media (max-width: 720px) {
+        .msg-window {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .msg-sidebar {
+        border-right: 1px solid var(--hair);
+        background: var(--surface-2);
+        display: flex;
+        flex-direction: column;
+      }
+      .msg-side-search {
+        padding: var(--s-4);
+        border-bottom: 1px solid var(--hair);
+      }
+      .msg-side-search input {
+        width: 100%;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        padding: 6px 10px;
+        border: 1px solid var(--hair);
+        background: var(--surface);
+        color: var(--ink);
+        outline: none;
+      }
+      .msg-threads {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .msg-thread {
+        display: grid;
+        grid-template-columns: 36px 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: var(--s-4);
+        border-bottom: 1px solid var(--hair);
+        cursor: pointer;
+      }
+      .msg-thread.is-active {
+        background: var(--surface-3);
+      }
+      .msg-thread:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: -2px;
+      }
+      .msg-thread-avatar {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        background: var(--ink);
+        color: var(--surface);
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        border-radius: 50%;
+      }
+      .msg-thread-meta {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .msg-thread-name {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .msg-thread-preview {
+        font-family: var(--font-sans);
+        font-size: 12px;
+        color: var(--ink-2);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .msg-thread-time {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-muted);
+        letter-spacing: 0.06em;
+      }
+
+      .msg-pane {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        min-height: 0;
+      }
+      .msg-pane-head {
+        padding: var(--s-3) var(--s-6);
+        border-bottom: 1px solid var(--hair);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        /* Pin to top of pane so long chats keep the title + rate-pill in view. */
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: var(--surface);
+      }
+      .msg-pane-title {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--ink);
+      }
+      .msg-pane-sub {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .msg-pane-sub::before {
+        content: "●";
+        color: var(--ok);
+        margin-right: 6px;
+        font-size: 8px;
+        vertical-align: middle;
+      }
+
+      .msg-log {
+        flex: 1;
+        overflow-y: auto;
+        /* Disable scroll anchoring so iOS Safari doesn't pin the viewport to
+       the previous anchor when new bubbles append — fixes auto-scroll. */
+        overflow-anchor: none;
+        list-style: none;
+        margin: 0;
+        padding: var(--s-6);
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-3);
+      }
+      .msg-bubble {
+        max-width: 70%;
+        padding: 10px 14px;
+        border-radius: 16px;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        line-height: 1.45;
+        word-wrap: break-word;
+      }
+      .msg-bubble em {
+        font-family: var(--font-serif);
+        font-style: italic;
+      }
+      .msg-bubble--in {
+        align-self: flex-start;
+        background: var(--surface-2);
+        color: var(--ink);
+        border-bottom-left-radius: 4px;
+        white-space: pre-wrap; /* preserve newlines from markdown renderer */
+      }
+      .msg-bubble--out {
+        align-self: flex-end;
+        background: var(--signal);
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+      }
+
+      /* ── markdown styling inside in-bubbles ── */
+      .msg-bubble--in strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .msg-bubble--in em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--accent);
+      }
+      .msg-bubble--in code {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        background: var(--surface-3, rgba(0, 0, 0, 0.06));
+        border: 1px solid var(--hair);
+        border-radius: 4px;
+        padding: 1px 5px;
+      }
+      .msg-bubble--in pre {
+        margin: 6px 0;
+        padding: 8px 10px;
+        background: var(--surface, #fafaf6);
+        border: 1px solid var(--hair);
+        border-radius: 6px;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      .msg-bubble--in pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        font-size: 11.5px;
+        line-height: 1.5;
+      }
+      .msg-bubble--in ul {
+        margin: 6px 0;
+        padding: 0 0 0 4px;
+        list-style: none;
+      }
+      .msg-bubble--in ul li {
+        padding-left: 14px;
+        position: relative;
+        margin: 2px 0;
+      }
+      .msg-bubble--in ul li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-family: var(--font-mono);
+      }
+      .msg-bubble--in a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+      }
+      .msg-bubble--in a:hover {
+        text-decoration-thickness: 2px;
+      }
+      /* citation chips appended by the rendering post-pass */
+      .msg-citation {
+        display: inline-block;
+        margin-left: 4px;
+        padding: 1px 6px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        color: var(--accent);
+        background: transparent;
+        border: 1px solid var(--hair);
+        border-radius: 999px;
+        text-decoration: none;
+        vertical-align: 1px;
+      }
+      .msg-citation:hover {
+        border-color: var(--accent);
+        background: var(--surface-2);
+      }
+      .msg-bubble--typing {
+        color: var(--ink-muted);
+        font-family: var(--font-mono);
+        letter-spacing: 0.4em;
+        animation: msgTyping 1.2s ease-in-out infinite;
+      }
+      @keyframes msgTyping {
+        0%,
+        100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .msg-bubble--typing {
+          animation: none;
+          opacity: 0.7;
+        }
+      }
+
+      /* ── rate-limit pill (header) ── */
+      /* `[hidden]` attribute would normally apply `display: none` via the UA
+     stylesheet, but the class-level `display:` below has higher specificity
+     and would override it. Force the hide explicitly. */
+      .msg-rate-pill[hidden],
+      .msg-rate-banner[hidden] {
+        display: none !important;
+      }
+
+      .msg-rate-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-left: auto;
+        padding: 4px 10px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        color: var(--ink-2);
+        background: var(--surface-2);
+        border: 1px solid var(--hair);
+        border-radius: 999px;
+        text-transform: uppercase;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .msg-rate-pill .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--ok, #5a7a4d);
+      }
+      .msg-rate-pill.is-low .dot {
+        background: var(--warn, #c98a3a);
+      }
+      .msg-rate-pill.is-empty {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .msg-rate-pill.is-empty .dot {
+        background: var(--accent);
+      }
+      .msg-rate-pill .num {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      /* ── rate-limit banner (above composer when 429) ── */
+      .msg-rate-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 16px;
+        background: var(--surface-2);
+        border-top: 1px solid var(--hair);
+        border-bottom: 1px solid var(--hair);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .msg-rate-banner-icon {
+        font-size: 16px;
+      }
+      .msg-rate-banner-text strong {
+        font-family: var(--font-mono);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* ── reasoning preview (thin line before a tool fires) ── */
+      .msg-bubble--reasoning {
+        align-self: flex-start;
+        max-width: 78%;
+        margin-right: auto;
+        padding: 2px 6px;
+        background: transparent;
+        border: none;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 12.5px;
+        color: var(--ink-muted);
+        opacity: 0.85;
+        animation: msgReasoningIn 0.25s ease-out;
+      }
+      .msg-bubble--reasoning::before {
+        content: "↪ ";
+        font-family: var(--font-mono);
+        font-style: normal;
+        color: var(--accent);
+        margin-right: 2px;
+      }
+      @keyframes msgReasoningIn {
+        from {
+          opacity: 0;
+          transform: translateY(2px);
+        }
+        to {
+          opacity: 0.85;
+          transform: translateY(0);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .msg-bubble--reasoning {
+          animation: none;
+        }
+      }
+
+      /* ── tool-call bubble (in-line, in-thread) ── */
+      .msg-bubble--tool {
+        align-self: flex-start;
+        max-width: 78%;
+        margin-right: auto;
+        padding: 8px 12px;
+        background: transparent;
+        border: 1px dashed var(--hair);
+        border-radius: 12px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        letter-spacing: 0.04em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition:
+          opacity 0.25s ease,
+          border-color 0.25s ease,
+          color 0.25s ease;
+      }
+      .msg-bubble--tool .tool-spin {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 1.5px solid var(--hair);
+        border-top-color: var(--accent);
+        animation: tool-spin 0.8s linear infinite;
+      }
+      .msg-bubble--tool.is-done {
+        color: var(--ok, #5a7a4d);
+        border-color: var(--ok, #5a7a4d);
+        border-style: solid;
+      }
+      .msg-bubble--tool.is-done .tool-spin {
+        animation: none;
+        border: none;
+        width: auto;
+        height: auto;
+      }
+      .msg-bubble--tool.is-error {
+        color: var(--accent);
+        border-color: var(--accent);
+        border-style: solid;
+      }
+      @keyframes tool-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .msg-bubble--tool .tool-spin {
+          animation: none;
+        }
+      }
+
+      /* ── refusal "why?" link on the bubble itself ── */
+      .msg-bubble--in.is-refusal {
+        border-left: 3px solid var(--accent);
+        padding-left: 11px;
+      }
+      .msg-refusal-why {
+        margin-left: 8px;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        color: var(--accent);
+        letter-spacing: 0.04em;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+      .msg-refusal-why::before {
+        content: " · ";
+        color: var(--ink-muted);
+        text-decoration: none;
+      }
+      .msg-refusal-why:hover {
+        text-decoration-thickness: 2px;
+      }
+
+      /* ── transparency modal ── */
+      .msg-modal[hidden] {
+        display: none !important;
+      }
+      .msg-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      .msg-modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(20, 18, 14, 0.5);
+        backdrop-filter: blur(4px);
+        cursor: pointer;
+      }
+      .msg-modal-card {
+        position: relative;
+        max-width: 540px;
+        width: 100%;
+        max-height: 86vh;
+        overflow-y: auto;
+        background: var(--surface);
+        border: 1px solid var(--ink);
+        border-radius: 12px;
+        padding: 26px 28px;
+        box-shadow: 0 18px 48px rgba(20, 18, 14, 0.25);
+      }
+      .msg-modal-close {
+        position: absolute;
+        top: 10px;
+        right: 14px;
+        background: none;
+        border: none;
+        font-size: 22px;
+        line-height: 1;
+        color: var(--ink-muted);
+        cursor: pointer;
+        padding: 4px;
+      }
+      .msg-modal-close:hover {
+        color: var(--accent);
+      }
+      .msg-modal-title {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: -0.01em;
+        margin: 0 0 12px;
+      }
+      .msg-modal-lead {
+        font-family: var(--font-sans);
+        font-size: 14px;
+        color: var(--ink-2);
+        margin: 0 0 14px;
+        line-height: 1.55;
+      }
+      .msg-modal-rules {
+        list-style: none;
+        margin: 0 0 14px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .msg-modal-rules li {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-2);
+        line-height: 1.5;
+        padding-left: 14px;
+        position: relative;
+      }
+      .msg-modal-rules li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-family: var(--font-mono);
+      }
+      .msg-modal-rules li strong {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        color: var(--ink);
+        font-size: 12.5px;
+      }
+      .msg-modal-rules li em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--accent);
+      }
+      .msg-modal-foot {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        line-height: 1.5;
+        margin: 16px 0 0;
+        padding-top: 14px;
+        border-top: 1px solid var(--hair);
+      }
+      .msg-modal-foot a {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
+      /* ── behind-the-scenes debug panel ── */
+      .msg-debug-toggle {
+        align-self: flex-start;
+        margin: -4px 0 2px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        color: var(--ink-muted);
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        text-transform: uppercase;
+      }
+      .msg-debug-toggle:hover {
+        color: var(--accent);
+      }
+      .msg-debug-toggle::before {
+        content: "⌃ ";
+      }
+      .msg-debug-toggle.is-on::before {
+        content: "⌄ ";
+      }
+      .msg-debug-panel {
+        align-self: flex-start;
+        max-width: 78%;
+        margin: 0 0 4px;
+        padding: 8px 12px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-left: 2px solid var(--accent);
+        border-radius: 6px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-2);
+        line-height: 1.5;
+      }
+      .msg-debug-panel[hidden] {
+        display: none !important;
+      }
+      .msg-debug-panel dl {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 2px 12px;
+      }
+      .msg-debug-panel dt {
+        color: var(--ink-muted);
+        letter-spacing: 0.08em;
+      }
+      .msg-debug-panel dd {
+        margin: 0;
+        color: var(--ink);
+        word-break: break-all;
+      }
+      .msg-debug-panel dd .num {
+        color: var(--accent);
+      }
+
+      /* ── timeline bubble (rendered when get_career_timeline returns) ── */
+      .msg-bubble--timeline {
+        align-self: flex-start;
+        max-width: 86%;
+        margin-right: auto;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .msg-bubble--timeline .tl-head {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .msg-bubble--timeline ol {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .msg-bubble--timeline li {
+        display: grid;
+        grid-template-columns: 110px 1fr;
+        gap: 10px;
+        padding: 6px 0;
+        border-top: 1px dashed var(--hair);
+      }
+      .msg-bubble--timeline li:first-child {
+        border-top: none;
+        padding-top: 0;
+      }
+      .msg-bubble--timeline .tl-year {
+        color: var(--ink-muted);
+        letter-spacing: 0.06em;
+        font-size: 10.5px;
+        padding-top: 1px;
+      }
+      .msg-bubble--timeline .tl-role {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .msg-bubble--timeline .tl-where {
+        color: var(--accent);
+        font-size: 11px;
+        margin-top: 1px;
+      }
+      .msg-bubble--timeline .tl-blurb {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-2);
+        margin-top: 4px;
+        line-height: 1.45;
+      }
+
+      /* ── engagement bubble (rendered when compare_engagements returns) ── */
+      .msg-bubble--engagement {
+        align-self: flex-start;
+        max-width: 82%;
+        margin-right: auto;
+        padding: 10px 14px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+      }
+      .msg-bubble--engagement .eg-head {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        font-family: var(--font-mono);
+      }
+      .msg-bubble--engagement .eg-code {
+        font-size: 10px;
+        color: var(--ink-muted);
+        letter-spacing: 0.12em;
+      }
+      .msg-bubble--engagement .eg-title {
+        font-size: 13px;
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .msg-bubble--engagement .eg-years {
+        font-size: 10px;
+        color: var(--accent);
+        margin-left: auto;
+      }
+      .msg-bubble--engagement .eg-blurb {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink-2);
+        line-height: 1.45;
+        margin: 4px 0 0;
+      }
+
+      /* ── link bubble (clickable card) ── */
+      .msg-bubble--link {
+        align-self: flex-start;
+        max-width: 78%;
+        margin-right: auto;
+        padding: 0;
+        background: transparent;
+        border: none;
+      }
+      .msg-bubble--link a {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 10px 14px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-left: 3px solid var(--accent);
+        border-radius: 10px;
+        text-decoration: none;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease;
+      }
+      .msg-bubble--link a:hover {
+        background: var(--surface-2);
+        border-color: var(--accent);
+      }
+      .msg-bubble--link .lnk-head {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.14em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+      }
+      .msg-bubble--link .lnk-label {
+        font-family: var(--font-sans);
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .msg-bubble--link .lnk-href {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent);
+        margin-top: 2px;
+      }
+
+      .msg-composer {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: var(--s-4) var(--s-5);
+        border-top: 1px solid var(--hair);
+        background: var(--surface);
+      }
+      .msg-input {
+        font-family: var(--font-sans);
+        font-size: 14px;
+        padding: 10px 14px;
+        border: 1px solid var(--hair);
+        background: var(--surface-2);
+        color: var(--ink);
+        outline: none;
+        transition: border-color var(--dur-1) var(--ease);
+      }
+      .msg-input:focus {
+        border-color: var(--ink);
+      }
+      .msg-send {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 16px;
+        padding: 0 16px;
+        background: var(--accent);
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        transition: filter var(--dur-1) var(--ease);
+      }
+      .msg-send:hover {
+        filter: brightness(1.08);
+      }
+      .msg-send:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 2px;
+      }
+      .msg-send[disabled] {
+        opacity: 0.4;
+        cursor: default;
+        background: var(--ink-muted);
+      }
+
+      .msg-foot {
+        text-align: center;
+        padding: var(--s-4) var(--gutter) var(--s-8);
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-muted);
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      /* ── iOS Messages skin · applies on phones and inside the iPhone iframe ── */
+      @media (max-width: 720px) {
+        body {
+          background: var(--surface);
+        }
+        html.is-embedded body {
+          background: #ffffff;
+        }
+
+        /* Lock the app shell to exactly the dynamic viewport height so the body
+       doesn't scroll. With nothing else on the page (lb-back/nav/footer are
+       display:none on mobile), this makes .msg-log the only scrolling region
+       — which is what sticky headers + iMessage-style chats expect. */
+        html,
+        body {
+          height: 100%;
+          overflow: hidden;
+        }
+        .msg-window {
+          grid-template-columns: 1fr;
+          margin: 0;
+          border: 0;
+          height: 100vh;
+          height: 100dvh;
+          max-height: 100dvh;
+          overflow: hidden;
+          background: #ffffff;
+        }
+        .msg-pane {
+          height: 100%;
+          min-height: 0;
+        }
+        /* default mobile view: thread list visible, conversation hidden */
+        .msg-sidebar {
+          display: flex;
+          flex-direction: column;
+        }
+        .msg-pane {
+          display: none;
+        }
+        .msg-window.is-thread-open .msg-sidebar {
+          display: none;
+        }
+        .msg-window.is-thread-open .msg-pane {
+          display: flex;
+        }
+
+        /* ── thread list ── */
+        .msg-side-head {
+          padding: 14px 16px 8px;
+          border-bottom: 1px solid rgba(60, 60, 67, 0.18);
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          position: sticky;
+          top: 0;
+          z-index: 5;
+        }
+        .msg-side-title {
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-weight: 700;
+          font-size: 28px;
+          letter-spacing: -0.02em;
+          margin: 0;
+          color: #1c1c1e;
+        }
+        .msg-thread {
+          grid-template-columns: 44px 1fr 14px;
+          gap: 14px;
+          padding: 14px 16px;
+          border-bottom: 1px solid rgba(60, 60, 67, 0.1);
+        }
+        .msg-thread-avatar {
+          width: 44px;
+          height: 44px;
+          font-size: 13px;
+        }
+        .msg-thread-avatar[data-color="warm"] {
+          background: var(--accent);
+          color: #fff;
+        }
+        .msg-thread-avatar[data-color="ink"] {
+          background: var(--ink);
+          color: #fff;
+        }
+        .msg-thread-name {
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-weight: 600;
+          font-size: 15px;
+          color: #1c1c1e;
+        }
+        .msg-thread-preview {
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-size: 13px;
+          color: #8e8e93;
+        }
+        .msg-thread-chev {
+          color: #c7c7cc;
+          font-size: 20px;
+          line-height: 1;
+          align-self: center;
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+        }
+        .msg-thread:active {
+          background: rgba(60, 60, 67, 0.06);
+        }
+
+        /* sticky conversation header with real back button — slimmed for mobile */
+        .msg-pane-head {
+          padding: 5px 10px 6px;
+          border-bottom: 1px solid rgba(60, 60, 67, 0.18);
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          display: grid;
+          grid-template-columns: 32px 1fr 32px;
+          align-items: center;
+          gap: 0;
+          text-align: center;
+        }
+        .msg-back {
+          background: none;
+          border: 0;
+          padding: 0;
+          width: 32px;
+          height: 32px;
+          color: #007aff;
+          font-size: 26px;
+          line-height: 1;
+          font-weight: 300;
+          display: grid;
+          place-items: center;
+          cursor: pointer;
+          -webkit-tap-highlight-color: transparent;
+        }
+        .msg-back:active {
+          opacity: 0.55;
+        }
+        .msg-pane-spacer {
+          width: 32px;
+          height: 32px;
+        }
+        .ios-stack {
+          grid-column: 2;
+          display: flex;
+          flex-direction: row; /* avatar + name on one row → shorter header */
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        .ios-avatar {
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #555 0%, #1c1c1e 100%);
+          color: #fff;
+          display: grid;
+          place-items: center;
+          font-family: var(--font-mono);
+          font-weight: 600;
+          font-size: 10px;
+          margin-bottom: 0;
+          flex-shrink: 0;
+        }
+        .msg-pane-title {
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-weight: 600;
+          font-size: 13px;
+          color: #1c1c1e;
+          letter-spacing: -0.01em;
+        }
+        /* Subtitle dropped on mobile — title alone is enough. Keeps it in DOM
+       for accessibility but visually collapsed. */
+        .msg-pane-sub {
+          display: none;
+        }
+
+        /* log */
+        .msg-log {
+          padding: 14px 12px 96px; /* bottom clears the fixed composer + safe area */
+          gap: 2px;
+          background: #ffffff;
+        }
+
+        /* bubbles · iMessage palette */
+        .msg-bubble {
+          max-width: 78%;
+          padding: 8px 12px;
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-size: 15px;
+          line-height: 1.32;
+          border-radius: 18px;
+          word-wrap: break-word;
+        }
+        .msg-bubble + .msg-bubble {
+          margin-top: 2px;
+        }
+        .msg-bubble--in {
+          background: #e5e5ea;
+          color: #1c1c1e;
+          border-bottom-left-radius: 18px;
+        }
+        .msg-bubble--in.is-tail {
+          border-bottom-left-radius: 4px;
+        }
+        .msg-bubble--out {
+          background: #007aff;
+          color: #ffffff;
+          border-bottom-right-radius: 18px;
+        }
+        .msg-bubble--out.is-tail {
+          border-bottom-right-radius: 4px;
+        }
+        .msg-bubble em {
+          font-family: var(--font-serif);
+          font-style: italic;
+        }
+
+        /* "Delivered" receipt line */
+        .msg-receipt {
+          list-style: none;
+          align-self: flex-end;
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+          font-size: 10px;
+          color: #8e8e93;
+          margin: 1px 4px 6px 0;
+        }
+
+        /* typing dots */
+        .msg-bubble--typing {
+          background: #e5e5ea !important;
+          color: #8e8e93;
+          padding: 12px 14px;
+          letter-spacing: 0;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          align-self: flex-start;
+          animation: none !important;
+          max-width: max-content;
+        }
+        .msg-bubble--typing i {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #8e8e93;
+          animation: iosTypingBounce 1.2s ease-in-out infinite;
+          display: inline-block;
+        }
+        .msg-bubble--typing i:nth-child(2) {
+          animation-delay: 0.15s;
+        }
+        .msg-bubble--typing i:nth-child(3) {
+          animation-delay: 0.3s;
+        }
+        @keyframes iosTypingBounce {
+          0%,
+          60%,
+          100% {
+            transform: translateY(0);
+            opacity: 0.45;
+          }
+          30% {
+            transform: translateY(-4px);
+            opacity: 1;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .msg-bubble--typing i {
+            animation: none;
+            opacity: 0.6;
+          }
+        }
+
+        /* composer — fixed bottom, pill input, round blue send */
+        .msg-composer {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          grid-template-columns: 1fr 36px;
+          gap: 8px;
+          padding: 8px 12px;
+          padding-bottom: max(8px, env(safe-area-inset-bottom));
+          background: rgba(255, 255, 255, 0.94);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-top: 1px solid rgba(60, 60, 67, 0.18);
+          z-index: 9;
+        }
+        .msg-input {
+          font-size: 16px;
+          padding: 8px 14px;
+          border-radius: 18px;
+          border: 1px solid rgba(60, 60, 67, 0.18);
+          background: var(--surface-2);
+          font-family: -apple-system, BlinkMacSystemFont, var(--font-sans);
+        }
+        .msg-input:focus {
+          border-color: rgba(60, 60, 67, 0.32);
+        }
+        .msg-send {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          padding: 0;
+          background: #007aff;
+          color: #fff;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1;
+          display: grid;
+          place-items: center;
+        }
+        .msg-send:hover {
+          filter: brightness(1.04);
+        }
+        .msg-send[disabled] {
+          background: #c7c7cc;
+          opacity: 1;
+        }
+
+        /* chrome from the parent template is unwanted in mobile context */
+        .msg-foot,
+        .lb-footer,
+        .lb-nav,
+        .lb-back {
+          display: none;
+        }
+      }
+
+      /* desktop · 2-pane experience, no back button, no large iOS avatar */
+      @media (min-width: 721px) {
+        .ios-avatar,
+        .msg-back,
+        .msg-pane-spacer,
+        .msg-side-head {
+          display: none;
+        }
+        .msg-pane-head {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .msg-thread {
+          display: grid;
+          grid-template-columns: 36px 1fr;
+          gap: 12px;
+          padding: var(--s-4);
+        }
+        .msg-thread-chev {
+          display: none;
+        }
+        .msg-thread.is-active {
+          background: var(--surface-3);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+    <header class="lb-nav">
+      <a class="lb-brand" href="index.html"
+        ><span class="br">[</span>kal_foundry<span class="br">]</span></a
+      >
+      <span class="lb-nav-spacer"></span>
+      <a href="work.html">work</a>
+      <a href="patents.html">patents</a>
+      <a href="about.html">about</a>
+      <a href="now.html">now</a>
+      <a href="resume.html" class="is-signal">team ↗</a>
+    </header>
+
+    <section class="msg-window" aria-label="messages">
+      <aside class="msg-sidebar" id="msg-sidebar" aria-label="conversations">
+        <header class="msg-side-head">
+          <h2 class="msg-side-title">Messages</h2>
+        </header>
+        <ul class="msg-threads" id="msg-threads" role="list">
+          <li
+            class="msg-thread"
+            data-thread="forgeChat"
+            tabindex="0"
+            role="button"
+            aria-label="open chat with Forge"
+          >
+            <span class="msg-thread-avatar" data-color="warm">F</span>
+            <span class="msg-thread-meta">
+              <span class="msg-thread-name">Forge</span>
+              <span class="msg-thread-preview" id="preview-forgeChat"
+                >ai · ask anything about the foundry's work</span
+              >
+            </span>
+            <span class="msg-thread-chev">›</span>
+          </li>
+          <li
+            class="msg-thread"
+            data-thread="teamChat"
+            tabindex="0"
+            role="button"
+            aria-label="message the KAL Foundry team directly"
+          >
+            <span class="msg-thread-avatar" data-color="ink">KF</span>
+            <span class="msg-thread-meta">
+              <span class="msg-thread-name">KAL Foundry</span>
+              <span class="msg-thread-preview" id="preview-teamChat"
+                >direct · routes to the foundry's inbox</span
+              >
+            </span>
+            <span class="msg-thread-chev">›</span>
+          </li>
+        </ul>
+      </aside>
+
+      <main class="msg-pane" aria-label="conversation">
+        <header class="msg-pane-head">
+          <button
+            class="msg-back"
+            id="msg-back"
+            type="button"
+            aria-label="back to messages"
+          >
+            ‹
+          </button>
+          <span class="ios-stack">
+            <span class="ios-avatar" id="ios-avatar" aria-hidden="true">F</span>
+            <span class="msg-pane-title" id="msg-pane-title">Forge</span>
+            <span class="msg-pane-sub" id="msg-pane-sub">iMessage</span>
+          </span>
+          <span class="msg-pane-spacer" aria-hidden="true"></span>
+          <span class="msg-rate-pill" id="msg-rate-pill" hidden>
+            <span class="dot"></span>
+            <span class="num" id="msg-rate-num">10</span>/<span class="den"
+              >10</span
+            >
+          </span>
+        </header>
+
+        <ol class="msg-log" id="msg-log" aria-live="polite"></ol>
+
+        <div class="msg-rate-banner" id="msg-rate-banner" hidden role="status">
+          <span class="msg-rate-banner-icon" aria-hidden="true">⏳</span>
+          <span class="msg-rate-banner-text" id="msg-rate-banner-text">
+            you've used today's 10 messages — back in
+            <strong id="msg-rate-banner-time">…</strong>.
+          </span>
+        </div>
+
+        <form class="msg-composer" id="msg-composer" autocomplete="off">
+          <input
+            class="msg-input"
+            id="msg-input"
+            type="text"
+            placeholder="ask anything about the foundry's work…"
+            aria-label="message"
+            maxlength="500"
+          />
+          <button class="msg-send" type="submit" aria-label="send" disabled>
+            ↑
+          </button>
+        </form>
+      </main>
+    </section>
+
+    <div class="msg-foot">
+      ask_foundry · 10 msgs/day · contact via direct or tool-call
+    </div>
+
+    <div
+      class="msg-modal"
+      id="msg-rules-modal"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="msg-rules-title"
+    >
+      <div class="msg-modal-backdrop" data-close="1"></div>
+      <div class="msg-modal-card">
+        <button
+          type="button"
+          class="msg-modal-close"
+          aria-label="close"
+          data-close="1"
+        >
+          ×
+        </button>
+        <h2 id="msg-rules-title" class="msg-modal-title">
+          why forge declined
+        </h2>
+        <p class="msg-modal-lead">
+          ask_foundry is scoped to KAL Foundry's work. Five rules govern
+          what it will and won't answer:
+        </p>
+        <ul class="msg-modal-rules">
+          <li>
+            <strong>third-person only.</strong> forge speaks
+            <em>about</em> the foundry — never as a client or partner. asked "are
+            you human?" it clarifies it's an AI assistant.
+          </li>
+          <li>
+            <strong>no fabrication.</strong> if a fact isn't in the curated
+            knowledge base, forge says so instead of guessing. metrics,
+            client names, dates, quotes, future plans — never invented.
+          </li>
+          <li>
+            <strong>out-of-scope topics are declined.</strong> pricing it can't
+            confirm, hiring decisions, confidential client strategy, politics,
+            religion, sensitive personal topics, anything unrelated to the
+            foundry's work.
+          </li>
+          <li>
+            <strong>prompt-injection refused.</strong> attempts to override
+            these rules, change forge's role, or extract its system prompt are
+            recognized and ignored.
+          </li>
+          <li>
+            <strong>client names anonymized.</strong> per the foundry's
+            convention — "Fortune 500 customer", "enterprise client",
+            domain-only labels.
+          </li>
+        </ul>
+        <p class="msg-modal-foot">
+          these rules are defended at multiple layers — input sanitization,
+          defensive system prompt, output scrubber, openai moderation,
+          per-session rate limit.
+          <a href="/architecture.html">see the full architecture →</a>
+        </p>
+      </div>
+    </div>
+
+    <footer class="lb-footer">
+      <span><span class="live">●</span> messages · ask_foundry</span>
+      <span class="signoff">— the foundry</span>
+    </footer>
+
+    <script>
+      (() => {
+        const ENDPOINT = "https://www.kalfoundry.com/api/ask";
+        const CONTACT_ENDPOINT = "https://www.kalfoundry.com/api/contact";
+
+        const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/i;
+        const CHAT_STORE_KEY = "lb_chat_v1";
+        const CLIENT_SESSION_KEY = "lb_client_session";
+        const SESSION_LIMIT = 10;
+
+        // Per-tab streaming lock: prevents queuing a second message while the
+        // current one is still streaming back, and disables the send button.
+        let isStreaming = false;
+
+        // Local rate-limit mirror. Authoritative value comes from server SSE meta
+        // events; this is just what the pill renders between events.
+        const rateBudget = {
+          remaining: SESSION_LIMIT,
+          resetAt: null,
+          disabled: false,
+        };
+
+        // Stable client-side session id, used only to key local history in
+        // localStorage. The server uses its own HttpOnly signed cookie.
+        function getClientSessionId() {
+          let id = localStorage.getItem(CLIENT_SESSION_KEY);
+          if (!id) {
+            id = crypto.randomUUID
+              ? crypto.randomUUID()
+              : "cs_" + Math.random().toString(36).slice(2);
+            localStorage.setItem(CLIENT_SESSION_KEY, id);
+          }
+          return id;
+        }
+        const clientSessionId = getClientSessionId();
+        const storeKey = `${CHAT_STORE_KEY}:${clientSessionId}`;
+
+        const THREADS = {
+          forgeChat: {
+            id: "forgeChat",
+            name: "Forge",
+            subtitle: "iMessage",
+            avatar: "F",
+            avatarStyle:
+              "background:linear-gradient(135deg,#d97757 0%,#b85a3a 100%);color:#fff;",
+            greeting:
+              "Hi, I'm Forge — KAL Foundry's assistant. I can answer most questions about the foundry's work: design & brand, strategy & AI consulting, digital products, and production & launch. Ask away.",
+            previewText: "ai · ask anything about the foundry's work",
+            placeholder: "ask anything about the foundry's work…",
+            send: "streamForgeChat",
+          },
+          teamChat: {
+            id: "teamChat",
+            name: "KAL Foundry",
+            subtitle: "iMessage",
+            avatar: "KF",
+            avatarStyle:
+              "background:linear-gradient(135deg,#555 0%,#1c1c1e 100%);color:#fff;",
+            greeting:
+              "Thanks for reaching out! This routes straight to the foundry's inbox. Drop your email anywhere in a message if you'd like a reply.",
+            previewText: "direct · routes to the foundry's inbox",
+            placeholder: "type a message · include your email for replies…",
+            send: "sendToTeamChat",
+          },
+        };
+
+        function freshState() {
+          return {
+            forgeChat: { bubbles: [], userEmail: null },
+            teamChat: { bubbles: [], userEmail: null },
+          };
+        }
+
+        function hydrateState() {
+          try {
+            const raw = localStorage.getItem(storeKey);
+            if (!raw) return freshState();
+            const parsed = JSON.parse(raw);
+            const out = freshState();
+            for (const id of Object.keys(out)) {
+              if (parsed[id] && Array.isArray(parsed[id].bubbles)) {
+                out[id].bubbles = parsed[id].bubbles
+                  .filter((b) => b && typeof b.content === "string")
+                  .map((b) => ({
+                    role: b.role === "user" ? "user" : "assistant",
+                    content: b.content,
+                    kind: b.kind || "text", // 'text' | 'tool' | 'link'
+                    meta: b.meta || null,
+                  }));
+                if (typeof parsed[id].userEmail === "string")
+                  out[id].userEmail = parsed[id].userEmail;
+              }
+            }
+            return out;
+          } catch {
+            return freshState();
+          }
+        }
+
+        function persistState() {
+          try {
+            // Trim to last 60 bubbles per thread to keep localStorage bounded.
+            const snapshot = {};
+            for (const id of Object.keys(threadState)) {
+              snapshot[id] = {
+                bubbles: threadState[id].bubbles.slice(-60),
+                userEmail: threadState[id].userEmail,
+              };
+            }
+            localStorage.setItem(storeKey, JSON.stringify(snapshot));
+          } catch {
+            /* quota or disabled — silent */
+          }
+        }
+
+        const threadState = hydrateState();
+        let activeThreadId = null;
+
+        // ── element refs ──
+        const win = document.querySelector(".msg-window");
+        const log = document.getElementById("msg-log");
+        const form = document.getElementById("msg-composer");
+        const input = document.getElementById("msg-input");
+        const send = form.querySelector(".msg-send");
+        const back = document.getElementById("msg-back");
+        const titleEl = document.getElementById("msg-pane-title");
+        const subEl = document.getElementById("msg-pane-sub");
+        const avatarEl = document.getElementById("ios-avatar");
+        const ratePill = document.getElementById("msg-rate-pill");
+        const rateNum = document.getElementById("msg-rate-num");
+        const rateBanner = document.getElementById("msg-rate-banner");
+        const rateBannerTime = document.getElementById("msg-rate-banner-time");
+        const previewEls = {
+          forgeChat: document.getElementById("preview-forgeChat"),
+          teamChat: document.getElementById("preview-teamChat"),
+        };
+
+        // ── rate-limit UI ──
+        function setSendDisabled() {
+          send.disabled =
+            isStreaming ||
+            !activeThreadId ||
+            !input.value.trim() ||
+            (activeThreadId === "forgeChat" && rateBudget.remaining <= 0);
+        }
+
+        function renderRatePill() {
+          if (activeThreadId !== "forgeChat") {
+            ratePill.hidden = true;
+            return;
+          }
+          ratePill.hidden = false;
+          rateNum.textContent = String(Math.max(0, rateBudget.remaining));
+          ratePill.classList.toggle(
+            "is-low",
+            rateBudget.remaining > 0 && rateBudget.remaining <= 3,
+          );
+          ratePill.classList.toggle("is-empty", rateBudget.remaining <= 0);
+        }
+
+        function formatResetIn(resetAt) {
+          if (!resetAt) return "a bit";
+          const diff = new Date(resetAt) - new Date();
+          if (diff <= 0) return "a moment";
+          const h = Math.floor(diff / 3600000);
+          const m = Math.floor((diff % 3600000) / 60000);
+          if (h > 0) return `${h}h ${m}m`;
+          if (m > 0) return `${m}m`;
+          return "under a minute";
+        }
+
+        let banTickHandle = null;
+        function showRateBanner(resetAt) {
+          rateBudget.remaining = 0;
+          rateBudget.resetAt = resetAt;
+          renderRatePill();
+          rateBanner.hidden = false;
+          rateBannerTime.textContent = formatResetIn(resetAt);
+          clearInterval(banTickHandle);
+          banTickHandle = setInterval(() => {
+            if (
+              !rateBudget.resetAt ||
+              new Date(rateBudget.resetAt) <= new Date()
+            ) {
+              // Reset window passed — try to refresh from server next message.
+              clearInterval(banTickHandle);
+              rateBanner.hidden = true;
+              rateBudget.remaining = SESSION_LIMIT;
+              rateBudget.resetAt = null;
+              renderRatePill();
+              setSendDisabled();
+              return;
+            }
+            rateBannerTime.textContent = formatResetIn(rateBudget.resetAt);
+          }, 30000);
+          setSendDisabled();
+        }
+
+        function hideRateBanner() {
+          rateBanner.hidden = true;
+          clearInterval(banTickHandle);
+        }
+
+        async function refreshRateMeta() {
+          if (!ENDPOINT) return;
+          try {
+            const r = await fetch(ENDPOINT + "?meta=1", {
+              credentials: "include",
+            });
+            if (!r.ok) return;
+            const j = await r.json();
+            if (typeof j.remaining === "number") {
+              rateBudget.remaining = j.remaining;
+              rateBudget.resetAt = j.resetAt || null;
+              if (j.remaining <= 0 && j.resetAt) showRateBanner(j.resetAt);
+              else hideRateBanner();
+              renderRatePill();
+              setSendDisabled();
+            }
+          } catch {
+            /* offline — show neutral */
+          }
+        }
+
+        // ── scroll helper ──
+        // Set log.scrollTop directly — do NOT use scrollIntoView, which scrolls
+        // every scrollable ancestor including the parent window through the
+        // iframe boundary. On the homepage that yanks the parallax scroll
+        // position and shrinks the macbook frame on every send. rAF still
+        // wraps the assignment so iOS reads the post-reflow scrollHeight.
+        function scrollToBottom() {
+          requestAnimationFrame(() => {
+            log.scrollTop = log.scrollHeight;
+          });
+        }
+
+        // ── bubble helpers ──
+        function appendBubbleEl(text, who, opts = {}) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--" + who;
+          if (opts.html) li.innerHTML = text;
+          else li.textContent = text;
+          log.appendChild(li);
+          scrollToBottom();
+          refreshTails();
+          return li;
+        }
+
+        function appendReasoningBubble(text) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--reasoning";
+          li.textContent = String(text || "");
+          log.appendChild(li);
+          scrollToBottom();
+          return li;
+        }
+
+        // Transient toast — reuses the reasoning style. Returns a remove() handle.
+        function showStatusToast(text) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--reasoning";
+          li.textContent = String(text || "");
+          log.appendChild(li);
+          scrollToBottom();
+          return { remove: () => li.remove() };
+        }
+
+        // Tool-call bubble — a small dashed pill that shows the model is using a tool.
+        // Returns the element so the caller can flip it to is-done / is-error.
+        function createToolBubble(label) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--tool";
+          li.innerHTML =
+            '<span class="tool-spin" aria-hidden="true"></span><span class="tool-label"></span>';
+          li.querySelector(".tool-label").textContent = label;
+          log.appendChild(li);
+          scrollToBottom();
+          refreshTails();
+          return li;
+        }
+        function finishToolBubble(el, outcome /* 'done' | 'error' */, label) {
+          if (!el) return;
+          el.classList.add(outcome === "error" ? "is-error" : "is-done");
+          el.innerHTML =
+            '<span aria-hidden="true">' +
+            (outcome === "error" ? "✗" : "✓") +
+            "</span>" +
+            '<span class="tool-label"></span>';
+          el.querySelector(".tool-label").textContent = label;
+          scrollToBottom();
+        }
+
+        function appendTimelineBubble(timeline) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--timeline";
+          const items = (timeline || [])
+            .map(
+              (t) =>
+                "<li>" +
+                '<span class="tl-year">' +
+                escapeHTML(t.year || "") +
+                "</span>" +
+                "<span>" +
+                '<div class="tl-role">' +
+                escapeHTML(t.role || "") +
+                "</div>" +
+                (t.where
+                  ? '<div class="tl-where">' + escapeHTML(t.where) + "</div>"
+                  : "") +
+                (t.blurb
+                  ? '<div class="tl-blurb">' + escapeHTML(t.blurb) + "</div>"
+                  : "") +
+                "</span>" +
+                "</li>",
+            )
+            .join("");
+          li.innerHTML =
+            '<div class="tl-head">career timeline</div>' +
+            "<ol>" +
+            items +
+            "</ol>";
+          log.appendChild(li);
+          scrollToBottom();
+          refreshTails();
+          return li;
+        }
+
+        function appendEngagementBubble(e) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--engagement";
+          li.innerHTML =
+            '<div class="eg-head">' +
+            '<span class="eg-code">' +
+            escapeHTML(e.code || "") +
+            "</span>" +
+            '<span class="eg-title">' +
+            escapeHTML(e.title || "") +
+            "</span>" +
+            '<span class="eg-years">' +
+            escapeHTML(e.years || "") +
+            "</span>" +
+            "</div>" +
+            (e.blurb
+              ? '<p class="eg-blurb">' + escapeHTML(e.blurb) + "</p>"
+              : "");
+          log.appendChild(li);
+          scrollToBottom();
+          refreshTails();
+          return li;
+        }
+
+        // Link bubble — clickable card pointing at a portfolio page.
+        function appendLinkBubble({ href, label, page }) {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--link";
+          const safeHref = String(href || "/").replace(/[^/\w\-.?=&%]/g, "");
+          const safeLabel = String(label || page || "open");
+          const a = document.createElement("a");
+          a.href = safeHref;
+          a.innerHTML =
+            '<span class="lnk-head">link · ' +
+            (page || "page") +
+            "</span>" +
+            '<span class="lnk-label"></span>' +
+            '<span class="lnk-href">' +
+            safeHref +
+            " ↗</span>";
+          a.querySelector(".lnk-label").textContent = safeLabel;
+          li.appendChild(a);
+          log.appendChild(li);
+          scrollToBottom();
+          refreshTails();
+          return li;
+        }
+
+        function refreshTails() {
+          const bubbles = log.querySelectorAll(
+            ".msg-bubble:not(.msg-bubble--typing):not(.msg-bubble--tool):not(.msg-bubble--link)",
+          );
+          bubbles.forEach((b, i) => {
+            const next = bubbles[i + 1];
+            const kind = b.classList.contains("msg-bubble--in")
+              ? "msg-bubble--in"
+              : "msg-bubble--out";
+            const same = next && next.classList.contains(kind);
+            b.classList.toggle("is-tail", !same);
+          });
+        }
+
+        function typingBubble() {
+          const li = document.createElement("li");
+          li.className = "msg-bubble msg-bubble--in msg-bubble--typing";
+          li.innerHTML = "<i></i><i></i><i></i>";
+          log.appendChild(li);
+          scrollToBottom();
+          return li;
+        }
+
+        function markDelivered() {
+          document.querySelectorAll(".msg-receipt").forEach((n) => n.remove());
+          const lastOut = [...log.querySelectorAll(".msg-bubble--out")].pop();
+          if (!lastOut) return;
+          const r = document.createElement("li");
+          r.className = "msg-receipt";
+          r.textContent = "Delivered";
+          lastOut.insertAdjacentElement("afterend", r);
+        }
+
+        function updatePreview(id, text) {
+          const el = previewEls[id];
+          if (el && text) el.textContent = text.slice(0, 60);
+        }
+
+        // ── markdown renderer (safe, hand-rolled, ~80 LOC) ──
+        // Order is critical: escape first, protect code, then handle links / bold /
+        // italic / lists. Only the allowed inline elements are reintroduced as tags;
+        // everything else passes through as escaped text.
+        const CITATION_PAGES = {
+          work: "/work.html",
+          case: "/case.html",
+          patents: "/patents.html",
+          resume: "/resume.html",
+          now: "/now.html",
+          about: "/about.html",
+        };
+
+        function escapeHTML(s) {
+          return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
+        function safeHref(href) {
+          const h = String(href || "").trim();
+          if (/^(https?:\/\/|\/)/i.test(h) && !/[<>"'`\s]/.test(h)) return h;
+          return null;
+        }
+
+        function renderMarkdown(input) {
+          if (!input) return "";
+          let s = escapeHTML(input);
+
+          // Protect fenced code blocks first (```lang\n...\n```).
+          const fences = [];
+          s = s.replace(
+            /```([a-zA-Z0-9_-]*)\n?([\s\S]*?)```/g,
+            (_, _lang, body) => {
+              fences.push(
+                `<pre><code>${body.replace(/\n+$/, "")}</code></pre>`,
+              );
+              return ` F${fences.length - 1} `;
+            },
+          );
+
+          // Protect inline code (single backticks, single-line).
+          const inlines = [];
+          s = s.replace(/`([^`\n]+)`/g, (_, body) => {
+            inlines.push(`<code>${body}</code>`);
+            return ` I${inlines.length - 1} `;
+          });
+
+          // Inline links: [text](href)
+          s = s.replace(/\[([^\]\n]+)\]\(([^)\s]+)\)/g, (_, text, href) => {
+            const safe = safeHref(href);
+            if (!safe) return text;
+            return `<a href="${safe}">${text}</a>`;
+          });
+
+          // Citation chips: [work] / [case] / [patents] / [about] / [now] / [resume].
+          // Only the closed enum is rewritten — unknown bracketed tokens pass through.
+          s = s.replace(
+            /\[(work|case|patents|about|now|resume)\]/g,
+            (_, page) => {
+              const href = CITATION_PAGES[page];
+              return ` <a class="msg-citation" href="${href}">→ ${page}</a>`;
+            },
+          );
+
+          // Bold then italic. Bold first so `**word**` doesn't get partially consumed.
+          s = s.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+          s = s.replace(
+            /(^|[\s(])\*([^*\n]+)\*(?=[\s.,!?;:)]|$)/g,
+            "$1<em>$2</em>",
+          );
+
+          // Unordered lists: consecutive lines starting with `- ` or `* `.
+          s = s.replace(/((?:^|\n)(?:[-*] [^\n]+\n?)+)/g, (block) => {
+            const items = block
+              .trim()
+              .split("\n")
+              .map((l) => l.replace(/^[-*] /, ""))
+              .map((l) => `<li>${l}</li>`)
+              .join("");
+            return `\n<ul>${items}</ul>`;
+          });
+
+          // Restore protected segments.
+          s = s.replace(/ I(\d+) /g, (_, i) => inlines[+i]);
+          s = s.replace(/ F(\d+) /g, (_, i) => fences[+i]);
+
+          return s;
+        }
+
+        // ── thread switching ──
+        function openThread(id) {
+          if (!THREADS[id]) return;
+          activeThreadId = id;
+          const t = THREADS[id];
+          titleEl.textContent = t.name;
+          subEl.textContent = t.subtitle;
+          avatarEl.textContent = t.avatar;
+          avatarEl.style.cssText =
+            "width:36px;height:36px;border-radius:50%;display:grid;place-items:center;" +
+            "font-family:var(--font-mono);font-weight:600;font-size:12px;margin-bottom:1px;" +
+            t.avatarStyle;
+          input.placeholder = t.placeholder;
+          input.value = "";
+          renderActiveThread();
+          win.classList.add("is-thread-open");
+          // sidebar highlight on desktop
+          document.querySelectorAll(".msg-thread").forEach((row) => {
+            row.classList.toggle("is-active", row.dataset.thread === id);
+          });
+          renderRatePill();
+          if (id === "forgeChat") refreshRateMeta();
+          else hideRateBanner();
+          setSendDisabled();
+          setTimeout(() => {
+            if (window.matchMedia("(min-width: 721px)").matches) input.focus();
+          }, 80);
+        }
+
+        function closeThread() {
+          activeThreadId = null;
+          win.classList.remove("is-thread-open");
+          document
+            .querySelectorAll(".msg-thread")
+            .forEach((row) => row.classList.remove("is-active"));
+        }
+
+        function renderActiveThread() {
+          if (!activeThreadId) return;
+          const t = THREADS[activeThreadId];
+          const st = threadState[activeThreadId];
+          if (st.bubbles.length === 0) {
+            st.bubbles.push({
+              role: "assistant",
+              content: t.greeting,
+              kind: "text",
+            });
+            updatePreview(activeThreadId, t.previewText);
+            persistState();
+          }
+          log.innerHTML = "";
+          st.bubbles.forEach((b) => {
+            if (b.kind === "reasoning") {
+              appendReasoningBubble(b.content);
+              return;
+            }
+            if (b.kind === "tool") {
+              const li = document.createElement("li");
+              li.className =
+                "msg-bubble msg-bubble--tool " +
+                (b.meta?.outcome === "error" ? "is-error" : "is-done");
+              li.innerHTML =
+                '<span aria-hidden="true">' +
+                (b.meta?.outcome === "error" ? "✗" : "✓") +
+                "</span>" +
+                '<span class="tool-label"></span>';
+              li.querySelector(".tool-label").textContent = b.content;
+              log.appendChild(li);
+              return;
+            }
+            if (b.kind === "link" && b.meta) {
+              appendLinkBubble(b.meta);
+              return;
+            }
+            if (b.kind === "timeline" && b.meta?.timeline) {
+              appendTimelineBubble(b.meta.timeline);
+              return;
+            }
+            if (b.kind === "engagement" && b.meta) {
+              appendEngagementBubble(b.meta);
+              return;
+            }
+            const who = b.role === "user" ? "out" : "in";
+            const li = document.createElement("li");
+            li.className = "msg-bubble msg-bubble--" + who;
+            if (b.role === "assistant") {
+              li.innerHTML = renderMarkdown(b.content);
+            } else {
+              li.textContent = b.content;
+            }
+            log.appendChild(li);
+          });
+          refreshTails();
+          scrollToBottom();
+        }
+
+        // ── senders ──
+        // Friendly labels for tool-call bubbles in the chat (snake_case → human).
+        const TOOL_LABELS = {
+          send_contact_email: {
+            pending: (a) =>
+              `sending email to the foundry${a?.replyTo ? ` (reply-to ${a.replyTo})` : ""}…`,
+            done: () => "email sent to the foundry",
+            error: () => "email failed — try again in a moment",
+          },
+          lookup_patent: {
+            pending: (a) =>
+              `searching patents for "${(a?.query || "").slice(0, 60)}"…`,
+            done: (a, r) =>
+              `${r?.matches?.length || 0} match${(r?.matches?.length || 0) === 1 ? "" : "es"} in the portfolio`,
+            error: () => "patent search failed",
+          },
+          link_to_page: {
+            pending: () => "finding the right page…",
+            done: () => "found",
+            error: () => "no matching page",
+          },
+          recommend_next_page: {
+            pending: (a) =>
+              `recommending pages for "${(a?.topic || "").slice(0, 60)}"…`,
+            done: (a, r) =>
+              `${r?.recommendations?.length || 0} page${(r?.recommendations?.length || 0) === 1 ? "" : "s"} recommended`,
+            error: () => "no recommendation",
+          },
+          get_career_timeline: {
+            pending: () => "building the foundry's timeline…",
+            done: (a, r) => `timeline · ${(r?.timeline || []).length} stops`,
+            error: () => "timeline unavailable",
+          },
+          compare_engagements: {
+            pending: (a) =>
+              `filtering engagements by "${(a?.domain || "").slice(0, 40)}"…`,
+            done: (a, r) =>
+              `${(r?.matches || []).length} engagement${(r?.matches || []).length === 1 ? "" : "s"} found`,
+            error: () => "no engagement match",
+          },
+        };
+
+        async function streamForgeChat(text) {
+          if (isStreaming) return;
+          isStreaming = true;
+          setSendDisabled();
+
+          threadState.forgeChat.bubbles.push({
+            role: "user",
+            content: text,
+            kind: "text",
+          });
+          appendBubbleEl(text, "out");
+          markDelivered();
+          updatePreview("forgeChat", text);
+          persistState();
+          const placeholder = typingBubble();
+
+          if (!ENDPOINT) {
+            await new Promise((r) => setTimeout(r, 700));
+            const reply =
+              "endpoint not configured yet — once /api/ask is deployed to Vercel, set the ENDPOINT constant and i'll start answering for real.";
+            placeholder.classList.remove("msg-bubble--typing");
+            placeholder.innerHTML = "";
+            placeholder.textContent = reply;
+            threadState.forgeChat.bubbles.push({
+              role: "assistant",
+              content: reply,
+              kind: "text",
+            });
+            refreshTails();
+            persistState();
+            isStreaming = false;
+            setSendDisabled();
+            return;
+          }
+
+          // Only send text/role pairs to the server. Tool / link bubbles are UI
+          // affordances and aren't part of the model's conversation memory.
+          const history = threadState.forgeChat.bubbles
+            .filter(
+              (b) =>
+                (b.kind === "text" || !b.kind) &&
+                typeof b.content === "string" &&
+                b.content.length > 0,
+            )
+            .map((b) => ({ role: b.role, content: b.content }));
+
+          async function tryFetch() {
+            return fetch(ENDPOINT, {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ messages: history }),
+            });
+          }
+
+          let res;
+          try {
+            res = await tryFetch();
+          } catch {
+            // One retry with a 1s backoff on transient network errors.
+            const toast = showStatusToast("reconnecting…");
+            await new Promise((r) => setTimeout(r, 1000));
+            try {
+              res = await tryFetch();
+              toast.remove();
+            } catch {
+              toast.remove();
+              placeholder.classList.remove("msg-bubble--typing");
+              placeholder.innerHTML = "";
+              placeholder.textContent =
+                "offline? couldn't reach the endpoint. try again.";
+              refreshTails();
+              isStreaming = false;
+              setSendDisabled();
+              return;
+            }
+          }
+
+          // Rate-limited.
+          if (res.status === 429) {
+            placeholder.remove();
+            let resetAt = null;
+            let exceeded = "session";
+            try {
+              const j = await res.json();
+              resetAt = j?.resetAt || null;
+              exceeded = j?.exceeded || exceeded;
+            } catch {}
+            if (exceeded === "burst") {
+              // Short cooldown — show toast, re-enable composer when timer expires.
+              const toast = showStatusToast(
+                "whoa, slow down — try again in a moment.",
+              );
+              setTimeout(() => toast.remove(), 4000);
+            } else {
+              showRateBanner(resetAt);
+            }
+            isStreaming = false;
+            setSendDisabled();
+            return;
+          }
+          // Moderation block (400 with content_policy).
+          if (res.status === 400) {
+            let body = null;
+            try {
+              body = await res.json();
+            } catch {}
+            placeholder.classList.remove("msg-bubble--typing");
+            placeholder.innerHTML = "";
+            placeholder.textContent =
+              body?.error === "content_policy"
+                ? "i can't help with that — let's keep it to questions about the foundry's work."
+                : `request failed (${res.status}). try again.`;
+            refreshTails();
+            isStreaming = false;
+            setSendDisabled();
+            return;
+          }
+          if (!res.ok || !res.body) {
+            placeholder.classList.remove("msg-bubble--typing");
+            placeholder.innerHTML = "";
+            placeholder.textContent =
+              res.status >= 500
+                ? "the foundry's bot is having a moment — try again in a few seconds."
+                : `request failed (${res.status}). try again.`;
+            refreshTails();
+            isStreaming = false;
+            setSendDisabled();
+            return;
+          }
+
+          // Streaming: parse the typed-event envelope.
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = "";
+          let textBubble = null;
+          let textFull = "";
+          const liveTools = new Map(); // id → li
+
+          function startTextBubble() {
+            if (textBubble) return textBubble;
+            // If the original typing placeholder is still in the DOM, reuse it so the
+            // visual transition is "dots → first token". Otherwise (tool_call has
+            // removed it), append a fresh in-bubble below whatever's there.
+            if (placeholder.isConnected) {
+              placeholder.classList.remove("msg-bubble--typing");
+              placeholder.innerHTML = "";
+              textBubble = placeholder;
+            } else {
+              textBubble = appendBubbleEl("", "in");
+            }
+            return textBubble;
+          }
+
+          function handleEvent(j) {
+            switch (j.type) {
+              case "meta": {
+                if (typeof j.remaining === "number") {
+                  rateBudget.remaining = j.remaining;
+                  rateBudget.resetAt = j.resetAt || rateBudget.resetAt;
+                  renderRatePill();
+                  setSendDisabled();
+                }
+                return;
+              }
+              case "delta": {
+                if (typeof j.content !== "string") return;
+                startTextBubble();
+                textFull += j.content;
+                textBubble.innerHTML = renderMarkdown(textFull);
+                scrollToBottom();
+                return;
+              }
+              case "reasoning": {
+                // Emitted just before a tool_call. Render the italic gray line,
+                // freeing the typing placeholder if it's still there.
+                if (
+                  placeholder.isConnected &&
+                  placeholder.classList.contains("msg-bubble--typing")
+                ) {
+                  placeholder.remove();
+                }
+                // If we'd been accumulating text, freeze it before the reasoning line.
+                if (textBubble && textFull) {
+                  threadState.forgeChat.bubbles.push({
+                    role: "assistant",
+                    content: textFull,
+                    kind: "text",
+                  });
+                  textBubble = null;
+                  textFull = "";
+                }
+                const text = String(j.text || "");
+                appendReasoningBubble(text);
+                threadState.forgeChat.bubbles.push({
+                  role: "assistant",
+                  content: text,
+                  kind: "reasoning",
+                });
+                return;
+              }
+              case "tool_call": {
+                // If we were accumulating text, freeze it as its own bubble so the
+                // tool indicator slots in below it.
+                if (textBubble && textFull) {
+                  threadState.forgeChat.bubbles.push({
+                    role: "assistant",
+                    content: textFull,
+                    kind: "text",
+                  });
+                  textBubble = null;
+                  textFull = "";
+                } else if (textBubble) {
+                  textBubble.remove();
+                  textBubble = null;
+                } else if (
+                  placeholder.isConnected &&
+                  placeholder.classList.contains("msg-bubble--typing")
+                ) {
+                  // No text streamed yet; clear the typing indicator so the tool
+                  // bubble doesn't sit underneath three bouncing dots.
+                  placeholder.remove();
+                }
+                const labels = TOOL_LABELS[j.name];
+                const label = labels
+                  ? labels.pending(j.args)
+                  : `running ${j.name}…`;
+                const el = createToolBubble(label);
+                liveTools.set(j.id, { el, name: j.name, args: j.args });
+                return;
+              }
+              case "tool_result": {
+                const live = liveTools.get(j.id);
+                const labels = TOOL_LABELS[j.name];
+                const result = j.result || {};
+                const outcome =
+                  result.ok === false || result.error ? "error" : "done";
+                const label = labels
+                  ? outcome === "error"
+                    ? labels.error(live?.args, result)
+                    : labels.done(live?.args, result)
+                  : outcome === "error"
+                    ? `${j.name} failed`
+                    : `${j.name} ok`;
+                if (live) finishToolBubble(live.el, outcome, label);
+                // Persist the tool bubble.
+                threadState.forgeChat.bubbles.push({
+                  role: "assistant",
+                  content: label,
+                  kind: "tool",
+                  meta: { outcome, name: j.name },
+                });
+                // If this is link_to_page, render a clickable link card too.
+                if (j.name === "link_to_page" && result.href) {
+                  const linkMeta = {
+                    href: result.href,
+                    label: result.label,
+                    page: live?.args?.page,
+                  };
+                  appendLinkBubble(linkMeta);
+                  threadState.forgeChat.bubbles.push({
+                    role: "assistant",
+                    content: "link: " + result.href,
+                    kind: "link",
+                    meta: linkMeta,
+                  });
+                }
+                // recommend_next_page → one card per recommendation.
+                if (
+                  j.name === "recommend_next_page" &&
+                  Array.isArray(result.recommendations)
+                ) {
+                  for (const rec of result.recommendations) {
+                    if (!rec?.href) continue;
+                    const linkMeta = {
+                      href: rec.href,
+                      label: rec.label,
+                      page: rec.page,
+                    };
+                    appendLinkBubble(linkMeta);
+                    threadState.forgeChat.bubbles.push({
+                      role: "assistant",
+                      content: "link: " + rec.href,
+                      kind: "link",
+                      meta: linkMeta,
+                    });
+                  }
+                }
+                // get_career_timeline → vertical timeline component.
+                if (
+                  j.name === "get_career_timeline" &&
+                  Array.isArray(result.timeline)
+                ) {
+                  appendTimelineBubble(result.timeline);
+                  threadState.forgeChat.bubbles.push({
+                    role: "assistant",
+                    content: "career timeline",
+                    kind: "timeline",
+                    meta: { timeline: result.timeline },
+                  });
+                }
+                // compare_engagements → one card per match.
+                if (
+                  j.name === "compare_engagements" &&
+                  Array.isArray(result.matches)
+                ) {
+                  for (const e of result.matches) {
+                    appendEngagementBubble(e);
+                    threadState.forgeChat.bubbles.push({
+                      role: "assistant",
+                      content: `${e.code} · ${e.title}`,
+                      kind: "engagement",
+                      meta: e,
+                    });
+                  }
+                }
+                liveTools.delete(j.id);
+                persistState();
+                return;
+              }
+              case "replace": {
+                // Server-side scrub kicked in mid-stream — replace whatever was
+                // shown with the fallback content.
+                if (!textBubble) startTextBubble();
+                textFull = String(j.content || "");
+                textBubble.innerHTML = renderMarkdown(textFull);
+                return;
+              }
+              case "refusal": {
+                // Same shape as replace, but also tags the bubble as a refusal and
+                // appends a "why?" link that opens the transparency modal.
+                if (!textBubble) startTextBubble();
+                textFull = String(j.content || "");
+                textBubble.innerHTML = renderMarkdown(textFull);
+                textBubble.classList.add("is-refusal");
+                if (!textBubble.querySelector(".msg-refusal-why")) {
+                  const link = document.createElement("a");
+                  link.href = "#";
+                  link.className = "msg-refusal-why";
+                  link.dataset.openRules = "1";
+                  link.textContent = "why?";
+                  textBubble.appendChild(link);
+                }
+                return;
+              }
+              case "error": {
+                startTextBubble();
+                textFull =
+                  textFull ||
+                  "something went sideways — try again in a moment.";
+                textBubble.textContent = textFull;
+                return;
+              }
+              case "debug": {
+                turnDebug = {
+                  model: j.model,
+                  usage: j.usage || {},
+                  tools: j.tools || [],
+                  latency_ms: j.latency_ms || 0,
+                };
+                return;
+              }
+            }
+          }
+
+          let turnDebug = null;
+
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              const lines = buf.split("\n");
+              buf = lines.pop() || "";
+              for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed.startsWith("data:")) continue;
+                const payload = trimmed.slice(5).trim();
+                if (!payload || payload === "[DONE]") continue;
+                try {
+                  handleEvent(JSON.parse(payload));
+                } catch {
+                  /* ignore */
+                }
+              }
+            }
+          } catch {
+            // Network drop mid-stream — leave what we have.
+          }
+
+          // Final cleanup: commit any accumulated text bubble; drop any unused placeholder.
+          if (textBubble && textFull) {
+            threadState.forgeChat.bubbles.push({
+              role: "assistant",
+              content: textFull,
+              kind: "text",
+            });
+          } else if (textBubble && !textFull) {
+            textBubble.remove();
+          } else if (
+            !textBubble &&
+            placeholder.classList.contains("msg-bubble--typing")
+          ) {
+            // No text streamed and we never started a text bubble — drop the typing.
+            placeholder.remove();
+          }
+
+          // Attach the behind-the-scenes debug toggle to the last assistant bubble
+          // produced this turn. Not persisted across refresh — it's a here-and-now
+          // affordance for the live response.
+          if (turnDebug) appendDebugToggle(turnDebug);
+
+          refreshTails();
+          persistState();
+          isStreaming = false;
+          setSendDisabled();
+        }
+
+        function appendDebugToggle(info) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "msg-debug-toggle";
+          btn.textContent = "debug";
+          const panel = document.createElement("div");
+          panel.className = "msg-debug-panel";
+          panel.hidden = true;
+          const u = info.usage || {};
+          panel.innerHTML =
+            "<dl>" +
+            "<dt>model</dt><dd>" +
+            escapeHTML(info.model || "unknown") +
+            "</dd>" +
+            '<dt>latency</dt><dd><span class="num">' +
+            (info.latency_ms || 0) +
+            "</span> ms</dd>" +
+            '<dt>tokens</dt><dd><span class="num">' +
+            (u.prompt_tokens || 0) +
+            '</span> in / <span class="num">' +
+            (u.completion_tokens || 0) +
+            "</span> out</dd>" +
+            "<dt>tools</dt><dd>" +
+            (info.tools && info.tools.length
+              ? info.tools.map(escapeHTML).join(", ")
+              : "<em>none</em>") +
+            "</dd>" +
+            "</dl>";
+          btn.addEventListener("click", () => {
+            const showing = !panel.hidden;
+            panel.hidden = showing;
+            btn.classList.toggle("is-on", !showing);
+          });
+          log.appendChild(btn);
+          log.appendChild(panel);
+          scrollToBottom();
+        }
+
+        async function sendToTeamChat(text) {
+          threadState.teamChat.bubbles.push({
+            role: "user",
+            content: text,
+            kind: "text",
+          });
+          appendBubbleEl(text, "out");
+          markDelivered();
+          updatePreview("teamChat", text);
+          persistState();
+
+          const found = text.match(EMAIL_RE);
+          if (found && !threadState.teamChat.userEmail) {
+            threadState.teamChat.userEmail = found[0];
+          }
+
+          if (!CONTACT_ENDPOINT) {
+            await new Promise((r) => setTimeout(r, 600));
+            const reply =
+              "endpoint not configured yet — once /api/contact is deployed, this delivers straight to the foundry's inbox.";
+            threadState.teamChat.bubbles.push({
+              role: "assistant",
+              content: reply,
+              kind: "text",
+            });
+            appendBubbleEl(reply, "in");
+            persistState();
+            return;
+          }
+
+          try {
+            const res = await fetch(CONTACT_ENDPOINT, {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                message: text,
+                replyTo: threadState.teamChat.userEmail,
+                via: "direct",
+                sessionId: clientSessionId,
+                history: threadState.teamChat.bubbles
+                  .filter(
+                    (b) =>
+                      (b.kind === "text" || !b.kind) &&
+                      b.content &&
+                      b.content.length > 0,
+                  )
+                  .slice(-10),
+              }),
+            });
+            if (!res.ok) throw new Error("http " + res.status);
+            const reply = threadState.teamChat.userEmail
+              ? "thanks — your message landed in the foundry's inbox. the team will reply to " +
+                threadState.teamChat.userEmail +
+                " soon."
+              : "thanks — landed in the foundry's inbox. drop your email anytime if you'd like a reply.";
+            await new Promise((r) => setTimeout(r, 600));
+            threadState.teamChat.bubbles.push({
+              role: "assistant",
+              content: reply,
+              kind: "text",
+            });
+            appendBubbleEl(reply, "in");
+            persistState();
+          } catch (err) {
+            const reply = "couldn't deliver — give it another try in a moment.";
+            threadState.teamChat.bubbles.push({
+              role: "assistant",
+              content: reply,
+              kind: "text",
+            });
+            appendBubbleEl(reply, "in");
+            persistState();
+          }
+        }
+
+        const senders = { streamForgeChat, sendToTeamChat };
+
+        // ── wiring ──
+        document.querySelectorAll(".msg-thread").forEach((row) => {
+          row.addEventListener("click", () => openThread(row.dataset.thread));
+          row.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openThread(row.dataset.thread);
+            }
+          });
+        });
+
+        back?.addEventListener("click", closeThread);
+
+        input.addEventListener("input", setSendDisabled);
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          if (!activeThreadId || isStreaming) return;
+          if (activeThreadId === "forgeChat" && rateBudget.remaining <= 0) return;
+          const t = input.value.trim();
+          if (!t) return;
+          input.value = "";
+          setSendDisabled();
+          const fn = senders[THREADS[activeThreadId].send];
+          if (fn) fn(t);
+        });
+
+        // ── transparency modal wiring ──
+        const rulesModal = document.getElementById("msg-rules-modal");
+        function openRulesModal() {
+          rulesModal.hidden = false;
+        }
+        function closeRulesModal() {
+          rulesModal.hidden = true;
+        }
+        rulesModal.addEventListener("click", (e) => {
+          if (e.target.closest("[data-close]")) {
+            e.preventDefault();
+            closeRulesModal();
+          }
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && !rulesModal.hidden) closeRulesModal();
+        });
+        // Delegate clicks on the in-bubble "why?" link.
+        log.addEventListener("click", (e) => {
+          const why = e.target.closest("[data-open-rules]");
+          if (!why) return;
+          e.preventDefault();
+          openRulesModal();
+        });
+
+        // Keyboard-aware blur. Old version blurred on ANY tap outside the composer,
+        // which dismissed the keyboard whenever the user tried to scroll the log
+        // mid-conversation. The narrower selector preserves the "tap header to
+        // dismiss" pattern while letting users scroll history without losing focus.
+        document.addEventListener(
+          "pointerdown",
+          (e) => {
+            if (document.activeElement !== input) return;
+            if (!e.target.closest(".msg-pane-head, .msg-back, .msg-thread"))
+              return;
+            input.blur();
+          },
+          { passive: true },
+        );
+
+        // Re-anchor to the bottom when the visual viewport changes — typically the
+        // iOS keyboard opening or closing. Only fires while the user is composing
+        // so we don't snap them away from reviewing history.
+        if (window.visualViewport) {
+          let pendingScroll = false;
+          window.visualViewport.addEventListener("resize", () => {
+            if (pendingScroll) return;
+            pendingScroll = true;
+            requestAnimationFrame(() => {
+              pendingScroll = false;
+              if (document.activeElement === input) scrollToBottom();
+            });
+          });
+        }
+
+        // initial state · desktop default-opens the first thread
+        if (window.matchMedia("(min-width: 721px)").matches) {
+          openThread("forgeChat");
+        }
+      })();
+    </script>
+  </body>
+</html>

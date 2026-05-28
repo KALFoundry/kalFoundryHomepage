@@ -1,0 +1,213 @@
+/* ─────────────────────────────────────────────────────────────
+   kal_foundry · studio site · component styles
+   Depends on tokens.css for all design values.
+   ───────────────────────────────────────────────────────────── */
+
+@import url("tokens.css");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap");
+
+html, body { min-height: 100%; }
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--surface);
+}
+
+img, svg { display: block; max-width: 100%; }
+button { font-family: inherit; cursor: pointer; }
+
+/* ── layout ── */
+.lb-container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+@media (max-width: 640px) { .lb-container { padding: 0 var(--gutter-sm); } }
+
+.lb-hr { border: 0; border-top: 1px solid var(--hair); margin: 0; }
+
+/* ── header / nav ── */
+.lb-nav {
+  display: flex; align-items: center; gap: var(--s-5);
+  padding: var(--s-4) var(--gutter);
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--font-mono); font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta);
+  background: var(--surface);
+  position: relative; z-index: 20;
+}
+.lb-brand { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; letter-spacing: -0.01em; text-decoration: none; color: var(--ink); }
+.lb-brand .br { color: var(--accent); }
+.lb-nav-spacer { flex: 1; }
+.lb-nav a {
+  color: var(--ink-2); text-decoration: none;
+  transition: color var(--dur-1) var(--ease);
+}
+.lb-nav a:hover { color: var(--ink); }
+.lb-nav a.is-active { color: var(--ink); }
+.lb-nav a.is-signal { color: var(--signal); }
+
+@media (max-width: 640px) {
+  /* mobile · brand on its own row, links wrap to the row below */
+  .lb-nav {
+    gap: var(--s-3) var(--s-4);
+    row-gap: var(--s-3);
+    padding: var(--s-3) var(--gutter-sm);
+    flex-wrap: wrap;
+  }
+  .lb-nav a { font-size: 11px; }
+  .lb-brand { flex-basis: 100%; }
+  .lb-nav-spacer { display: none; }
+}
+
+/* ── footer ── */
+.lb-footer {
+  border-top: 1px solid var(--hair);
+  padding: var(--s-4) var(--gutter);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono); font-size: var(--t-meta);
+  letter-spacing: var(--tracking-meta); color: var(--ink-muted);
+}
+.lb-footer .signoff { font-family: var(--font-serif); font-style: italic; font-size: 16px; letter-spacing: 0; color: var(--ink-2); }
+.lb-footer .live { color: var(--accent); }
+
+/* ── type primitives ── */
+.lb-eyebrow { font-family: var(--font-mono); font-size: var(--t-micro); letter-spacing: var(--tracking-caps); color: var(--ink-muted); text-transform: uppercase; }
+.lb-display { font-family: var(--font-mono); font-weight: 600; font-size: clamp(2.5rem, 5.5vw, 4rem); line-height: 0.98; letter-spacing: var(--tracking-display); text-wrap: balance; }
+.lb-h1 { font-family: var(--font-mono); font-weight: 600; font-size: var(--t-h1); letter-spacing: var(--tracking-heading); line-height: 1.05; }
+.lb-h2 { font-family: var(--font-mono); font-weight: 500; font-size: var(--t-h2); letter-spacing: var(--tracking-heading); line-height: 1.15; }
+.lb-h3 { font-family: var(--font-mono); font-weight: 500; font-size: var(--t-h3); line-height: 1.3; }
+.lb-body { font-family: var(--font-sans); font-size: var(--t-body); line-height: 1.6; color: var(--ink-2); }
+.lb-meta { font-family: var(--font-mono); font-size: var(--t-meta); letter-spacing: var(--tracking-meta); color: var(--ink-muted); text-transform: uppercase; }
+.lb-moment { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+
+/* ── buttons ── */
+.lb-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  padding: 11px 18px; border: 1px solid transparent;
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+  text-decoration: none;
+}
+.lb-btn--primary { background: var(--ink); color: var(--surface); }
+.lb-btn--primary:hover { background: var(--accent); color: #fff; }
+.lb-btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
+.lb-btn--secondary:hover { background: var(--ink); color: var(--surface); }
+.lb-btn--accent { background: var(--accent); color: #fff; }
+.lb-btn--accent:hover { filter: brightness(1.08); }
+.lb-btn--link { padding: 0; color: var(--signal); border: none; text-decoration: underline; text-underline-offset: 4px; }
+
+/* ── cards ── */
+.lb-card {
+  background: var(--surface-2);
+  border: 1px solid var(--hair);
+  padding: var(--s-5);
+  display: flex; flex-direction: column; gap: var(--s-3);
+  transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease);
+  text-decoration: none; color: inherit;
+}
+.lb-card:hover { border-color: var(--rule); }
+.lb-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); }
+.lb-card-title { font-family: var(--font-mono); font-weight: 600; font-size: 20px; letter-spacing: -0.01em; line-height: 1.2; color: var(--ink); }
+.lb-card-moment { font-family: var(--font-serif); font-style: italic; color: var(--accent); }
+.lb-card-tags { margin-top: auto; display: flex; gap: var(--s-3); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--ink-muted); text-transform: uppercase; }
+
+/* ── page sections ── */
+.lb-section { padding: var(--s-16) var(--gutter); }
+@media (max-width: 640px) { .lb-section { padding: var(--s-12) var(--gutter-sm); } }
+.lb-section-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-4); margin-bottom: var(--s-8); padding-bottom: var(--s-3); border-bottom: 1px solid var(--ink); }
+.lb-section-head .lb-eyebrow { color: var(--ink); }
+
+/* ── definition list ── */
+.lb-dl { display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3) var(--s-5); }
+.lb-dl dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; color: var(--ink-muted); padding-top: 2px; text-transform: uppercase; }
+.lb-dl dd { margin: 0; font-family: var(--font-sans); font-size: 15px; line-height: 1.55; color: var(--ink); }
+
+/* ── code/terminal block ── */
+.lb-pre {
+  background: var(--surface-2); border: 1px solid var(--hair);
+  padding: var(--s-4); font-family: var(--font-mono); font-size: 12px; line-height: 1.6;
+  color: var(--ink-2); overflow-x: auto;
+}
+.lb-pre .c-comment { color: var(--ink-muted); }
+.lb-pre .c-prompt  { color: var(--accent); }
+.lb-pre .c-signal  { color: var(--signal); }
+
+/* ── grids ── */
+.lb-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-5); }
+.lb-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
+@media (max-width: 900px) { .lb-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .lb-grid-2, .lb-grid-3 { grid-template-columns: 1fr; } }
+
+/* ── back-home pill (top-left on inner pages) ── */
+.lb-back {
+  position: fixed; top: 70px; left: var(--s-5);
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+  padding: 8px 12px; border: 1px solid var(--hair);
+  background: var(--surface); color: var(--ink-2);
+  text-decoration: none; z-index: 15; text-transform: uppercase;
+  transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+}
+.lb-back:hover { border-color: var(--ink); color: var(--ink); background: var(--surface-2); }
+.lb-back .dot { width: 6px; height: 6px; background: var(--accent); display: inline-block; }
+@media (max-width: 640px) {
+  .lb-back {
+    top: max(60px, calc(env(safe-area-inset-top) + 56px));
+    left: var(--s-3);
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+/* ── embed mode ── when a page is loaded inside the home device iframe,
+   the page's own back-pill is redundant (device chrome owns "close").
+   Pages opt in via a tiny <script> in <head> that adds .is-embedded. */
+.is-embedded .lb-back { display: none; }
+
+/* corner ticks (motif) */
+.lb-tick {
+  position: absolute; width: 14px; height: 14px;
+  pointer-events: none;
+}
+.lb-tick.tl { top: 12px; left: 12px;  border-top: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+.lb-tick.tr { top: 12px; right: 12px; border-top: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+.lb-tick.bl { bottom: 12px; left: 12px;  border-bottom: 1px solid var(--accent); border-left: 1px solid var(--accent); }
+.lb-tick.br { bottom: 12px; right: 12px; border-bottom: 1px solid var(--accent); border-right: 1px solid var(--accent); }
+
+/* ─────────────────────────────────────────────────────────────
+   mobile / touch defaults · applied site-wide
+   ───────────────────────────────────────────────────────────── */
+
+/* no blue tap-highlight flash, no 300ms tap delay on interactive elements */
+* { -webkit-tap-highlight-color: transparent; }
+a, button, [role="button"], .lb-card, .lb-btn { touch-action: manipulation; }
+
+/* subtle active feedback on touch (replaces hover-only affordances) */
+@media (hover: none) and (pointer: coarse) {
+  .lb-card:active, .lb-btn:active { transform: scale(0.985); }
+}
+
+/* footer stacks on narrow + respects iOS home indicator */
+@media (max-width: 480px) {
+  .lb-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding-bottom: max(var(--s-4), env(safe-area-inset-bottom));
+  }
+}
+
+/* definition lists: 1-col at narrow */
+@media (max-width: 480px) {
+  .lb-dl { grid-template-columns: 1fr; gap: var(--s-2); }
+  .lb-dl dt { padding-top: 0; }
+}
+
+/* code blocks: tighter padding + smaller font on narrow */
+@media (max-width: 640px) {
+  .lb-pre { font-size: 11.5px; padding: var(--s-3); }
+}
+
+/* cards: tighter padding + smaller heading at narrow */
+@media (max-width: 480px) {
+  .lb-card { padding: var(--s-4); gap: var(--s-2); }
+  .lb-card-title { font-size: 16px; }
+}

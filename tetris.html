@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>tetris — arcade — KAL Foundry</title>
+<meta name="description" content="Tetris — KAL Foundry arcade. Classic falling-blocks with mobile-friendly controls.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/tetris.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/tetris.html">
+<meta property="og:title" content="tetris — KAL Foundry arcade">
+<meta property="og:description" content="Tetris — KAL Foundry arcade. Classic falling-blocks with mobile-friendly controls.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="tetris — KAL Foundry arcade">
+<meta name="twitter:description" content="Tetris — KAL Foundry arcade. Classic falling-blocks with mobile-friendly controls.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  html, body { height: 100%; }
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  .game-shell {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 100dvh;
+  }
+  .game-bar {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .game-bar .back { color: var(--signal); text-decoration: none; padding: 6px 0; }
+  .game-bar .name { color: var(--ink); }
+
+  /* compact horizontal HUD on mobile, becomes side-column on desktop */
+  .hud {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .hud .col { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .hud .col .v { color: var(--ink); font-size: 16px; font-weight: 600; letter-spacing: -0.01em; text-transform: none; }
+  .hud .col.best .v { color: var(--accent); }
+  .hud canvas.next { width: 56px; height: 56px; border: 1px solid var(--hair); background: var(--surface); justify-self: end; }
+
+  /* board · 1:2 aspect ratio, constrained by viewport-derived width so the
+     board always fits inside the MacBook iframe / phone screen without
+     needing to scroll. 31dvh × 2 = 62dvh total height — height auto-derives
+     from width via aspect-ratio, so the aspect is never violated. */
+  .stage {
+    position: relative;
+    width: min(320px, 31dvh);
+    aspect-ratio: 1 / 2;
+  }
+  canvas.board {
+    width: 100%; height: 100%;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    touch-action: none;
+    display: block;
+  }
+  .banner {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    pointer-events: none;
+  }
+  .banner-inner {
+    background: rgba(245, 241, 232, 0.94);
+    border: 1px solid var(--ink);
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .banner-inner .t { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .banner-inner .s { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .stage[data-state="playing"] .banner { display: none; }
+
+  /* on-screen control row · big buttons for mobile */
+  .pad {
+    width: 100%;
+    max-width: 360px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .pad button {
+    height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 80ms ease, transform 80ms ease;
+  }
+  .pad button:active {
+    background: var(--ink);
+    color: var(--surface);
+    transform: scale(0.94);
+  }
+  .pad button .lbl {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 1px;
+    color: var(--ink-muted);
+  }
+  .pad button:active .lbl { color: rgba(255,255,255,0.6); }
+
+  .ctrl-hint {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .ctrl-hint { display: none; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pad { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="game-shell">
+  <div class="game-bar">
+    <a class="back" href="arcade.html">‹ arcade</a>
+    <span class="name">tetris</span>
+  </div>
+
+  <div class="hud">
+    <div class="col"><span>score</span><span class="v" id="score">0</span></div>
+    <div class="col"><span>lines</span><span class="v" id="lines">0</span></div>
+    <div class="col"><span>level</span><span class="v" id="level">1</span></div>
+    <div class="col best"><span>best</span><span class="v" id="best">0</span></div>
+    <canvas class="next" id="next" width="56" height="56" aria-label="next piece"></canvas>
+  </div>
+
+  <div class="stage" id="stage" data-state="menu">
+    <canvas class="board" id="game" width="240" height="480" aria-label="tetris board"></canvas>
+    <div class="banner">
+      <div class="banner-inner" id="banner">
+        <div class="t" id="banner-t">tetris</div>
+        <div class="s" id="banner-s">tap to play</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" aria-label="controls">
+    <button type="button" id="pad-left"   aria-label="move left">←<span class="lbl">move</span></button>
+    <button type="button" id="pad-rotate" aria-label="rotate">↻<span class="lbl">rotate</span></button>
+    <button type="button" id="pad-right"  aria-label="move right">→<span class="lbl">move</span></button>
+    <button type="button" id="pad-drop"   aria-label="hard drop">▼<span class="lbl">drop</span></button>
+  </div>
+
+  <div class="ctrl-hint">←→ move · ↑ rotate · ↓ soft · space drop · p pause</div>
+</section>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const nextCanvas = document.getElementById('next');
+  const nctx = nextCanvas.getContext('2d');
+  const stage = document.getElementById('stage');
+  const banner = document.getElementById('banner');
+  const bannerT = document.getElementById('banner-t');
+  const bannerS = document.getElementById('banner-s');
+  const scoreEl = document.getElementById('score');
+  const linesEl = document.getElementById('lines');
+  const levelEl = document.getElementById('level');
+  const bestEl = document.getElementById('best');
+
+  const COLS = 10, ROWS = 20, CELL = 24;
+  const HIGH_KEY = 'arcade_tetris_high';
+
+  const C_HAIR = '#cfc8b5';
+  const COLORS = {
+    I: '#4a8de2', O: '#c89a3a', T: '#d97757',
+    S: '#5a7a4d', Z: '#a64545', J: '#5d6878', L: '#8a6f50',
+  };
+
+  const SHAPES = {
+    I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
+    O: [[1,1],[1,1]],
+    T: [[0,1,0],[1,1,1],[0,0,0]],
+    S: [[0,1,1],[1,1,0],[0,0,0]],
+    Z: [[1,1,0],[0,1,1],[0,0,0]],
+    J: [[1,0,0],[1,1,1],[0,0,0]],
+    L: [[0,0,1],[1,1,1],[0,0,0]],
+  };
+  const KEYS = Object.keys(SHAPES);
+
+  let grid, piece, nextPiece, score, lines, level, high, state, dropTimer, dropInterval;
+
+  function makeGrid() { return Array.from({length: ROWS}, () => Array(COLS).fill(0)); }
+  function clonePiece(p) { return { type: p.type, m: p.m.map(r => r.slice()), x: p.x, y: p.y }; }
+  function spawn() {
+    const t = nextPiece ? nextPiece.type : KEYS[Math.floor(Math.random() * KEYS.length)];
+    const m = SHAPES[t].map(r => r.slice());
+    const p = { type: t, m, x: Math.floor((COLS - m[0].length) / 2), y: 0 };
+    const nt = KEYS[Math.floor(Math.random() * KEYS.length)];
+    nextPiece = { type: nt, m: SHAPES[nt].map(r => r.slice()), x: 0, y: 0 };
+    if (collides(p, grid)) { gameOver(); return null; }
+    return p;
+  }
+  function collides(p, g) {
+    for (let r = 0; r < p.m.length; r++)
+      for (let c = 0; c < p.m[r].length; c++) {
+        if (!p.m[r][c]) continue;
+        const x = p.x + c, y = p.y + r;
+        if (x < 0 || x >= COLS || y >= ROWS) return true;
+        if (y >= 0 && g[y][x]) return true;
+      }
+    return false;
+  }
+  function merge(p, g) {
+    for (let r = 0; r < p.m.length; r++)
+      for (let c = 0; c < p.m[r].length; c++) {
+        if (!p.m[r][c]) continue;
+        const y = p.y + r;
+        if (y >= 0) g[y][p.x + c] = p.type;
+      }
+  }
+  function clearLines() {
+    let cleared = 0;
+    for (let r = ROWS - 1; r >= 0; r--) {
+      if (grid[r].every(c => c !== 0)) {
+        grid.splice(r, 1);
+        grid.unshift(Array(COLS).fill(0));
+        cleared++;
+        r++;
+      }
+    }
+    if (cleared) {
+      const bonus = [0, 100, 300, 500, 800][cleared] * level;
+      score += bonus;
+      lines += cleared;
+      const newLevel = 1 + Math.floor(lines / 10);
+      if (newLevel > level) { level = newLevel; dropInterval = Math.max(80, 1000 - (level - 1) * 80); }
+      updateHUD();
+    }
+  }
+  function rotate(p) {
+    const m = p.m;
+    const n = m.length;
+    const out = Array.from({length: n}, () => Array(n).fill(0));
+    for (let r = 0; r < n; r++)
+      for (let c = 0; c < n; c++)
+        out[c][n - 1 - r] = m[r][c];
+    return { ...p, m: out };
+  }
+  function ghost() {
+    const g = clonePiece(piece);
+    while (!collides({ ...g, y: g.y + 1 }, grid)) g.y++;
+    return g;
+  }
+  function drawCell(c, r, color, alpha = 1, target = ctx) {
+    target.globalAlpha = alpha;
+    target.fillStyle = color;
+    target.fillRect(c * CELL + 1, r * CELL + 1, CELL - 2, CELL - 2);
+    target.globalAlpha = 1;
+  }
+  function draw() {
+    ctx.fillStyle = '#f5f1e8';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = C_HAIR;
+    ctx.lineWidth = 0.5;
+    for (let c = 1; c < COLS; c++) {
+      ctx.beginPath(); ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, ROWS * CELL); ctx.stroke();
+    }
+    for (let r = 1; r < ROWS; r++) {
+      ctx.beginPath(); ctx.moveTo(0, r * CELL); ctx.lineTo(COLS * CELL, r * CELL); ctx.stroke();
+    }
+    for (let r = 0; r < ROWS; r++)
+      for (let c = 0; c < COLS; c++)
+        if (grid[r][c]) drawCell(c, r, COLORS[grid[r][c]]);
+    if (piece) {
+      const g = ghost();
+      for (let r = 0; r < piece.m.length; r++)
+        for (let c = 0; c < piece.m[r].length; c++)
+          if (piece.m[r][c] && g.y + r >= 0) drawCell(g.x + c, g.y + r, COLORS[piece.type], 0.22);
+      for (let r = 0; r < piece.m.length; r++)
+        for (let c = 0; c < piece.m[r].length; c++)
+          if (piece.m[r][c] && piece.y + r >= 0) drawCell(piece.x + c, piece.y + r, COLORS[piece.type]);
+    }
+  }
+  function drawNext() {
+    nctx.fillStyle = '#f5f1e8';
+    nctx.fillRect(0, 0, nextCanvas.width, nextCanvas.height);
+    if (!nextPiece) return;
+    const cell = 11;
+    const m = nextPiece.m;
+    const w = m[0].length * cell, h = m.length * cell;
+    const ox = (nextCanvas.width - w) / 2, oy = (nextCanvas.height - h) / 2;
+    for (let r = 0; r < m.length; r++)
+      for (let c = 0; c < m[r].length; c++) {
+        if (!m[r][c]) continue;
+        nctx.fillStyle = COLORS[nextPiece.type];
+        nctx.fillRect(ox + c * cell + 1, oy + r * cell + 1, cell - 2, cell - 2);
+      }
+  }
+  function softDrop() {
+    if (!piece) return;
+    const np = { ...piece, y: piece.y + 1 };
+    if (collides(np, grid)) {
+      merge(piece, grid);
+      clearLines();
+      piece = spawn();
+      draw();
+      drawNext();
+    } else {
+      piece = np;
+      draw();
+    }
+  }
+  function hardDrop() {
+    if (!piece) return;
+    const g = ghost();
+    score += (g.y - piece.y) * 2;
+    piece = g;
+    merge(piece, grid);
+    clearLines();
+    piece = spawn();
+    updateHUD();
+    draw();
+    drawNext();
+  }
+  function move(dx) {
+    if (!piece) return;
+    const np = { ...piece, x: piece.x + dx };
+    if (!collides(np, grid)) { piece = np; draw(); }
+  }
+  function tryRotate() {
+    if (!piece) return;
+    const r = rotate(piece);
+    for (const dx of [0, 1, -1, 2, -2]) {
+      const cand = { ...r, x: r.x + dx };
+      if (!collides(cand, grid)) { piece = cand; draw(); return; }
+    }
+  }
+  function tick() {
+    if (state !== 'playing') return;
+    softDrop();
+    dropTimer = setTimeout(tick, dropInterval);
+  }
+  function updateHUD() {
+    scoreEl.textContent = score;
+    linesEl.textContent = lines;
+    levelEl.textContent = level;
+    bestEl.textContent = high;
+  }
+  function start() {
+    grid = makeGrid();
+    score = 0; lines = 0; level = 1;
+    dropInterval = 1000;
+    nextPiece = null;
+    piece = spawn();
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    updateHUD();
+    draw();
+    drawNext();
+    clearTimeout(dropTimer);
+    tick();
+  }
+  function gameOver() {
+    state = 'gameover';
+    stage.dataset.state = 'gameover';
+    clearTimeout(dropTimer);
+    if (score > high) {
+      high = score;
+      try { localStorage.setItem(HIGH_KEY, String(high)); } catch {}
+    }
+    updateHUD();
+    bannerT.textContent = 'game over · ' + score;
+    bannerS.textContent = 'tap to play again';
+  }
+  function pause() {
+    if (state !== 'playing') return;
+    state = 'paused';
+    stage.dataset.state = 'paused';
+    clearTimeout(dropTimer);
+    bannerT.textContent = 'paused';
+    bannerS.textContent = 'tap to resume';
+  }
+  function resume() {
+    if (state !== 'paused') return;
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    tick();
+  }
+  function startOrAction(actionWhilePlaying) {
+    if (state === 'menu' || state === 'gameover') start();
+    else if (state === 'paused') resume();
+    else if (state === 'playing' && actionWhilePlaying) actionWhilePlaying();
+  }
+
+  // keyboard
+  window.addEventListener('keydown', (e) => {
+    if (state === 'menu' || state === 'gameover') {
+      if (e.key === ' ' || e.key === 'Enter') { start(); e.preventDefault(); }
+      return;
+    }
+    if (state === 'paused') {
+      if (e.key.toLowerCase() === 'p' || e.key === ' ') { resume(); e.preventDefault(); }
+      return;
+    }
+    if (e.key === 'ArrowLeft')  { move(-1); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { move(1);  e.preventDefault(); }
+    if (e.key === 'ArrowDown')  { softDrop(); score++; updateHUD(); e.preventDefault(); }
+    if (e.key === 'ArrowUp')    { tryRotate(); e.preventDefault(); }
+    if (e.key === ' ')          { hardDrop(); e.preventDefault(); }
+    if (e.key.toLowerCase() === 'p') { pause(); e.preventDefault(); }
+  });
+
+  // on-screen pad buttons · use pointerdown for immediate response
+  function padBind(id, fn) {
+    const el = document.getElementById(id);
+    el.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      startOrAction(fn);
+    });
+  }
+  padBind('pad-left',   () => move(-1));
+  padBind('pad-right',  () => move(1));
+  padBind('pad-rotate', () => tryRotate());
+  padBind('pad-drop',   () => hardDrop());
+
+  // long-press soft-drop on left/right? not necessary — touch canvas does it
+  // touch on canvas: swipe-down for soft drop (held), tap for rotate
+  let ts = null, dragged = false, softInterval = 0;
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    ts = { x: t.clientX, y: t.clientY, t: Date.now() };
+    dragged = false;
+  }, { passive: true });
+  canvas.addEventListener('touchmove', (e) => {
+    if (!ts || state !== 'playing') return;
+    const t = e.touches[0];
+    const dx = t.clientX - ts.x;
+    const dy = t.clientY - ts.y;
+    if (Math.abs(dx) > 28) {
+      move(dx > 0 ? 1 : -1);
+      ts.x = t.clientX;
+      dragged = true;
+    }
+    if (dy > 36) {
+      softDrop();
+      ts.y = t.clientY;
+      dragged = true;
+    }
+  }, { passive: true });
+  canvas.addEventListener('touchend', (e) => {
+    if (!ts) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - ts.x;
+    const dy = t.clientY - ts.y;
+    const dur = Date.now() - ts.t;
+    ts = null;
+    if (state === 'menu' || state === 'gameover') { start(); return; }
+    if (state === 'paused') { resume(); return; }
+    if (dy > 80 && dur < 280) { hardDrop(); return; }
+    if (!dragged && Math.abs(dx) < 18 && Math.abs(dy) < 18 && dur < 280) tryRotate();
+  }, { passive: true });
+
+  banner.addEventListener('click', () => {
+    if (state === 'menu' || state === 'gameover') start();
+    else if (state === 'paused') resume();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state === 'playing') pause();
+  });
+
+  try { high = parseInt(localStorage.getItem(HIGH_KEY), 10) || 0; } catch { high = 0; }
+  grid = makeGrid();
+  score = 0; lines = 0; level = 1;
+  dropInterval = 1000;
+  state = 'menu';
+  updateHUD();
+  draw();
+  drawNext();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f6f1e8"/>
+      <stop offset="100%" stop-color="#ece6d8"/>
+    </linearGradient>
+    <pattern id="grid" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0 L0 0 L0 60" fill="none" stroke="#1c1c1e" stroke-width="0.4" opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- top eyebrow -->
+  <g transform="translate(600, 130)">
+    <circle cx="-100" cy="-6" r="5" fill="#d97757"/>
+    <text x="0" y="0"
+          font-family="ui-monospace, 'SF Mono', Menlo, monospace"
+          font-size="16"
+          letter-spacing="6"
+          fill="#6b6557"
+          textLength="240" lengthAdjust="spacingAndGlyphs"
+          text-anchor="middle">KALFOUNDRY.COM</text>
+  </g>
+
+  <!-- centered wordmark -->
+  <text x="600" y="320"
+        font-family="ui-monospace, 'SF Mono', Menlo, monospace"
+        font-weight="700"
+        font-size="68"
+        letter-spacing="-1"
+        fill="#1c1c1e"
+        textLength="820" lengthAdjust="spacingAndGlyphs"
+        text-anchor="middle">
+    <tspan fill="#d97757">[</tspan>&#160;kal_foundry&#160;<tspan fill="#d97757">]</tspan>
+  </text>
+
+  <!-- italic tagline · three pillars -->
+  <text x="600" y="410"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-style="italic"
+        font-size="44"
+        fill="#d97757"
+        textLength="600" lengthAdjust="spacingAndGlyphs"
+        text-anchor="middle">design · AI · digital products</text>
+
+  <!-- hairline divider -->
+  <line x1="520" y1="460" x2="680" y2="460" stroke="#1c1c1e" stroke-width="1" opacity="0.25"/>
+
+  <!-- footer caption -->
+  <text x="600" y="505"
+        font-family="ui-monospace, 'SF Mono', Menlo, monospace"
+        font-size="15"
+        letter-spacing="6"
+        fill="#1c1c1e"
+        textLength="560" lengthAdjust="spacingAndGlyphs"
+        text-anchor="middle">DIGITAL FOUNDRY · AI · PRODUCT</text>
+</svg>

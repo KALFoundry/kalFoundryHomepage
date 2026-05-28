@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>finder — kal_foundry</title>
+<meta name="description" content="Browse KAL Foundry's work as files. macOS Finder-style navigation across all the pages.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/finder.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/finder.html">
+<meta property="og:title" content="finder — KAL Foundry">
+<meta property="og:description" content="Browse KAL Foundry's work as files. macOS Finder-style navigation.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — design, AI, and digital products, strategy through fabrication.">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="finder — KAL Foundry">
+<meta name="twitter:description" content="Browse KAL Foundry's work as files. macOS Finder-style navigation.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — design, AI, and digital products, strategy through fabrication.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  body { background: var(--surface-2); }
+
+  .fnd-window {
+    max-width: 1100px;
+    margin: var(--s-8) auto;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    display: flex; flex-direction: column;
+    min-height: 70vh;
+  }
+
+  .fnd-toolbar {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: var(--s-5);
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--hair);
+    background: var(--surface-2);
+  }
+  .fnd-toolbar-nav, .fnd-toolbar-view { display: flex; gap: 4px; }
+  .fnd-tb-btn, .fnd-tb-vw {
+    width: 28px; height: 24px; padding: 0;
+    border: 1px solid var(--hair); background: var(--surface);
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--ink-2); cursor: pointer;
+    transition: border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+  }
+  .fnd-tb-btn:hover:not([disabled]),
+  .fnd-tb-vw:hover { border-color: var(--ink); color: var(--ink); }
+  .fnd-tb-vw.is-on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+  .fnd-tb-btn[disabled] { opacity: 0.4; cursor: default; }
+
+  .fnd-crumbs {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--ink-2);
+    display: flex; gap: 6px; align-items: center;
+    min-width: 0; overflow: hidden;
+  }
+  .fnd-crumbs .fnd-crumb-sep { color: var(--ink-muted); }
+  .fnd-crumbs .is-here { color: var(--accent); }
+
+  .fnd-search input {
+    font-family: var(--font-mono); font-size: 12px;
+    padding: 6px 10px;
+    border: 1px solid var(--hair); background: var(--surface); color: var(--ink);
+    width: 220px;
+    transition: border-color var(--dur-1) var(--ease);
+  }
+  .fnd-search input:focus { outline: 2px solid var(--signal); outline-offset: -1px; border-color: var(--ink); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+  .fnd-body { display: grid; grid-template-columns: 200px 1fr; flex: 1; }
+  @media (max-width: 720px) {
+    .fnd-body { grid-template-columns: 1fr; }
+    .fnd-sidebar { display: none; }
+  }
+
+  .fnd-sidebar {
+    border-right: 1px solid var(--hair);
+    background: var(--surface-2);
+    padding: var(--s-5) var(--s-4);
+    font-family: var(--font-mono); font-size: 12px;
+  }
+  .fnd-side-group + .fnd-side-group { margin-top: var(--s-6); }
+  .fnd-side-label {
+    font-size: 10px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+  .fnd-sidebar ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; }
+  .fnd-sidebar a {
+    color: var(--ink-2); text-decoration: none;
+    padding: 5px 8px; display: block;
+    transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+  }
+  .fnd-sidebar a:hover { background: var(--surface-3); color: var(--ink); }
+  .fnd-sidebar a.is-here { background: var(--ink); color: var(--surface); }
+  .fnd-tags li {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px; color: var(--ink-2);
+  }
+  .fnd-tags .dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; }
+
+  .fnd-main { padding: 0; overflow-x: auto; }
+  .fnd-cols, .fnd-row {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.5fr) 1.2fr 1fr 0.6fr;
+    gap: var(--s-5);
+    padding: 10px var(--s-5);
+    align-items: center;
+  }
+  .fnd-cols {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-muted);
+    border-bottom: 1px solid var(--ink);
+    position: sticky; top: 0;
+    background: var(--surface);
+    z-index: 1;
+  }
+  .fnd-rows { list-style: none; margin: 0; padding: 0; }
+  .fnd-row {
+    border-bottom: 1px solid var(--hair);
+    cursor: pointer;
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--ink-2);
+    transition: background var(--dur-1) var(--ease);
+  }
+  .fnd-row:hover { background: var(--surface-2); }
+  .fnd-row:focus-visible { outline: 2px solid var(--signal); outline-offset: -2px; }
+  .fnd-name { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+  .fnd-name .fi { width: 20px; height: 20px; flex-shrink: 0; }
+
+  /* icons-view: flip the grid into a tile gallery */
+  .fnd-main[data-view="icons"] .fnd-cols { display: none; }
+  .fnd-main[data-view="icons"] .fnd-rows {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: var(--s-5);
+    padding: var(--s-6);
+  }
+  .fnd-main[data-view="icons"] .fnd-row {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    border: 1px solid var(--hair); padding: var(--s-4);
+  }
+  .fnd-main[data-view="icons"] .fnd-kind,
+  .fnd-main[data-view="icons"] .fnd-mod,
+  .fnd-main[data-view="icons"] .fnd-size { display: none; }
+  .fnd-main[data-view="icons"] .fnd-name {
+    flex-direction: column; gap: 8px; text-align: center;
+    font-family: var(--font-mono); font-size: 11px;
+  }
+  .fnd-main[data-view="icons"] .fnd-name .fi { width: 42px; height: 42px; }
+
+  /* column view: visual flair; same data */
+  .fnd-main[data-view="cols"] .fnd-cols { display: grid; }
+
+  .fnd-empty {
+    display: none;
+    padding: var(--s-12);
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--ink-muted); text-align: center;
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .fnd-empty.is-on { display: block; }
+
+  .fnd-moment {
+    text-align: center;
+    padding: var(--s-6) var(--gutter) var(--s-12);
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 16px; color: var(--accent);
+  }
+
+  /* mobile · hide secondary table columns; bigger row tap targets */
+  @media (max-width: 640px) {
+    .fnd-window { margin: var(--s-4) auto; min-height: 60vh; }
+    .fnd-toolbar {
+      grid-template-columns: auto 1fr;
+      gap: var(--s-3); padding: 8px 10px;
+    }
+    .fnd-toolbar-view, .fnd-crumbs { display: none; }
+    .fnd-search { width: 100%; }
+    .fnd-search input { width: 100%; box-sizing: border-box; font-size: 16px; }
+
+    /* keep only name + size; hide kind + date */
+    .fnd-cols, .fnd-row {
+      grid-template-columns: 1fr auto;
+      gap: var(--s-3);
+      padding: 12px var(--s-4);
+    }
+    .fnd-cols span:not(:first-child):not(:last-child) { display: none; }
+    .fnd-cols span:last-child { text-align: right; }
+    .fnd-row .fnd-kind, .fnd-row .fnd-mod { display: none; }
+    .fnd-row .fnd-size { text-align: right; font-size: 10px; color: var(--ink-muted); }
+    .fnd-row { min-height: 44px; align-items: center; }
+    .fnd-row:active { background: var(--surface-3); }
+    .fnd-name .fi { width: 24px; height: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+<header class="lb-nav">
+  <a class="lb-brand" href="index.html"><span class="br">[</span>kal_foundry<span class="br">]</span></a>
+  <span class="lb-nav-spacer"></span>
+  <a href="work.html">work</a>
+  <a href="patents.html">patents</a>
+  <a href="about.html">about</a>
+  <a href="now.html">now</a>
+  <a href="resume.html" class="is-signal">team ↗</a>
+</header>
+
+<section class="fnd-window" aria-label="finder">
+
+  <header class="fnd-toolbar">
+    <div class="fnd-toolbar-nav">
+      <button class="fnd-tb-btn" aria-label="back" disabled>‹</button>
+      <button class="fnd-tb-btn" aria-label="forward" disabled>›</button>
+    </div>
+    <div class="fnd-toolbar-view" role="group" aria-label="view mode">
+      <button class="fnd-tb-vw is-on" data-view="list" aria-label="list view">≡</button>
+      <button class="fnd-tb-vw" data-view="icons" aria-label="icon view">▦</button>
+      <button class="fnd-tb-vw" data-view="cols" aria-label="column view">◫</button>
+    </div>
+    <nav class="fnd-crumbs" aria-label="breadcrumb">
+      <span>kal_foundry</span>
+      <span class="fnd-crumb-sep">›</span>
+      <span>foundry</span>
+      <span class="fnd-crumb-sep">›</span>
+      <span class="is-here">/</span>
+    </nav>
+    <label class="fnd-search">
+      <span class="vh">search</span>
+      <input type="search" id="fnd-search" placeholder="search foundry" />
+    </label>
+  </header>
+
+  <div class="fnd-body">
+
+    <aside class="fnd-sidebar" aria-label="locations">
+      <div class="fnd-side-group">
+        <div class="fnd-side-label">favorites</div>
+        <ul>
+          <li><a href="#root" class="is-here">⌂ foundry</a></li>
+          <li><a href="work.html">{ } code</a></li>
+          <li><a href="case.html">📄 writing</a></li>
+          <li><a href="patents.html">⚙ patents</a></li>
+        </ul>
+      </div>
+      <div class="fnd-side-group">
+        <div class="fnd-side-label">locations</div>
+        <ul>
+          <li><a href="https://github.com/kalfoundry" target="_blank" rel="noopener noreferrer">↗ github</a></li>
+          <li><a href="https://linkedin.com/company/kalfoundry" target="_blank" rel="noopener noreferrer">↗ linkedin</a></li>
+        </ul>
+      </div>
+      <div class="fnd-side-group">
+        <div class="fnd-side-label">tags</div>
+        <ul class="fnd-tags">
+          <li><span class="dot" style="background:var(--accent)"></span>core</li>
+          <li><span class="dot" style="background:var(--signal)"></span>shipped</li>
+          <li><span class="dot" style="background:var(--ok)"></span>active</li>
+          <li><span class="dot" style="background:var(--ink-muted)"></span>archive</li>
+        </ul>
+      </div>
+    </aside>
+
+    <main class="fnd-main" data-view="list" aria-label="files">
+      <div class="fnd-cols">
+        <span>name</span><span>kind</span><span>date modified</span><span>size</span>
+      </div>
+      <ul class="fnd-rows" role="list">
+        <li class="fnd-row" data-href="work.html" data-label="work">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 64 50" aria-hidden="true">
+              <path d="M3 11 a3 3 0 0 1 3 -3 h17 l4 5 h34 a3 3 0 0 1 3 3 v3 H3 z" fill="#5c83ac"/>
+              <path d="M3 16 h58 v28 a3 3 0 0 1 -3 3 H6 a3 3 0 0 1 -3 -3 z" fill="#7da3c8"/>
+            </svg>
+            work
+          </span>
+          <span class="fnd-kind">folder · cases</span>
+          <span class="fnd-mod">2026-05-12</span>
+          <span class="fnd-size">7 items</span>
+        </li>
+        <li class="fnd-row" data-href="patents.html" data-label="patents">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 64 50" aria-hidden="true">
+              <path d="M3 11 a3 3 0 0 1 3 -3 h17 l4 5 h34 a3 3 0 0 1 3 3 v3 H3 z" fill="#5c83ac"/>
+              <path d="M3 16 h58 v28 a3 3 0 0 1 -3 3 H6 a3 3 0 0 1 -3 -3 z" fill="#7da3c8"/>
+            </svg>
+            patents
+          </span>
+          <span class="fnd-kind">folder · portfolio</span>
+          <span class="fnd-mod">2026-05-05</span>
+          <span class="fnd-size">—</span>
+        </li>
+        <li class="fnd-row" data-href="about.html" data-label="about">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#fafaf6" stroke="#cfc8b5" stroke-width="0.75"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2"/>
+              <rect x="6" y="46" width="38" height="13" fill="#13141a"/>
+              <text x="25" y="55" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="#f4f1ea" text-anchor="middle">MD</text>
+            </svg>
+            about.md
+          </span>
+          <span class="fnd-kind">markdown · about</span>
+          <span class="fnd-mod">2026-03-21</span>
+          <span class="fnd-size">6 kb</span>
+        </li>
+        <li class="fnd-row" data-href="now.html" data-label="now">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#fafaf6" stroke="#cfc8b5" stroke-width="0.75"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2"/>
+            </svg>
+            now.txt
+          </span>
+          <span class="fnd-kind">text · current state</span>
+          <span class="fnd-mod">2026-05-18</span>
+          <span class="fnd-size">1 kb</span>
+        </li>
+        <li class="fnd-row" data-href="resume.html" data-label="team.pdf">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#fafaf6" stroke="#cfc8b5" stroke-width="0.75"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2"/>
+              <rect x="6" y="46" width="38" height="13" fill="#d97757"/>
+              <text x="25" y="55" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="#ffffff" text-anchor="middle">PDF</text>
+            </svg>
+            team.pdf
+          </span>
+          <span class="fnd-kind">pdf · team</span>
+          <span class="fnd-mod">2026-05-21</span>
+          <span class="fnd-size">59 kb</span>
+        </li>
+        <li class="fnd-row" data-href="architecture.html" data-label="forge_architecture">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#fafaf6" stroke="#cfc8b5" stroke-width="0.75"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2"/>
+              <rect x="6" y="46" width="38" height="13" fill="#d97757"/>
+              <text x="25" y="55" font-family="JetBrains Mono, monospace" font-size="8" font-weight="700" fill="#ffffff" text-anchor="middle">MD</text>
+            </svg>
+            forge_architecture
+          </span>
+          <span class="fnd-kind">markdown · system design</span>
+          <span class="fnd-mod">2026-05-26</span>
+          <span class="fnd-size">8 kb</span>
+        </li>
+        <li class="fnd-row" data-href="trello.html" data-label="board">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#fafaf6" stroke="#cfc8b5" stroke-width="0.75"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2"/>
+              <rect x="11" y="22" width="6" height="20" fill="#4a8de2"/>
+              <rect x="22" y="22" width="6" height="14" fill="#4a8de2"/>
+              <rect x="33" y="22" width="6" height="24" fill="#4a8de2"/>
+            </svg>
+            board.trello
+          </span>
+          <span class="fnd-kind">board · kanban</span>
+          <span class="fnd-mod">2026-05-20</span>
+          <span class="fnd-size">5 lists</span>
+        </li>
+        <li class="fnd-row" data-href="iterm2.html" data-label="terminal">
+          <span class="fnd-name">
+            <svg class="fi" viewBox="0 0 50 64" aria-hidden="true">
+              <path d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z" fill="#0c0d12"/>
+              <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#1a1c24"/>
+              <text x="12" y="38" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" fill="#ede9df">&gt;_</text>
+            </svg>
+            terminal.sh
+          </span>
+          <span class="fnd-kind">shell · interactive</span>
+          <span class="fnd-mod">2026-05-20</span>
+          <span class="fnd-size">1 kb</span>
+        </li>
+      </ul>
+      <div class="fnd-empty" id="fnd-empty">— no items match —</div>
+    </main>
+
+  </div>
+</section>
+
+<div class="fnd-moment">— eight items. one of them is the work.</div>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> /Users/foundry/work · 8 items</span>
+  <span class="signoff">— the foundry</span>
+</footer>
+
+<script>
+(() => {
+  const isEmbedded = self !== top;
+
+  // row activation · in embed mode, ask the parent to swap to the target app
+  document.querySelectorAll('.fnd-row').forEach(row => {
+    row.tabIndex = 0;
+    row.setAttribute('role', 'button');
+    const activate = () => {
+      const href = row.dataset.href;
+      const label = row.dataset.label || href;
+      if (!href) return;
+      if (isEmbedded) {
+        parent.postMessage({ type: 'openApp', href, label }, '*');
+      } else {
+        location.href = href;
+      }
+    };
+    row.addEventListener('click', activate);
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activate();
+      }
+    });
+  });
+
+  // search filter · case-insensitive substring against the name column
+  const q = document.getElementById('fnd-search');
+  const empty = document.getElementById('fnd-empty');
+  q?.addEventListener('input', () => {
+    const term = q.value.trim().toLowerCase();
+    let shown = 0;
+    document.querySelectorAll('.fnd-row').forEach((r) => {
+      const name = r.querySelector('.fnd-name').textContent.toLowerCase();
+      const visible = !term || name.includes(term);
+      r.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    empty.classList.toggle('is-on', shown === 0);
+  });
+
+  // view-mode toggle · flips data-view on the main panel
+  document.querySelectorAll('.fnd-tb-vw').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.fnd-tb-vw').forEach(x => x.classList.remove('is-on'));
+      b.classList.add('is-on');
+      document.querySelector('.fnd-main').dataset.view = b.dataset.view;
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

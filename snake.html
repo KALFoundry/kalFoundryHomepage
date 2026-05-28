@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>snake — arcade — KAL Foundry</title>
+<meta name="description" content="Snake — KAL Foundry arcade. Mobile-friendly with D-pad controls and persistent high scores.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/snake.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/snake.html">
+<meta property="og:title" content="snake — KAL Foundry arcade">
+<meta property="og:description" content="Snake — KAL Foundry arcade. Mobile-friendly with D-pad controls and persistent high scores.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="snake — KAL Foundry arcade">
+<meta name="twitter:description" content="Snake — KAL Foundry arcade. Mobile-friendly with D-pad controls and persistent high scores.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  html, body { height: 100%; }
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  .game-shell {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 100dvh;
+  }
+  .game-bar {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .game-bar .back { color: var(--signal); text-decoration: none; padding: 6px 0; }
+  .game-bar .name { color: var(--ink); }
+
+  .hud {
+    width: 100%;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--ink); font-weight: 600;
+  }
+  .hud .best { color: var(--accent); }
+
+  .game-stage {
+    position: relative;
+    width: 100%;
+    max-width: min(480px, 56dvh);
+    aspect-ratio: 1 / 1;
+  }
+  canvas {
+    width: 100%; height: 100%;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    touch-action: none;
+    image-rendering: pixelated;
+    display: block;
+  }
+  .banner {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    pointer-events: none;
+  }
+  .banner-inner {
+    background: rgba(245, 241, 232, 0.94);
+    border: 1px solid var(--ink);
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .banner-inner .t { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .banner-inner .s { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.06em; text-transform: uppercase; }
+  .game-stage[data-state="playing"] .banner { display: none; }
+
+  /* ── on-screen D-pad · always visible on touch devices ─────────── */
+  .pad {
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 6px;
+    margin-top: -2px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .pad button {
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0;
+    display: grid; place-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 80ms ease, transform 80ms ease;
+  }
+  .pad button:active,
+  .pad button.is-down {
+    background: var(--ink);
+    color: var(--surface);
+    transform: scale(0.94);
+  }
+  .pad .up    { grid-area: 1 / 2; }
+  .pad .left  { grid-area: 2 / 1; }
+  .pad .mid   { grid-area: 2 / 2; visibility: hidden; }
+  .pad .right { grid-area: 2 / 3; }
+  .pad .down  { grid-area: 3 / 2; }
+
+  .ctrl-hint {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  /* hide keyboard hint on touch devices; pad is enough */
+  @media (hover: none) and (pointer: coarse) {
+    .ctrl-hint { display: none; }
+  }
+  /* hide pad on desktop · keyboard is faster */
+  @media (hover: hover) and (pointer: fine) {
+    .pad { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="game-shell">
+  <div class="game-bar">
+    <a class="back" href="arcade.html">‹ arcade</a>
+    <span class="name">snake</span>
+  </div>
+
+  <div class="hud">
+    <span>score <span id="score">0</span></span>
+    <span class="best">best <span id="best">0</span></span>
+  </div>
+
+  <div class="game-stage" id="stage" data-state="menu">
+    <canvas id="game" width="320" height="320" aria-label="snake game canvas"></canvas>
+    <div class="banner">
+      <div class="banner-inner" id="banner">
+        <div class="t" id="banner-t">snake</div>
+        <div class="s" id="banner-s">tap to play</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" aria-label="direction pad">
+    <button type="button" class="up"    data-dir="up"    aria-label="up">↑</button>
+    <button type="button" class="left"  data-dir="left"  aria-label="left">←</button>
+    <span class="mid" aria-hidden="true"></span>
+    <button type="button" class="right" data-dir="right" aria-label="right">→</button>
+    <button type="button" class="down"  data-dir="down"  aria-label="down">↓</button>
+  </div>
+
+  <div class="ctrl-hint">arrows · wasd · space</div>
+</section>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const stage = document.getElementById('stage');
+  const banner = document.getElementById('banner');
+  const bannerT = document.getElementById('banner-t');
+  const bannerS = document.getElementById('banner-s');
+  const scoreEl = document.getElementById('score');
+  const bestEl = document.getElementById('best');
+
+  const SIZE = 16;
+  const COLS = 20, ROWS = 20;
+  const HIGH_KEY = 'arcade_snake_high';
+
+  const styles = getComputedStyle(document.documentElement);
+  const C_INK    = '#13141a';
+  const C_ACCENT = (styles.getPropertyValue('--accent') || '#d97757').trim();
+  const C_SIGNAL = (styles.getPropertyValue('--signal') || '#4a8de2').trim();
+  const C_HAIR   = '#cfc8b5';
+
+  let snake, dir, pendingDir, food, score, high, state, tickTimer;
+
+  function reset() {
+    snake = [{x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10}];
+    dir = {x: 1, y: 0};
+    pendingDir = dir;
+    score = 0;
+    spawnFood();
+    updateHUD();
+  }
+  function spawnFood() {
+    while (true) {
+      const f = { x: Math.floor(Math.random() * COLS), y: Math.floor(Math.random() * ROWS) };
+      if (!snake.some(s => s.x === f.x && s.y === f.y)) { food = f; return; }
+    }
+  }
+  function updateHUD() {
+    scoreEl.textContent = score;
+    bestEl.textContent = high;
+  }
+  function start() {
+    if (state === 'playing') return;
+    reset();
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    clearTimeout(tickTimer);
+    tick();
+  }
+  function gameOver() {
+    state = 'gameover';
+    stage.dataset.state = 'gameover';
+    if (score > high) {
+      high = score;
+      try { localStorage.setItem(HIGH_KEY, String(high)); } catch {}
+    }
+    updateHUD();
+    bannerT.textContent = 'game over · ' + score;
+    bannerS.textContent = 'tap to play again';
+  }
+  function pause() {
+    if (state !== 'playing') return;
+    state = 'paused';
+    stage.dataset.state = 'paused';
+    clearTimeout(tickTimer);
+    bannerT.textContent = 'paused';
+    bannerS.textContent = 'tap to resume';
+  }
+  function resume() {
+    if (state !== 'paused') return;
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    tick();
+  }
+
+  function tick() {
+    dir = pendingDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) return gameOver();
+    if (snake.some(s => s.x === head.x && s.y === head.y)) return gameOver();
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+      score++;
+      updateHUD();
+      spawnFood();
+    } else {
+      snake.pop();
+    }
+    draw();
+    const speed = Math.max(70, 130 - Math.floor(score / 5) * 6);
+    tickTimer = setTimeout(tick, speed);
+  }
+
+  function draw() {
+    ctx.fillStyle = '#f5f1e8';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = C_HAIR;
+    ctx.lineWidth = 0.5;
+    for (let i = 1; i < COLS; i++) {
+      ctx.beginPath(); ctx.moveTo(i * SIZE, 0); ctx.lineTo(i * SIZE, canvas.height); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, i * SIZE); ctx.lineTo(canvas.width, i * SIZE); ctx.stroke();
+    }
+    ctx.fillStyle = C_SIGNAL;
+    ctx.fillRect(food.x * SIZE + 2, food.y * SIZE + 2, SIZE - 4, SIZE - 4);
+    snake.forEach((seg, i) => {
+      ctx.fillStyle = i === 0 ? C_INK : C_ACCENT;
+      ctx.fillRect(seg.x * SIZE + 1, seg.y * SIZE + 1, SIZE - 2, SIZE - 2);
+    });
+  }
+
+  function setDir(nx, ny) {
+    if (nx === -dir.x && ny === -dir.y) return;
+    pendingDir = { x: nx, y: ny };
+  }
+  function setDirName(name) {
+    if (name === 'up')    setDir(0, -1);
+    if (name === 'down')  setDir(0,  1);
+    if (name === 'left')  setDir(-1, 0);
+    if (name === 'right') setDir(1,  0);
+    if (state === 'menu' || state === 'gameover') start();
+  }
+
+  // keyboard
+  window.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    if (k === 'arrowup'   || k === 'w') { setDirName('up');    e.preventDefault(); }
+    if (k === 'arrowdown' || k === 's') { setDirName('down');  e.preventDefault(); }
+    if (k === 'arrowleft' || k === 'a') { setDirName('left');  e.preventDefault(); }
+    if (k === 'arrowright'|| k === 'd') { setDirName('right'); e.preventDefault(); }
+    if (k === ' ' || k === 'enter') {
+      if (state === 'menu' || state === 'gameover') start();
+      else if (state === 'playing') pause();
+      else if (state === 'paused') resume();
+      e.preventDefault();
+    }
+    if (k === 'p' && state === 'playing') pause();
+    else if (k === 'p' && state === 'paused') resume();
+  });
+
+  // on-screen pad
+  document.querySelectorAll('.pad button[data-dir]').forEach((btn) => {
+    const press = (e) => {
+      e.preventDefault();
+      setDirName(btn.dataset.dir);
+    };
+    btn.addEventListener('pointerdown', press);
+  });
+
+  // swipe on canvas as a faster alternative
+  let ts = null;
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    ts = { x: t.clientX, y: t.clientY };
+  }, { passive: true });
+  canvas.addEventListener('touchend', (e) => {
+    if (!ts) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - ts.x;
+    const dy = t.clientY - ts.y;
+    const ax = Math.abs(dx), ay = Math.abs(dy);
+    ts = null;
+    if (ax < 18 && ay < 18) { // tap on canvas → start / resume
+      if (state === 'menu' || state === 'gameover') start();
+      else if (state === 'paused') resume();
+      return;
+    }
+    if (ax > ay) setDirName(dx > 0 ? 'right' : 'left');
+    else         setDirName(dy > 0 ? 'down'  : 'up');
+  }, { passive: true });
+
+  banner.addEventListener('click', () => {
+    if (state === 'menu' || state === 'gameover') start();
+    else if (state === 'paused') resume();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state === 'playing') pause();
+  });
+
+  try { high = parseInt(localStorage.getItem(HIGH_KEY), 10) || 0; } catch { high = 0; }
+  reset();
+  draw();
+  updateHUD();
+  state = 'menu';
+})();
+</script>
+
+</body>
+</html>

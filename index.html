@@ -1,230 +1,2170 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KAL Foundry</title>
-  <link rel="icon" type="image/png" sizes="64x64" href="KALFoundryFavicon64.png" />
-  <link rel="icon" type="image/png" href="KALFoundryFavicon.png" />
-  <link rel="apple-touch-icon" href="KALFoundryFavicon.png" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="tokens.css" />
-  <link rel="stylesheet" href="base.css" />
-  <link rel="stylesheet" href="components.css" />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>KAL Foundry — Digital Foundry · AI &amp; Product Studio</title>
+<meta name="description" content="KAL Foundry is a digital foundry for design, AI, and digital products — strategy through fabrication. A team holding 100+ patents, serving Fortune 500 to solo founders.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/">
+<meta property="og:title" content="KAL Foundry — Digital Foundry · AI &amp; Product Studio">
+<meta property="og:description" content="Design, AI, and digital products — strategy through fabrication. A team holding 100+ patents, serving Fortune 500 to solo founders.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — a digital foundry for design, AI, and digital products.">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KAL Foundry — Digital Foundry · AI &amp; Product Studio">
+<meta name="twitter:description" content="Design, AI, and digital products — strategy through fabrication. A team holding 100+ patents, serving Fortune 500 to solo founders.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — a digital foundry for design, AI, and digital products.">
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+    <style>
+      /* ── homepage-only styles ── */
+      body {
+        background: var(--surface);
+      }
+      /* once the parallax lock engages, the lock is permanent for the page
+         lifetime — these rules close iOS rubber-band/overscroll loopholes */
+      body.is-phone-locked {
+        overscroll-behavior: none;
+        touch-action: pan-x;
+      }
 
-  <!-- Nav -->
-  <header class="kf-rail" id="top">
-    <a href="#top" class="site-logo">
-      <img src="KALFoundryJustLogo.png" alt="KAL Foundry" />
-    </a>
-    <nav class="site-nav">
-      <a href="#about" class="kf-eyebrow">About</a>
-      <a href="#services" class="kf-eyebrow">Services</a>
-      <a href="#work" class="kf-eyebrow">Work</a>
-      <a href="#contact" class="kf-eyebrow">Contact</a>
-    </nav>
-    <button class="kf-btn kf-btn--primary kf-btn--sm js-contact-cta">Get in Touch</button>
-  </header>
+      /* the parallax wrapper. height controls how long the parallax lasts. */
+      .home {
+        position: relative;
+        min-height: 240vh;
+      }
+      @media (max-width: 767px) {
+        /* phones: long scroll range so the parallax feels gentle & cinematic
+           (less sensitive per pixel). dvh tracks Safari's collapsing address
+           bar so the visual range doesn't drift mid-scroll. */
+        .home {
+          min-height: 280dvh;
+        }
+      }
 
-  <!-- Hero -->
-  <section class="site-hero" id="home">
-    <div class="kf-page site-hero__inner">
-      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Crafted with intention</div>
-      <h1 class="kf-display" style="margin-bottom:var(--kf-s-5);">We build things<br>that <span style="color:var(--kf-accent);">last</span>.</h1>
-      <p class="kf-lede" style="margin-bottom:var(--kf-s-7);">KAL Foundry is a team dedicated to forging bold ideas into lasting digital and physical experiences.</p>
-      <div class="site-hero__actions">
-        <a href="#work" class="kf-btn kf-btn--primary kf-btn--lg">See Our Work</a>
-        <a href="#about" class="kf-btn kf-btn--secondary kf-btn--lg">Learn More</a>
-      </div>
-    </div>
-  </section>
+      /* sticky stage that holds hero + device */
+      .home-stage {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+      }
+      @media (max-width: 767px) {
+        /* shift the phone toward the bottom of the viewport so there's
+           no dead space below it once it reaches full size */
+        .home-stage {
+          height: 100dvh;
+          align-items: end;
+          padding-bottom: 2dvh;
+        }
+      }
+      .home-bg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.55;
+        background-image:
+          linear-gradient(var(--hair) 1px, transparent 1px),
+          linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+        background-size: 56px 56px;
+        mask-image: radial-gradient(
+          ellipse 90% 70% at center,
+          black 30%,
+          transparent 95%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse 90% 70% at center,
+          black 30%,
+          transparent 95%
+        );
+      }
 
-  <!-- About -->
-  <section class="site-section" id="about">
-    <div class="kf-page">
-      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Who We Are</div>
-      <div class="site-about__grid">
-        <div class="site-about__text">
-          <h2 class="kf-h2" style="margin-bottom:var(--kf-s-5);">A foundry for ideas worth building.</h2>
-          <p class="kf-body" style="margin-bottom:var(--kf-s-4);">We partner with founders, brands, and builders to turn visions into tangible reality. From strategy to execution, we forge every detail with precision and purpose.</p>
-          <p class="kf-body">KAL Foundry was born from the belief that great work requires both craft and thought. With an emphasis on AI, next-gen solutions, and end to end execution guidance, the team is able to assist customers ranging in size from fortune 500 to single person businesses.</p>
+      /* corner ticks during hero */
+      .home-ticks .lb-tick {
+        transition: opacity 400ms var(--ease);
+      }
+
+      /* ── hero copy ── */
+      .home-hero {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 0 var(--gutter);
+        z-index: 2;
+        will-change: opacity, transform;
+      }
+      .home-hero-inner {
+        max-width: 760px;
+      }
+      .home-hero .eyebrow {
+        margin-bottom: 18px;
+      }
+      .home-hero h1 {
+        margin: 0 0 18px;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: clamp(2.25rem, 6vw, 4.5rem);
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+        color: var(--ink);
+        text-wrap: balance;
+      }
+      .home-hero h1 em {
+        display: block;
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+        letter-spacing: -0.01em;
+        margin-top: 6px;
+      }
+      .home-hero p {
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.6;
+        max-width: 520px;
+        margin: 0 auto 28px;
+        color: var(--ink-2);
+      }
+      .home-hero .hint {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .home-hero .hint::before,
+      .home-hero .hint::after {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: var(--ink-muted);
+        display: inline-block;
+      }
+      .home-hero .hint .arrow {
+        animation: hintBob 1.6s ease-in-out infinite;
+      }
+      @keyframes hintBob {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.6;
+        }
+        50% {
+          transform: translateY(3px);
+          opacity: 1;
+        }
+      }
+
+      /* ── device wrapper (scales from 0.5 to 1.0) ── */
+      .home-device {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 3;
+        will-change: transform;
+        transform-origin: center;
+      }
+
+      /* mobile vs desktop visibility */
+      .device-mobile {
+        display: none;
+      }
+      .device-desktop {
+        display: none;
+      }
+      @media (max-width: 767px) {
+        .device-mobile {
+          display: grid;
+        }
+      }
+      @media (min-width: 768px) {
+        .device-desktop {
+          display: grid;
+        }
+      }
+
+      /* ── iPhone frame ── */
+      .iphone {
+        --w: min(394px, 94vw);
+        --h: min(854px, 92dvh);
+        width: var(--w);
+        height: var(--h);
+        background: #0c0d12;
+        border-radius: 42px;
+        padding: 12px;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.06) inset,
+          0 0 0 1.5px #2a2c34,
+          0 30px 80px rgba(0, 0, 0, 0.35),
+          0 8px 20px rgba(0, 0, 0, 0.18);
+        position: relative;
+      }
+      .iphone-screen {
+        width: 100%;
+        height: 100%;
+        background:
+          url("assets/images/ios_wallpaper.jpg") center/cover no-repeat,
+          linear-gradient(180deg, #ebe7dd 0%, #f4f1ea 100%);
+        border-radius: 32px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      /* dynamic island */
+      .iphone-island {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 96px;
+        height: 28px;
+        background: #0c0d12;
+        border-radius: 16px;
+        z-index: 5;
+      }
+      /* mobile status bar · readable on wallpaper */
+      .ios-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 22px 0;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        color: #ffffff;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+        height: 44px;
+      }
+      .ios-status .left {
+        letter-spacing: 0;
+      }
+      .ios-status .right {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .ios-status .bars {
+        display: inline-flex;
+        gap: 2px;
+        align-items: flex-end;
+        height: 10px;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+      }
+      .ios-status .bars i {
+        width: 3px;
+        background: #ffffff;
+      }
+      .ios-status .bars i:nth-child(1) {
+        height: 4px;
+      }
+      .ios-status .bars i:nth-child(2) {
+        height: 6px;
+      }
+      .ios-status .bars i:nth-child(3) {
+        height: 8px;
+      }
+      .ios-status .bars i:nth-child(4) {
+        height: 10px;
+      }
+      .ios-status .battery {
+        width: 22px;
+        height: 11px;
+        border: 1px solid #ffffff;
+        border-radius: 3px;
+        position: relative;
+        padding: 1px;
+        filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+      }
+      .ios-status .battery::after {
+        content: "";
+        position: absolute;
+        top: 3px;
+        right: -3px;
+        width: 2px;
+        height: 5px;
+        background: #ffffff;
+        border-radius: 1px;
+      }
+      .ios-status .battery i {
+        display: block;
+        height: 100%;
+        width: 75%;
+        background: #ffffff;
+      }
+
+      /* mobile header on home screen · readable on wallpaper */
+      .ios-header {
+        padding: 18px 26px 4px;
+        text-align: center;
+      }
+      .ios-header .name {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 18px;
+        color: #ffffff;
+        letter-spacing: -0.01em;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+      }
+      .ios-header .name .br {
+        color: var(--accent);
+      }
+      .ios-header .meta {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: rgba(255, 255, 255, 0.85);
+        text-transform: uppercase;
+        margin-top: 4px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      /* mobile app grid */
+      .ios-apps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px 12px;
+        padding: 16px 22px;
+      }
+      .app {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        color: inherit;
+        transition: transform var(--dur-2) var(--ease);
+      }
+      .app:hover {
+        outline: none;
+      }
+      .app:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 4px;
+      }
+      .app:active {
+        transform: scale(0.94);
+      }
+      .app-tile {
+        width: 56px;
+        height: 56px;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+        transition:
+          border-color var(--dur-1) var(--ease),
+          background var(--dur-1) var(--ease);
+      }
+      .app:hover .app-tile {
+        border-color: var(--ink);
+      }
+      .app[data-accent] .app-tile {
+        background: var(--ink);
+      }
+      .app[data-accent] .app-tile svg {
+        stroke: var(--surface);
+      }
+      .app[data-warm] .app-tile {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .app[data-warm] .app-tile svg {
+        stroke: #fff;
+      }
+      .app-tile svg {
+        width: 26px;
+        height: 26px;
+        stroke: var(--ink);
+        stroke-width: 1.5;
+        fill: none;
+      }
+      /* unified colored-tile modifier · white glyph on solid color */
+      .app-tile[data-color] {
+        border-color: transparent;
+      }
+      .app-tile[data-color="ink"] {
+        background: var(--ink);
+      }
+      .app-tile[data-color="warm"] {
+        background: var(--accent);
+      }
+      .app-tile[data-color="signal"] {
+        background: var(--signal);
+      }
+      .app-tile[data-color="ok"] {
+        background: var(--ok, #5a7a4d);
+      }
+      .app-tile[data-color="gold"] {
+        background: #c89a3a;
+      }
+      .app-tile[data-color="blue"] {
+        background: #0079bf;
+      }
+      .app-tile[data-color] svg {
+        stroke: #ffffff;
+        fill: none;
+        width: 28px;
+        height: 28px;
+        stroke-width: 1.6;
+      }
+      .app-tile[data-color] svg [data-fill] {
+        fill: #ffffff;
+        stroke: none;
+      }
+      .app-tile-letters {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        color: var(--ink);
+      }
+      .app[data-accent] .app-tile-letters {
+        color: var(--surface);
+      }
+      .app[data-warm] .app-tile-letters {
+        color: #fff;
+      }
+      .app-label {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.06em;
+        color: #ffffff;
+        text-transform: lowercase;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.7),
+          0 0 1px rgba(0, 0, 0, 0.5);
+      }
+
+      /* tiles that render a real app icon image (not an SVG glyph) */
+      .app-tile--img {
+        background: transparent !important;
+        border: none !important;
+        /* shadow KEPT — PNGs share the same lift as SVG tiles */
+        overflow: hidden;
+      }
+      .app-tile--img img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        border-radius: inherit;
+        /* counteract the ~8-10% transparent padding baked into .icns exports
+           so the visible icon content fills the tile like the colored SVG tiles do */
+        transform: scale(1.2);
+      }
+
+      /* mobile dock */
+      .ios-dock {
+        margin: auto 18px 18px;
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--hair);
+        border-radius: 22px;
+        padding: 10px 12px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .ios-dock .app-label {
+        display: none;
+      }
+      .ios-dock .app-tile {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+      }
+      .ios-dock .app-tile svg {
+        width: 22px;
+        height: 22px;
+      }
+      .ios-dock .app-tile[data-color] svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      /* ── MacBook frame ── */
+      .macbook {
+        --w: min(1180px, 90vw);
+        --h: min(720px, 78vh);
+        width: var(--w);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .macbook-screen {
+        width: 100%;
+        height: var(--h);
+        background: #0c0d12;
+        border-radius: 14px 14px 4px 4px;
+        padding: 18px 14px 14px;
+        box-shadow:
+          0 0 0 1px #1f2129,
+          0 30px 80px rgba(0, 0, 0, 0.3),
+          0 12px 28px rgba(0, 0, 0, 0.16);
+        position: relative;
+      }
+      .macbook-camera {
+        position: absolute;
+        top: 7px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #2a2c34;
+      }
+      .macbook-camera::after {
+        content: "";
+        position: absolute;
+        inset: 1.5px;
+        border-radius: 50%;
+        background: #444;
+      }
+      .macbook-inner {
+        width: 100%;
+        height: 100%;
+        background: var(--surface);
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+      /* MacBook hinge / lip */
+      .macbook-lip {
+        width: calc(var(--w) + 60px);
+        height: 14px;
+        background: linear-gradient(
+          180deg,
+          #1f2129 0%,
+          #2a2c34 30%,
+          #14151a 100%
+        );
+        border-radius: 0 0 14px 14px;
+        position: relative;
+      }
+      .macbook-lip::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 4px;
+        background: #0c0d12;
+        border-radius: 0 0 6px 6px;
+      }
+
+      /* macOS menu bar */
+      .mac-menu {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 8px 16px;
+        background: rgba(12, 13, 18, 0.45);
+        backdrop-filter: blur(20px) saturate(140%);
+        -webkit-backdrop-filter: blur(20px) saturate(140%);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .mac-menu .apple {
+        width: 11px;
+        height: 11px;
+        background: #ffffff;
+        border-radius: 50%;
+      }
+      .mac-menu .menu-brand {
+        color: #ffffff;
+        font-weight: 600;
+      }
+      .mac-menu .menu-brand .br {
+        color: var(--accent);
+      }
+      .mac-menu .menu-item {
+        letter-spacing: 0.04em;
+      }
+      .mac-menu .spacer {
+        flex: 1;
+      }
+      .mac-menu .right {
+        display: flex;
+        gap: 16px;
+        letter-spacing: 0.04em;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .mac-menu .clock {
+        color: #ffffff;
+      }
+
+      /* MacBook desktop · real wallpaper image */
+      .mac-desktop {
+        flex: 1;
+        position: relative;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        background: var(--surface);
+      }
+      .mac-desktop::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("assets/images/wallpaper.webp") center/cover no-repeat;
+        image-rendering: pixelated;
+        image-rendering: -webkit-optimize-contrast;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .mac-desktop > * {
+        position: relative;
+        z-index: 1;
+      }
+      /* video wallpaper · sits behind icons/dock (z-index 1), above the
+         ::before fallback (z-index 0). Higher specificity than `.mac-desktop > *`
+         so it stays at z-index 0. */
+      .mac-desktop .mac-wallpaper {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+        pointer-events: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        /* honor reduced-motion: drop the looping video, fall back to the
+           static wallpaper painted by .mac-desktop::before */
+        .mac-desktop .mac-wallpaper {
+          display: none;
+        }
+      }
+
+      /* desktop icon column · right edge, like real macOS */
+      .mac-icons {
+        position: absolute;
+        top: 28px;
+        right: 22px;
+        display: grid;
+        gap: 18px;
+        z-index: 2;
+        width: 86px;
+      }
+      .mac-icon {
+        display: grid;
+        grid-template-rows: 64px auto;
+        gap: 6px;
+        text-decoration: none;
+        color: inherit;
+        text-align: center;
+        cursor: pointer;
+        padding: 4px 2px;
+        border-radius: 6px;
+        transition:
+          background var(--dur-1) var(--ease),
+          transform var(--dur-2) var(--ease);
+      }
+      .mac-icon:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      .mac-icon:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 2px;
+      }
+      .mac-icon:active {
+        transform: scale(0.96);
+      }
+      .mac-icon-img {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto;
+        display: block;
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
+      }
+      .mac-icon-label {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        font-weight: 500;
+        line-height: 1.2;
+        color: #ffffff;
+        letter-spacing: 0.01em;
+        text-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.75),
+          0 0 1px rgba(0, 0, 0, 0.5);
+      }
+
+      /* MacBook dock */
+      .mac-dock {
+        margin: 0 auto 14px;
+        background: rgba(255, 255, 255, 0.55);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid var(--hair);
+        border-radius: 22px;
+        padding: 8px 16px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      }
+      [data-theme="dark"] .mac-dock {
+        background: rgba(40, 42, 52, 0.55);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mac-dock {
+          background: rgba(40, 42, 52, 0.55);
+        }
+      }
+      .mac-dock .app {
+        gap: 0;
+        transition: transform var(--dur-1) var(--ease);
+      }
+      .mac-dock .app:hover {
+        transform: translateY(-3px);
+      }
+      .mac-dock .app-tile {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+      }
+      .mac-dock .app-tile svg {
+        width: 24px;
+        height: 24px;
+      }
+      .mac-dock .app-label {
+        display: none;
+      }
+      .mac-dock .sep {
+        width: 1px;
+        height: 34px;
+        background: var(--hair);
+        margin: 0 6px;
+      }
+
+      /* ── in-device app overlay · iPhone (full-screen) ── */
+      .iphone-app {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        background: var(--surface);
+        border-radius: 32px;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(0.94);
+        transform-origin: center;
+        transition:
+          opacity 280ms var(--ease),
+          transform 280ms var(--ease);
+        display: flex;
+        flex-direction: column;
+      }
+      .iphone.is-app-open .iphone-app {
+        opacity: 1;
+        pointer-events: auto;
+        transform: scale(1);
+      }
+      .iphone-app iframe {
+        width: 100%;
+        flex: 1;
+        border: 0;
+        display: block;
+        background: var(--surface);
+      }
+      .iphone-home-indicator {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        transform: translateX(-50%);
+        width: 180px; /* was 140px — wider catch zone for the swipe */
+        height: 56px; /* was 30px — taller catch zone for the swipe */
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0 0 6px;
+        z-index: 11;
+        display: grid;
+        align-items: end; /* keep pill anchored to bottom of larger box */
+        justify-items: center;
+        touch-action: none; /* prevent iOS from intercepting swipe as scroll */
+      }
+      .iphone-home-indicator::before {
+        content: "";
+        width: 110px;
+        height: 5px;
+        border-radius: 3px;
+        background: var(--ink);
+        opacity: 0.4;
+        transition:
+          opacity var(--dur-1) var(--ease),
+          transform 220ms var(--ease);
+        transform: translateY(calc(var(--swipe-y, 0px) * -0.35));
+      }
+      .iphone-home-indicator:hover::before {
+        opacity: 0.75;
+      }
+
+      /* ── first-time gesture hint · tooltip above the pill ── */
+      .iphone-home-hint {
+        position: absolute;
+        bottom: 52px;
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        z-index: 12;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #ffffff;
+        background: rgba(12, 13, 18, 0.78);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        padding: 5px 10px;
+        border-radius: 14px;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+        transition:
+          opacity 220ms var(--ease),
+          transform 220ms var(--ease);
+      }
+      .iphone-home-hint::after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%) rotate(45deg);
+        width: 8px;
+        height: 8px;
+        background: rgba(12, 13, 18, 0.78);
+      }
+      .iphone-home-hint.is-on {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      @keyframes homeHintBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        35% {
+          transform: translateY(-8px);
+        }
+        60% {
+          transform: translateY(-2px);
+        }
+        80% {
+          transform: translateY(-4px);
+        }
+      }
+      .iphone-home-indicator.is-hinting::before {
+        animation: homeHintBounce 1.8s ease-in-out 2;
+        opacity: 0.85;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .iphone-home-indicator.is-hinting::before {
+          animation: none;
+          opacity: 0.85;
+        }
+      }
+
+      .iphone-home-indicator:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: -2px;
+        border-radius: 8px;
+      }
+
+      /* ── in-device app window · MacBook (inset, dock stays visible) ── */
+      .mac-app {
+        position: absolute;
+        top: 10px;
+        left: 14px;
+        right: 14px;
+        bottom: 80px;
+        z-index: 5;
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        border-radius: 8px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(10px) scale(0.985);
+        transform-origin: 50% 100%;
+        transition:
+          opacity 220ms var(--ease),
+          transform 240ms var(--ease);
+        box-shadow:
+          0 12px 36px rgba(0, 0, 0, 0.18),
+          0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .macbook.is-app-open .mac-app {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1);
+      }
+      .mac-app-chrome {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 12px;
+        background: rgba(244, 241, 234, 0.85);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--hair);
+        flex-shrink: 0;
+      }
+      [data-theme="dark"] .mac-app-chrome {
+        background: rgba(40, 42, 52, 0.85);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .mac-app-chrome {
+          background: rgba(40, 42, 52, 0.85);
+        }
+      }
+      .mac-app-lights {
+        display: flex;
+        gap: 6px;
+      }
+      .mac-app-light {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: none;
+        padding: 0;
+        position: relative;
+      }
+      .mac-app-light.r {
+        background: #ed6a5e;
+        cursor: pointer;
+      }
+      .mac-app-light.y {
+        background: #f5bd4f;
+      }
+      .mac-app-light.g {
+        background: #61c554;
+      }
+      .mac-app-light.r:hover::after {
+        content: "×";
+        position: absolute;
+        inset: 0;
+        font: 700 13px/12px system-ui;
+        color: rgba(0, 0, 0, 0.7);
+        display: grid;
+        place-items: center;
+      }
+      .mac-app-light.r:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 2px;
+      }
+      /* green light = fullscreen toggle (was decorative) */
+      .mac-app-light.g {
+        cursor: pointer;
+      }
+      .mac-app-light.g:hover::after {
+        content: "⤢";
+        position: absolute;
+        inset: 0;
+        font: 700 9px/12px system-ui;
+        color: rgba(0, 0, 0, 0.7);
+        display: grid;
+        place-items: center;
+      }
+      .macbook.is-fullscreen .mac-app-light.g:hover::after {
+        content: "⤡";
+      }
+      .mac-app-light.g:focus-visible {
+        outline: 2px solid var(--signal);
+        outline-offset: 2px;
+      }
+      /* fullscreen mode · chrome stays visible so the close button stays reachable */
+      .macbook.is-fullscreen .mac-app {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        border-radius: 0;
+        border: 0;
+        transform: none;
+        transition: none;
+        box-shadow: none;
+      }
+      .macbook.is-fullscreen .mac-app-chrome {
+        background: var(--surface);
+      }
+      [data-theme="dark"] .macbook.is-fullscreen .mac-app-chrome {
+        background: var(--surface);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) .macbook.is-fullscreen .mac-app-chrome {
+          background: var(--surface);
+        }
+      }
+      .mac-app-title {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        letter-spacing: 0.04em;
+      }
+      .mac-app iframe {
+        width: 100%;
+        flex: 1;
+        border: 0;
+        display: block;
+        background: var(--surface);
+      }
+
+      /* small screen device adjustments */
+      @media (max-width: 380px) {
+        .ios-apps {
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px 8px;
+          padding: 12px 14px;
+        }
+        .app-tile {
+          width: 50px;
+          height: 50px;
+          border-radius: 12px;
+        }
+        .iphone {
+          --w: 320px;
+          --h: 92vh;
+        }
+        .ios-header {
+          padding: 14px 22px 4px;
+        }
+        .ios-header .name {
+          font-size: 16px;
+        }
+      }
+
+      /* iPhone-frame touch defaults · respect iOS home-bar safe area on real phones */
+      .app,
+      .mac-icon,
+      .mac-dock .app {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+      @media (max-width: 767px) {
+        .ios-dock {
+          margin: auto 18px max(18px, env(safe-area-inset-bottom));
+        }
+        .iphone-home-indicator {
+          bottom: max(0px, env(safe-area-inset-bottom));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="home">
+      <div class="home-stage" id="stage">
+        <div class="home-bg"></div>
+        <div class="home-ticks">
+          <span class="lb-tick tl"></span>
+          <span class="lb-tick tr"></span>
+          <span class="lb-tick bl"></span>
+          <span class="lb-tick br"></span>
         </div>
-        <div class="site-stats">
-          <div class="kf-card">
-            <div class="kf-stat"><div class="v">100+</div><div class="k">Patents Held by the Team</div></div>
-          </div>
-          <div class="kf-card">
-            <div class="kf-stat"><div class="v">20+</div><div class="k">Years of Craft</div></div>
-          </div>
-          <div class="kf-card">
-            <div class="kf-stat"><div class="v">15+</div><div class="k">AI Initiatives participated in</div></div>
-          </div>
-          <div class="kf-card">
-            <div class="kf-stat"><div class="v">&lt;24hr</div><div class="k">Response Time</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Services -->
-  <section class="site-section site-section--alt" id="services">
-    <div class="kf-page">
-      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">What We Do</div>
-      <h2 class="kf-h2" style="margin-bottom:var(--kf-s-7);">Our capabilities.</h2>
-      <div class="site-services__grid">
-
-        <article class="kf-card">
-          <div class="site-service__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
-              <rect x="3" y="3" width="18" height="18"/>
-              <path d="M8 12h8M12 8v8"/>
-            </svg>
-          </div>
-          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Design &amp; Brand</h3>
-          <p class="kf-small">Visual identities, systems, and experiences that communicate with clarity and command attention.</p>
-        </article>
-
-        <article class="kf-card">
-          <div class="site-service__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
-              <polyline points="4,18 9,13 14,17 20,7"/>
-            </svg>
-          </div>
-          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Strategy &amp; AI Consulting</h3>
-          <p class="kf-small">From market positioning to product roadmaps, we help you cut through complexity and move with confidence involving next-generation technology for the best in breed solutions.</p>
-        </article>
-
-        <article class="kf-card">
-          <div class="site-service__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
-              <polyline points="4,7 12,3 20,7 20,17 12,21 4,17 4,7"/>
-              <line x1="12" y1="3" x2="12" y2="21"/>
-              <line x1="4" y1="7" x2="20" y2="7"/>
-              <line x1="4" y1="17" x2="20" y2="17"/>
-            </svg>
-          </div>
-          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Digital Products</h3>
-          <p class="kf-small">Web apps, platforms, and interfaces built with performance and people at the center.</p>
-        </article>
-
-        <article class="kf-card">
-          <div class="site-service__icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
-              <rect x="3" y="3" width="18" height="18"/>
-              <polyline points="3,9 21,9"/>
-              <line x1="9" y1="9" x2="9" y2="21"/>
-            </svg>
-          </div>
-          <h3 class="kf-h3" style="margin:var(--kf-s-4) 0 var(--kf-s-3);">Production &amp; Launch</h3>
-          <p class="kf-small">End-to-end execution for campaigns, product launches, and physical fabrication projects.</p>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Work -->
-  <section class="site-section" id="work">
-    <div class="kf-page">
-      <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Selected Work</div>
-      <h2 class="kf-h2" style="margin-bottom:var(--kf-s-7);">Projects we're proud of.</h2>
-      <div class="site-work__grid">
-
-        <article class="kf-card kf-card--stamped site-work-card site-work-card--featured">
-          <div class="site-work-card__media site-work-card__media--1">
-            <img src="assets/arsenalHubGif.gif" alt="Arsenal Hub app demo" class="site-work-card__gif" />
-          </div>
-          <div class="site-work-card__info">
-            <span class="kf-eyebrow kf-eyebrow--accent">Mobile App</span>
-            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">Armory Hub</h3>
-            <p class="kf-small">A Security First Mobile App for tracking personal gun, ammo, and accessory inventory</p>
-          </div>
-        </article>
-
-        <article class="kf-card site-work-card">
-          <div class="site-work-card__media site-work-card__media--2">
-            <img src="assets/backgClearHome.png" alt="backgClear app" class="site-work-card__gif" />
-          </div>
-          <div class="site-work-card__info">
-            <span class="kf-eyebrow kf-eyebrow--accent">SaaS</span>
-            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">backgClear</h3>
-            <p class="kf-small">A Simple SaaS Platform for Background Removal</p>
-          </div>
-        </article>
-
-        <article class="kf-card site-work-card">
-          <div class="site-work-card__media site-work-card__media--3"></div>
-          <div class="site-work-card__info">
-            <span class="kf-eyebrow kf-eyebrow--accent">Fabrication</span>
-            <h3 class="kf-h3" style="margin:var(--kf-s-2) 0 var(--kf-s-3);">Ironwork Series</h3>
-            <p class="kf-small">Bespoke architectural metalwork installations for commercial spaces.</p>
-          </div>
-        </article>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="site-section site-section--alt" id="contact">
-    <div class="kf-page">
-      <div class="site-contact__grid">
-        <div class="site-contact__text">
-          <div class="kf-eyebrow kf-eyebrow--rule kf-eyebrow--accent" style="margin-bottom:var(--kf-s-5);">Get in Touch</div>
-          <h2 class="kf-h2" style="margin-bottom:var(--kf-s-5);">Let's build something together.</h2>
-          <p class="kf-body" style="margin-bottom:var(--kf-s-6);">Have a project in mind? We'd love to hear about it. Reach out and we'll be in touch within 24 hours.</p>
-          <div class="site-contact__meta">
-            <div class="site-contact__meta-item">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
-                <rect x="2" y="4" width="20" height="16"/>
-                <polyline points="2,4 12,13 22,4"/>
-              </svg>
-              <span class="kf-small">team@kalfoundry.com</span>
+        <!-- ─── hero ─── -->
+        <div class="home-hero" id="hero">
+          <div class="home-hero-inner">
+            <div class="lb-eyebrow eyebrow">
+              // DIGITAL FOUNDRY · AI · PRODUCT
+            </div>
+            <h1>
+              we forge ideas
+              <em>into things that last.</em>
+            </h1>
+            <p>
+              A studio for design, AI, and digital products. From strategy to
+              fabrication — we turn bold ideas into lasting work, for clients
+              from Fortune 500 to solo founders.
+            </p>
+            <div class="hint">
+              <span>scroll</span>
+              <span class="arrow">↓</span>
             </div>
           </div>
         </div>
-        <form class="kf-card kf-card--stamped" onsubmit="handleSubmit(event)">
-          <div class="kf-field" style="margin-bottom:var(--kf-s-5);">
-            <label class="kf-field-label" for="name">Name</label>
-            <input class="kf-input" type="text" id="name" name="name" placeholder="Your name" required />
-          </div>
-          <div class="kf-field" style="margin-bottom:var(--kf-s-5);">
-            <label class="kf-field-label" for="email">Email</label>
-            <input class="kf-input" type="email" id="email" name="email" placeholder="you@email.com" required />
-          </div>
-          <div class="kf-field" style="margin-bottom:var(--kf-s-6);">
-            <label class="kf-field-label" for="message">Message</label>
-            <textarea class="kf-textarea" id="message" name="message" placeholder="Tell us about your project..." required></textarea>
-          </div>
-          <button type="submit" class="kf-btn kf-btn--primary" style="width:100%;justify-content:center;">Send Message</button>
-        </form>
-      </div>
-    </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="kf-page">
-      <div class="site-footer__inner">
-        <a href="#top" class="site-footer__logo">
-          <img src="KALFoundryJustLogo.png" alt="KAL Foundry" />
-        </a>
-        <p class="kf-eyebrow" style="color:var(--kf-ink-3);">&copy; 2026 KAL Foundry. All rights reserved.</p>
-        <nav class="site-footer__nav">
-          <a href="#about" class="kf-eyebrow">About</a>
-          <a href="#services" class="kf-eyebrow">Services</a>
-          <a href="#contact" class="kf-eyebrow">Contact</a>
-        </nav>
-      </div>
-    </div>
-  </footer>
+        <!-- ─── device · mobile ─── -->
+        <div class="home-device device-mobile" id="device-mobile">
+          <div class="iphone">
+            <div class="iphone-island"></div>
+            <div class="iphone-screen">
+              <div class="ios-status">
+                <span class="left" id="ios-time">9:41</span>
+                <span class="right">
+                  <span class="bars"><i></i><i></i><i></i><i></i></span>
+                  <span class="battery"><i></i></span>
+                </span>
+              </div>
+              <div class="ios-header">
+                <div class="name">[ kal<span class="br">_</span>foundry ]</div>
+                <div class="meta">tap an app</div>
+              </div>
 
-  <script src="main.js"></script>
-</body>
+              <div class="ios-apps">
+                <a class="app" href="work.html" aria-label="work">
+                  <span class="app-tile" data-color="blue"
+                    ><svg viewBox="0 0 24 24">
+                      <path d="M3 7h7l2 2h9v11H3z" /></svg
+                  ></span>
+                  <span class="app-label">work</span>
+                </a>
+                <a class="app" href="patents.html" aria-label="patents">
+                  <span class="app-tile" data-color="gold">
+                    <svg
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path
+                        d="M16 4 L26 8 L26 16 C26 22 22 26 16 28 C10 26 6 22 6 16 L6 8 Z"
+                      />
+                      <path d="M10.5 16 L14.5 20 L22 12" />
+                    </svg>
+                  </span>
+                  <span class="app-label">patents</span>
+                </a>
+                <a class="app" href="about.html" aria-label="about page">
+                  <span class="app-tile" data-color="warm">
+                    <svg
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <circle cx="16" cy="12" r="5" />
+                      <path d="M5 27 C5 21 10 18 16 18 C22 18 27 21 27 27" />
+                    </svg>
+                  </span>
+                  <span class="app-label">about</span>
+                </a>
+                <a class="app" href="now.html" aria-label="now page">
+                  <span class="app-tile" data-color="ok">
+                    <svg viewBox="0 0 32 32" aria-hidden="true">
+                      <circle cx="16" cy="16" r="3.2" data-fill />
+                      <circle
+                        cx="16"
+                        cy="16"
+                        r="8"
+                        fill="none"
+                        stroke-width="1.6"
+                        opacity="0.7"
+                      />
+                      <circle
+                        cx="16"
+                        cy="16"
+                        r="12.5"
+                        fill="none"
+                        stroke-width="1.6"
+                        opacity="0.4"
+                      />
+                    </svg>
+                  </span>
+                  <span class="app-label">now</span>
+                </a>
+                <a class="app" href="resume.html" aria-label="team">
+                  <span class="app-tile" data-color="signal">
+                    <svg
+                      viewBox="0 0 32 32"
+                      aria-hidden="true"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path d="M9 5 H20 L24 9 V27 H9 Z" />
+                      <path d="M20 5 V9 H24" />
+                      <line x1="12" y1="16" x2="21" y2="16" />
+                      <line x1="12" y1="20" x2="21" y2="20" />
+                      <line x1="12" y1="24" x2="17" y2="24" />
+                    </svg>
+                  </span>
+                  <span class="app-label">team</span>
+                </a>
+                <a
+                  class="app"
+                  href="https://github.com/kalfoundry"
+                  aria-label="github profile"
+                >
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/github.png" alt="" />
+                  </span>
+                  <span class="app-label">github</span>
+                </a>
+                <a class="app" href="files.html" aria-label="files">
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/files.png" alt="" />
+                  </span>
+                  <span class="app-label">files</span>
+                </a>
+                <a class="app" href="trello.html" aria-label="trello board">
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/trello.png" alt="" />
+                  </span>
+                  <span class="app-label">trello</span>
+                </a>
+                <a
+                  class="app"
+                  href="https://linkedin.com/company/kalfoundry"
+                  aria-label="linkedin profile"
+                >
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/linkedin.png" alt="" />
+                  </span>
+                  <span class="app-label">linkedin</span>
+                </a>
+                <a class="app" href="arcade.html" aria-label="arcade">
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/arcade.png" alt="" />
+                  </span>
+                  <span class="app-label">arcade</span>
+                </a>
+              </div>
+
+              <div class="ios-dock">
+                <a class="app" href="files.html" aria-label="files">
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/files.png" alt="" />
+                  </span>
+                </a>
+                <a class="app" href="about.html" aria-label="about page">
+                  <span class="app-tile" data-color="warm"
+                    ><svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="9" r="3.5" />
+                      <path d="M5 20c0-3.5 3.5-6 7-6s7 2.5 7 6" /></svg
+                  ></span>
+                </a>
+                <a class="app" href="messages.html" aria-label="messages">
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/messager.png" alt="" />
+                  </span>
+                </a>
+                <a
+                  class="app"
+                  href="mailto:team@kalfoundry.com"
+                  aria-label="email"
+                >
+                  <span class="app-tile app-tile--img">
+                    <img src="/assets/icons/outlook.png" alt="" />
+                  </span>
+                </a>
+              </div>
+
+              <!-- app overlay · opens in-device when an icon is tapped -->
+              <div class="iphone-app" id="iphone-app">
+                <iframe
+                  class="iphone-app-frame"
+                  title="open app"
+                  loading="lazy"
+                ></iframe>
+                <span
+                  class="iphone-home-hint"
+                  id="iphone-home-hint"
+                  aria-hidden="true"
+                  >swipe up to exit</span
+                >
+                <button
+                  class="iphone-home-indicator"
+                  id="iphone-home-indicator"
+                  aria-label="swipe up to close · press Escape on keyboard"
+                  type="button"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── device · desktop ─── -->
+        <div class="home-device device-desktop" id="device-desktop">
+          <div class="macbook">
+            <div class="macbook-screen">
+              <div class="macbook-camera"></div>
+              <div class="macbook-inner">
+                <!-- menu bar -->
+                <div class="mac-menu">
+                  <span class="apple"></span>
+                  <span class="menu-brand"
+                    >[ kal<span class="br">_</span>foundry ]</span
+                  >
+                  <span class="menu-item">File</span>
+                  <span class="menu-item">View</span>
+                  <span class="menu-item">Window</span>
+                  <span class="menu-item">Help</span>
+                  <span class="spacer"></span>
+                  <span class="right">
+                    <span>● open for work</span>
+                    <span class="clock">Q2 · 2026</span>
+                  </span>
+                </div>
+
+                <!-- desktop -->
+                <div class="mac-desktop">
+                  <!-- video wallpaper · poster + ::before fall back to the static webp -->
+                  <video
+                    class="mac-wallpaper"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    poster="assets/images/wallpaper.webp"
+                  >
+                    <source src="assets/backgroundDrive.mp4" type="video/mp4" />
+                  </video>
+                  <!-- desktop icons · right column, real macOS arrangement -->
+                  <div class="mac-icons">
+                    <a
+                      class="mac-icon"
+                      href="work.html"
+                      aria-label="work folder"
+                    >
+                      <svg
+                        class="mac-icon-img"
+                        viewBox="0 0 64 50"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 11 a3 3 0 0 1 3 -3 h17 l4 5 h34 a3 3 0 0 1 3 3 v3 H3 z"
+                          fill="#5c83ac"
+                        />
+                        <path
+                          d="M3 16 h58 v28 a3 3 0 0 1 -3 3 H6 a3 3 0 0 1 -3 -3 z"
+                          fill="#7da3c8"
+                        />
+                        <rect
+                          x="3"
+                          y="16"
+                          width="58"
+                          height="1.5"
+                          fill="#ffffff"
+                          opacity="0.32"
+                        />
+                      </svg>
+                      <span class="mac-icon-label">work</span>
+                    </a>
+                    <a
+                      class="mac-icon"
+                      href="patents.html"
+                      aria-label="patents folder"
+                    >
+                      <svg
+                        class="mac-icon-img"
+                        viewBox="0 0 64 50"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 11 a3 3 0 0 1 3 -3 h17 l4 5 h34 a3 3 0 0 1 3 3 v3 H3 z"
+                          fill="#5c83ac"
+                        />
+                        <path
+                          d="M3 16 h58 v28 a3 3 0 0 1 -3 3 H6 a3 3 0 0 1 -3 -3 z"
+                          fill="#7da3c8"
+                        />
+                        <rect
+                          x="3"
+                          y="16"
+                          width="58"
+                          height="1.5"
+                          fill="#ffffff"
+                          opacity="0.32"
+                        />
+                      </svg>
+                      <span class="mac-icon-label">patents</span>
+                    </a>
+                    <a class="mac-icon" href="resume.html" aria-label="team">
+                      <svg
+                        class="mac-icon-img"
+                        viewBox="0 0 50 64"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M7 2 h25 l11 11 v47 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 z"
+                          fill="#fafaf6"
+                          stroke="#cfc8b5"
+                          stroke-width="0.75"
+                        />
+                        <path d="M32 2 v9 a2 2 0 0 0 2 2 h9 z" fill="#e8e2d2" />
+                        <rect
+                          x="11"
+                          y="22"
+                          width="20"
+                          height="1"
+                          fill="#cfc8b5"
+                        />
+                        <rect
+                          x="11"
+                          y="26"
+                          width="26"
+                          height="1"
+                          fill="#cfc8b5"
+                        />
+                        <rect
+                          x="11"
+                          y="30"
+                          width="18"
+                          height="1"
+                          fill="#cfc8b5"
+                        />
+                        <rect
+                          x="11"
+                          y="34"
+                          width="22"
+                          height="1"
+                          fill="#cfc8b5"
+                        />
+                        <rect
+                          x="6"
+                          y="46"
+                          width="38"
+                          height="13"
+                          fill="#d97757"
+                        />
+                        <text
+                          x="25"
+                          y="55"
+                          font-family="JetBrains Mono, monospace"
+                          font-size="8"
+                          font-weight="700"
+                          fill="#ffffff"
+                          text-anchor="middle"
+                          letter-spacing="0.5"
+                        >
+                          PDF
+                        </text>
+                      </svg>
+                      <span class="mac-icon-label">team</span>
+                    </a>
+                    <a class="mac-icon" href="arcade.html" aria-label="arcade">
+                      <img class="mac-icon-img" src="/assets/icons/arcade.png" alt="" />
+                      <span class="mac-icon-label">arcade</span>
+                    </a>
+                  </div>
+
+                  <!-- app window · opens in-device when an icon is clicked -->
+                  <div class="mac-app" id="mac-app">
+                    <div class="mac-app-chrome">
+                      <span class="mac-app-lights">
+                        <button
+                          class="mac-app-light r"
+                          id="mac-app-close"
+                          aria-label="close window"
+                          type="button"
+                        ></button>
+                        <span class="mac-app-light y" aria-hidden="true"></span>
+                        <button
+                          class="mac-app-light g"
+                          id="mac-app-fullscreen"
+                          aria-label="enter full screen"
+                          type="button"
+                        ></button>
+                      </span>
+                      <span class="mac-app-title" id="mac-app-title">~/</span>
+                    </div>
+                    <iframe
+                      class="mac-app-frame"
+                      title="open app"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+
+                  <!-- dock · real macOS icons. Finder = nav hub. Messages = emulated chat app. -->
+                  <div class="mac-dock">
+                    <a
+                      class="app"
+                      href="finder.html"
+                      title="finder"
+                      aria-label="finder"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/finder.png" alt=""
+                      /></span>
+                    </a>
+                    <a
+                      class="app"
+                      href="trello.html"
+                      title="trello"
+                      aria-label="trello board"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/trello.png" alt=""
+                      /></span>
+                    </a>
+                    <a
+                      class="app"
+                      href="iterm2.html"
+                      title="iterm2"
+                      aria-label="iterm2 terminal"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/iterm2.png" alt=""
+                      /></span>
+                    </a>
+                    <a
+                      class="app"
+                      href="messages.html"
+                      title="messages"
+                      aria-label="messages"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/messager.png" alt=""
+                      /></span>
+                    </a>
+                    <span class="sep"></span>
+                    <a
+                      class="app"
+                      href="https://github.com/kalfoundry"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="github"
+                      aria-label="github profile"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/github.png" alt=""
+                      /></span>
+                    </a>
+                    <a
+                      class="app"
+                      href="https://linkedin.com/company/kalfoundry"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="linkedin"
+                      aria-label="linkedin profile"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/linkedin.png" alt=""
+                      /></span>
+                    </a>
+                    <a
+                      class="app"
+                      href="mailto:team@kalfoundry.com"
+                      title="mail"
+                      aria-label="email"
+                    >
+                      <span class="app-tile app-tile--img"
+                        ><img src="/assets/icons/outlook.png" alt=""
+                      /></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="macbook-lip"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- fixed mini nav, slides in once parallax completes -->
+    <script>
+      (() => {
+        const stage = document.getElementById("stage");
+        const hero = document.getElementById("hero");
+        const dMobile = document.getElementById("device-mobile");
+        const dDesktop = document.getElementById("device-desktop");
+        const ticks = document.querySelectorAll(".home-ticks .lb-tick");
+
+        const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const ease = (t) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t); // ease-in-out
+
+        // figure out the parallax range: the main element's height minus viewport.
+        // recomputed every frame because Safari's collapsing address bar changes
+        // window.innerHeight without always firing resize, leaving a stale value
+        // that pushes the lock threshold past where the phone actually fills the screen.
+        const main = document.querySelector(".home");
+        const getRange = () =>
+          Math.max(1, main.offsetHeight - window.innerHeight);
+
+        // ── scroll lock at end-of-parallax (mobile only) ──────────────
+        // Once the phone is fully zoomed in, freeze body scroll permanently
+        // for this page lifetime via position:fixed (iOS-grade lock —
+        // overflow:hidden alone can be bypassed by Safari's overscroll/rubber-
+        // band / address-bar collapse).
+        let isLocked = false;
+        let lockedAtY = 0;
+        function isMobileViewport() {
+          return window.innerWidth <= 767;
+        }
+        function applyFixedLock(y) {
+          document.body.classList.add("is-phone-locked");
+          document.body.style.position = "fixed";
+          document.body.style.top = `-${y}px`;
+          document.body.style.left = "0";
+          document.body.style.right = "0";
+          document.body.style.width = "100%";
+          document.body.style.overflow = "hidden";
+          // Body becoming position:fixed breaks position:sticky on .home-stage —
+          // the sticky stage loses its scroll context and falls back to top-of-
+          // parent, which is offscreen above the viewport. Flip the stage to
+          // position:fixed at lock time so it stays anchored to the viewport.
+          if (stage) {
+            stage.style.position = "fixed";
+            stage.style.top = "0";
+            stage.style.left = "0";
+            stage.style.right = "0";
+          }
+        }
+        function applyLockIfReady() {
+          if (isLocked) return;
+          if (!isMobileViewport()) return;
+          // snap to exact lock point first so the page isn't half-way through curve
+          const end = getRange();
+          if (window.scrollY < end - 1) window.scrollTo(0, end);
+          lockedAtY = end;
+          isLocked = true;
+          applyFixedLock(end);
+        }
+        // Self-healing watchdog · if any future regression clears the lock CSS
+        // while isLocked is still true, reapply it on the next animation frame.
+        function reassertLockIfNeeded() {
+          if (!isLocked) return;
+          if (document.body.style.position === "fixed") return;
+          applyFixedLock(lockedAtY);
+        }
+        // Forcibly re-apply the lock CSS regardless of current body.position.
+        // iOS Safari shifts the parent layout when an iframe input is focused
+        // and the keyboard appears; reapplyLock() snaps everything back.
+        function reapplyLock() {
+          if (!isLocked) return;
+          applyFixedLock(lockedAtY);
+        }
+        // Expose to the launcher IIFE so closeApp() can read isLocked
+        // and avoid clearing body.overflow when the lock is engaged.
+        window.__homeLock = {
+          isLocked: () => isLocked,
+          apply: applyLockIfReady,
+          reapply: reapplyLock,
+        };
+
+        // ── iOS keyboard recovery ─────────────────────────────────────
+        // When an iframe input takes focus, iOS shifts the parent's
+        // position:fixed layout to keep the input visible. When the
+        // keyboard hides, those shifts don't always restore cleanly.
+        // These two listeners catch the recovery moments and re-apply
+        // the lock so the phone chassis snaps back into place.
+        window.addEventListener("focus", () => {
+          reapplyLock();
+        });
+        if (window.visualViewport) {
+          let vvTimer = 0;
+          window.visualViewport.addEventListener("resize", () => {
+            clearTimeout(vvTimer);
+            vvTimer = setTimeout(reapplyLock, 60);
+          });
+        }
+
+        let raf = 0;
+        function update() {
+          raf = 0;
+          reassertLockIfNeeded();
+          // When locked, body is position:fixed and window.scrollY reads 0 —
+          // so we'd otherwise re-draw the start state. Pin p to 1 so the
+          // locked visuals (full-scale device, faded hero) stay correct.
+          const p = isLocked ? 1 : clamp(window.scrollY / getRange(), 0, 1);
+
+          // hero: fade & lift over 0 → 0.30
+          const hp = clamp(p / 0.3, 0, 1);
+          hero.style.opacity = String(1 - ease(hp));
+          hero.style.transform = `translateY(${-40 * ease(hp)}px)`;
+
+          // device scale: 0.30 → 1.00 over 0.05 → 0.85
+          // (phone starts small & grows; reaches full size & locks when
+          //  centered/filling screen, with a short plateau before bottom-of-page)
+          const dp = clamp((p - 0.05) / 0.8, 0, 1);
+          const scale = lerp(0.3, 1.0, ease(dp));
+          const lift = lerp(20, 0, ease(dp));
+          const deviceTf = `translateY(${lift}px) scale(${scale.toFixed(4)})`;
+          const deviceOp = String(
+            lerp(0.0, 1.0, ease(clamp((p - 0.05) / 0.2, 0, 1))),
+          );
+          if (dMobile) {
+            dMobile.style.transform = deviceTf;
+            dMobile.style.opacity = deviceOp;
+          }
+          if (dDesktop) {
+            dDesktop.style.transform = deviceTf;
+            dDesktop.style.opacity = deviceOp;
+          }
+
+          // ticks: only visible during hero
+          ticks.forEach((t) => (t.style.opacity = String(1 - ease(hp))));
+
+          // engage the lock once the phone is essentially at full scale
+          if (p >= 0.78) applyLockIfReady();
+        }
+        function onScroll() {
+          if (!raf) raf = requestAnimationFrame(update);
+        }
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        update();
+
+        // honor reduced motion
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          // collapse to end-state immediately
+          main.style.minHeight = "100vh";
+          if (dMobile) {
+            dMobile.style.transform = "scale(1)";
+            dMobile.style.opacity = "1";
+          }
+          if (dDesktop) {
+            dDesktop.style.transform = "scale(1)";
+            dDesktop.style.opacity = "1";
+          }
+          if (hero) hero.style.display = "none";
+          ticks.forEach((t) => (t.style.opacity = "0"));
+          applyLockIfReady();
+        }
+      })();
+
+      // ── live status-bar time · iOS-style "9:41" ───────────────────
+      (() => {
+        const el = document.getElementById("ios-time");
+        if (!el) return;
+        function render() {
+          const d = new Date();
+          const h = d.getHours() % 12 || 12;
+          const m = String(d.getMinutes()).padStart(2, "0");
+          el.textContent = `${h}:${m}`;
+        }
+        function scheduleNextMinute() {
+          const ms = 60000 - (Date.now() % 60000) + 50;
+          setTimeout(() => {
+            render();
+            scheduleNextMinute();
+          }, ms);
+        }
+        render();
+        scheduleNextMinute();
+        document.addEventListener("visibilitychange", () => {
+          if (!document.hidden) render();
+        });
+      })();
+    </script>
+
+    <!-- in-device app launcher · clicks on icons open pages inside the device -->
+    <script>
+      (() => {
+        const iphoneApp = document.getElementById("iphone-app");
+        const macApp = document.getElementById("mac-app");
+        const iphoneFrame = iphoneApp && iphoneApp.querySelector("iframe");
+        const macFrame = macApp && macApp.querySelector("iframe");
+        const macTitle = document.getElementById("mac-app-title");
+        const iphoneRoot = document.querySelector(".iphone");
+        const macRoot = document.querySelector(".macbook");
+        const homeMain = document.querySelector(".home");
+
+        let activeRoot = null;
+        let activeFrame = null;
+
+        function parallaxEnd() {
+          return Math.max(0, homeMain.offsetHeight - window.innerHeight);
+        }
+
+        function openApp(href, label) {
+          const isMobile = window.matchMedia("(max-width: 767px)").matches;
+          activeRoot = isMobile ? iphoneRoot : macRoot;
+          activeFrame = isMobile ? iphoneFrame : macFrame;
+          if (!activeRoot || !activeFrame) return;
+
+          const end = parallaxEnd();
+          const delta = end - window.scrollY;
+
+          const doOpen = () => {
+            if (!isMobile && macTitle) {
+              const slug = String(label || href)
+                .replace(/\.html$/i, "")
+                .replace(/[\s/]+/g, "_")
+                .toLowerCase();
+              macTitle.textContent = "~/" + slug;
+            }
+            // cache-bust the iframe load · browsers cache iframe URLs separately
+            // from the main browsing context, so a fresh edit can look stale until
+            // we force a unique URL each time the app opens.
+            const bust = (href.includes("?") ? "&" : "?") + "v=" + Date.now();
+            activeFrame.src = href + bust;
+            activeRoot.classList.add("is-app-open");
+            document.body.style.overflow = "hidden";
+          };
+
+          if (delta > 20) {
+            window.scrollTo({ top: end, behavior: "smooth" });
+            setTimeout(doOpen, 420);
+          } else {
+            doOpen();
+          }
+        }
+
+        function closeApp() {
+          if (!activeRoot) return;
+          const root = activeRoot;
+          const frame = activeFrame;
+          // exit fullscreen if we were in it
+          if (macRoot) macRoot.classList.remove("is-fullscreen");
+          root.classList.remove("is-app-open");
+          // preserve scroll lock if it was engaged at the bottom of the parallax
+          if (!window.__homeLock?.isLocked()) {
+            document.body.style.overflow = "";
+          } else {
+            // iOS may have shifted body/stage if an iframe input was focused —
+            // explicitly restore the lock CSS before returning to the home screen.
+            window.__homeLock?.reapply();
+          }
+          activeRoot = null;
+          activeFrame = null;
+          // clear the iframe after the close animation so memory frees and
+          // re-opening starts from a clean slate
+          setTimeout(() => {
+            if (frame && !root.classList.contains("is-app-open")) {
+              frame.src = "about:blank";
+            }
+          }, 360);
+        }
+
+        // intercept clicks on every app/icon (iPhone apps + iPhone dock + MacBook desktop icons + MacBook dock)
+        document.querySelectorAll(".app, .mac-icon").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            const href = link.getAttribute("href") || "";
+            // skip external + mail + new-tab links — those keep native behavior
+            if (
+              !href ||
+              href.startsWith("http") ||
+              href.startsWith("mailto:") ||
+              link.target === "_blank"
+            )
+              return;
+            e.preventDefault();
+            const label =
+              link.getAttribute("aria-label") ||
+              (link.querySelector(".mac-icon-label, .app-label") || {})
+                .textContent ||
+              href;
+            openApp(href, label);
+          });
+        });
+
+        // ── tap-to-snap · once the user is most of the way through the parallax,
+        // tapping the phone (anywhere outside an app icon) finishes the scroll
+        // and engages the lock. Five guards prevent it from firing wrong.
+        (() => {
+          if (!iphoneRoot) return;
+          const SNAP_THRESHOLD = 0.55;
+          const homeMain = document.querySelector(".home");
+          let touchStart = null;
+
+          function progress() {
+            const range = Math.max(
+              1,
+              homeMain.offsetHeight - window.innerHeight,
+            );
+            return Math.min(1, Math.max(0, window.scrollY / range));
+          }
+          function lockTargetY() {
+            return Math.max(0, homeMain.offsetHeight - window.innerHeight);
+          }
+          function isMobile() {
+            return window.innerWidth <= 767;
+          }
+          function isAppOpen() {
+            return iphoneRoot.classList.contains("is-app-open");
+          }
+          function locked() {
+            return !!window.__homeLock?.isLocked();
+          }
+
+          function snapToLock() {
+            const reduced = window.matchMedia(
+              "(prefers-reduced-motion: reduce)",
+            ).matches;
+            const target = lockTargetY();
+            if (reduced) {
+              window.scrollTo(0, target);
+              window.__homeLock?.apply();
+              return;
+            }
+            window.scrollTo({ top: target, behavior: "smooth" });
+            let done = false;
+            const finish = () => {
+              if (done) return;
+              done = true;
+              window.removeEventListener("scrollend", finish);
+              window.__homeLock?.apply();
+            };
+            window.addEventListener("scrollend", finish, { once: true });
+            setTimeout(finish, 700);
+          }
+
+          iphoneRoot.addEventListener(
+            "touchstart",
+            (e) => {
+              if (!isMobile() || isAppOpen() || locked()) return;
+              if (progress() < SNAP_THRESHOLD) return;
+              if (e.touches.length !== 1) return;
+              const t = e.touches[0];
+              touchStart = { x: t.clientX, y: t.clientY, t: Date.now() };
+            },
+            { passive: true },
+          );
+
+          iphoneRoot.addEventListener(
+            "touchend",
+            (e) => {
+              if (!touchStart) return;
+              const end = e.changedTouches[0];
+              const dx = Math.abs(end.clientX - touchStart.x);
+              const dy = Math.abs(end.clientY - touchStart.y);
+              const dur = Date.now() - touchStart.t;
+              touchStart = null;
+              if (isAppOpen() || locked()) return;
+              if (dx < 10 && dy < 10 && dur < 400) snapToLock();
+            },
+            { passive: true },
+          );
+
+          iphoneRoot.addEventListener(
+            "touchcancel",
+            () => {
+              touchStart = null;
+            },
+            { passive: true },
+          );
+
+          // Mouse / non-touch tap path
+          iphoneRoot.addEventListener("click", (e) => {
+            if (!isMobile() || isAppOpen() || locked()) return;
+            if (progress() < SNAP_THRESHOLD) return;
+            // never intercept an actual app-icon click — let openApp() handle
+            if (e.target.closest(".app, .mac-icon")) return;
+            snapToLock();
+          });
+        })();
+
+        // close affordances
+        // (note: iPhone home-indicator no longer closes on click — only on
+        // swipe-up. keyboard users press Escape, handled globally below.)
+        document
+          .getElementById("mac-app-close")
+          ?.addEventListener("click", closeApp);
+
+        // ── swipe-up on the home-indicator · closes the open app ──────────
+        // Authentic iOS gesture: swipe must originate from the bottom-edge zone
+        // (the enlarged .iphone-home-indicator button). Touches inside the
+        // iframe don't bubble to the parent, so this is the only zone we can
+        // listen on without injecting scripts into every inner page.
+        (() => {
+          const indicator = document.getElementById("iphone-home-indicator");
+          if (!indicator) return;
+
+          const SWIPE_THRESHOLD = 50; // px upward to trigger close
+          const MAX_VISUAL_DRAG = 100; // clamp pill follow-distance
+          let startY = null;
+          let startX = null;
+
+          const setDrag = (px) =>
+            indicator.style.setProperty("--swipe-y", px + "px");
+          const resetDrag = () => indicator.style.removeProperty("--swipe-y");
+
+          indicator.addEventListener(
+            "touchstart",
+            (e) => {
+              if (e.touches.length !== 1) return;
+              if (!iphoneRoot?.classList.contains("is-app-open")) return;
+              startY = e.touches[0].clientY;
+              startX = e.touches[0].clientX;
+            },
+            { passive: true },
+          );
+
+          indicator.addEventListener(
+            "touchmove",
+            (e) => {
+              if (startY === null) return;
+              const t = e.touches[0];
+              const dy = startY - t.clientY; // positive = up
+              const dx = Math.abs(t.clientX - startX);
+              if (dx > Math.max(40, Math.abs(dy))) return; // ignore horizontal
+              if (dy > 0) {
+                setDrag(Math.min(dy, MAX_VISUAL_DRAG));
+                e.preventDefault(); // stop browser from scrolling the page
+              }
+            },
+            { passive: false },
+          );
+
+          indicator.addEventListener(
+            "touchend",
+            (e) => {
+              if (startY === null) return;
+              const endY = e.changedTouches[0].clientY;
+              const dy = startY - endY;
+              resetDrag();
+              startY = null;
+              startX = null;
+              if (dy > SWIPE_THRESHOLD) closeApp();
+            },
+            { passive: true },
+          );
+
+          indicator.addEventListener(
+            "touchcancel",
+            () => {
+              resetDrag();
+              startY = null;
+              startX = null;
+            },
+            { passive: true },
+          );
+        })();
+
+        // ── first-time gesture hint · teaches users the swipe-up gesture
+        // once per browser. Triggered when the iPhone iframe-overlay opens.
+        (() => {
+          const indicator = document.getElementById("iphone-home-indicator");
+          const tooltip = document.getElementById("iphone-home-hint");
+          if (!indicator || !tooltip) return;
+
+          const STORAGE_KEY = "homeHintSeen";
+          const HINT_DELAY = 1400;
+          const HINT_LINGER = 5000;
+
+          let hintTimer = 0;
+          let lingerTimer = 0;
+          let seen = false;
+          // sessionStorage so each fresh page load (refresh) shows the hint
+          // once, but repeated app opens within the same tab session don't
+          // re-show it. Also clear any legacy localStorage flag from earlier
+          // versions so returning visitors get the new behavior immediately.
+          try {
+            localStorage.removeItem(STORAGE_KEY);
+          } catch {}
+          try {
+            seen = sessionStorage.getItem(STORAGE_KEY) === "1";
+          } catch {}
+
+          function markSeen() {
+            if (seen) return;
+            seen = true;
+            try {
+              sessionStorage.setItem(STORAGE_KEY, "1");
+            } catch {}
+          }
+          function dismissHint() {
+            clearTimeout(hintTimer);
+            clearTimeout(lingerTimer);
+            hintTimer = 0;
+            lingerTimer = 0;
+            indicator.classList.remove("is-hinting");
+            tooltip.classList.remove("is-on");
+          }
+          function showHint() {
+            if (seen) return;
+            markSeen(); // mark immediately · one-per-session, even if dismissed early
+            indicator.classList.add("is-hinting");
+            tooltip.classList.add("is-on");
+            lingerTimer = setTimeout(dismissHint, HINT_LINGER);
+          }
+          function scheduleHint() {
+            if (seen) return;
+            clearTimeout(hintTimer);
+            hintTimer = setTimeout(showHint, HINT_DELAY);
+          }
+
+          if (iphoneRoot) {
+            const obs = new MutationObserver(() => {
+              if (iphoneRoot.classList.contains("is-app-open")) scheduleHint();
+              else dismissHint();
+            });
+            obs.observe(iphoneRoot, {
+              attributes: true,
+              attributeFilter: ["class"],
+            });
+          }
+
+          indicator.addEventListener(
+            "touchstart",
+            () => {
+              dismissHint();
+              markSeen();
+            },
+            { passive: true },
+          );
+        })();
+
+        // fullscreen affordance · repurpose the green traffic light
+        const macFull = document.getElementById("mac-app-fullscreen");
+        function toggleFullscreen() {
+          if (!macRoot || !macRoot.classList.contains("is-app-open")) return;
+          macRoot.classList.toggle("is-fullscreen");
+          if (macFull) {
+            macFull.setAttribute(
+              "aria-label",
+              macRoot.classList.contains("is-fullscreen")
+                ? "exit full screen"
+                : "enter full screen",
+            );
+          }
+        }
+        macFull?.addEventListener("click", toggleFullscreen);
+
+        // ESC: first exits fullscreen, second closes the app
+        window.addEventListener("keydown", (e) => {
+          if (e.key !== "Escape" || !activeRoot) return;
+          if (
+            activeRoot === macRoot &&
+            macRoot.classList.contains("is-fullscreen")
+          ) {
+            macRoot.classList.remove("is-fullscreen");
+            if (macFull)
+              macFull.setAttribute("aria-label", "enter full screen");
+            return;
+          }
+          closeApp();
+        });
+
+        // postMessage from inside the iframe:
+        //   {type: 'closeApp'}                  → brand-link / Esc-from-inside
+        //   {type: 'openApp', href, label}      → Finder row click (close + reopen with new app)
+        window.addEventListener("message", (e) => {
+          if (!e.data) return;
+          if (e.data.type === "closeApp") return closeApp();
+          if (e.data.type === "openApp" && typeof e.data.href === "string") {
+            const next = e.data.href;
+            const label = e.data.label || next;
+            closeApp();
+            setTimeout(() => openApp(next, label), 200);
+          }
+        });
+      })();
+    </script>
+  </body>
 </html>

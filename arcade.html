@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>arcade — KAL Foundry</title>
+<meta name="description" content="Browser arcade — Snake, Tetris, Breakout. Side experiments from the foundry.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/arcade.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/arcade.html">
+<meta property="og:title" content="arcade — KAL Foundry">
+<meta property="og:description" content="Browser arcade — Snake, Tetris, Breakout. Side experiments from the foundry.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="arcade — KAL Foundry">
+<meta name="twitter:description" content="Browser arcade — Snake, Tetris, Breakout. Side experiments from the foundry.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  body { background: var(--surface); color: var(--ink); }
+  html.is-embedded body { background: var(--surface); }
+
+  .arc-shell {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: var(--s-10) var(--gutter) var(--s-12);
+  }
+  .arc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 14px;
+  }
+  .arc-title {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    letter-spacing: -0.03em;
+    line-height: 0.98;
+    margin: 0 0 14px;
+    color: var(--ink);
+  }
+  .arc-title em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+    display: block;
+  }
+  .arc-sub {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 520px;
+    margin: 0 0 var(--s-8);
+  }
+
+  .arc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-5);
+  }
+  @media (max-width: 720px) {
+    .arc-grid { grid-template-columns: 1fr; gap: var(--s-4); }
+    .arc-shell { padding: var(--s-6) var(--gutter-sm) var(--s-8); }
+  }
+
+  .arc-card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    padding: var(--s-6);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color var(--dur-1) var(--ease), background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+    cursor: pointer;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--s-4);
+  }
+  .arc-card:hover {
+    border-color: var(--ink);
+    background: var(--surface-2);
+  }
+  .arc-card:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+  .arc-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .arc-card-art {
+    width: 100%;
+    height: 80px;
+    display: grid;
+    place-items: center;
+  }
+  .arc-card-art svg { width: 64px; height: 64px; }
+  .arc-card-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .arc-card-desc {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .arc-card-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .arc-card-foot .best { color: var(--accent); font-weight: 600; }
+  .arc-card-foot .play { color: var(--signal); }
+</style>
+</head>
+<body>
+
+<a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+<section class="arc-shell">
+  <div class="arc-eyebrow">// ARCADE</div>
+  <h1 class="arc-title">play something.</h1>
+
+  <div class="arc-grid">
+
+    <a class="arc-card" href="snake.html" aria-label="play snake">
+      <div class="arc-card-head"><span>GAME / 01</span><span>arcade</span></div>
+      <div class="arc-card-art">
+        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="6" width="52" height="52" stroke="var(--hair)" stroke-width="1"/>
+          <path d="M14 50 L14 38 L26 38 L26 26 L38 26 L38 14 L50 14" stroke="var(--accent)" stroke-width="3"/>
+          <circle cx="50" cy="14" r="2.5" fill="var(--accent)" stroke="none"/>
+          <circle cx="50" cy="50" r="3" fill="var(--signal)" stroke="none"/>
+        </svg>
+      </div>
+      <h2 class="arc-card-title">snake</h2>
+      <p class="arc-card-desc">Eat. Grow. Don't bite yourself. Swipe / arrows.</p>
+      <div class="arc-card-foot">
+        <span class="best" id="best-snake">—</span>
+        <span class="play">play →</span>
+      </div>
+    </a>
+
+    <a class="arc-card" href="tetris.html" aria-label="play tetris">
+      <div class="arc-card-head"><span>GAME / 02</span><span>arcade</span></div>
+      <div class="arc-card-art">
+        <svg viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="8" y="8" width="48" height="48" stroke="var(--hair)" stroke-width="1"/>
+          <!-- T-piece -->
+          <rect x="20" y="36" width="10" height="10" fill="var(--accent)"/>
+          <rect x="30" y="36" width="10" height="10" fill="var(--accent)"/>
+          <rect x="40" y="36" width="10" height="10" fill="var(--accent)"/>
+          <rect x="30" y="26" width="10" height="10" fill="var(--accent)"/>
+          <!-- floor row -->
+          <rect x="10" y="48" width="10" height="6" fill="var(--signal)"/>
+          <rect x="20" y="48" width="10" height="6" fill="var(--ok, #5a7a4d)"/>
+          <rect x="30" y="48" width="10" height="6" fill="#c89a3a"/>
+          <rect x="40" y="48" width="10" height="6" fill="var(--signal)"/>
+          <rect x="50" y="48" width="6" height="6" fill="var(--ok, #5a7a4d)"/>
+        </svg>
+      </div>
+      <h2 class="arc-card-title">tetris</h2>
+      <p class="arc-card-desc">Stack. Clear lines. Don't touch the ceiling. Arrows + space.</p>
+      <div class="arc-card-foot">
+        <span class="best" id="best-tetris">—</span>
+        <span class="play">play →</span>
+      </div>
+    </a>
+
+    <a class="arc-card" href="breakout.html" aria-label="play breakout">
+      <div class="arc-card-head"><span>GAME / 03</span><span>arcade</span></div>
+      <div class="arc-card-art">
+        <svg viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="6" y="6" width="52" height="52" stroke="var(--hair)" stroke-width="1"/>
+          <!-- brick wall -->
+          <rect x="10" y="14" width="11" height="5" fill="var(--accent)"/>
+          <rect x="22" y="14" width="11" height="5" fill="var(--accent)"/>
+          <rect x="34" y="14" width="11" height="5" fill="var(--accent)"/>
+          <rect x="46" y="14" width="8" height="5" fill="var(--accent)"/>
+          <rect x="10" y="20" width="11" height="5" fill="#c89a3a"/>
+          <rect x="22" y="20" width="11" height="5" fill="#c89a3a"/>
+          <rect x="34" y="20" width="11" height="5" fill="#c89a3a"/>
+          <rect x="46" y="20" width="8" height="5" fill="#c89a3a"/>
+          <rect x="10" y="26" width="11" height="5" fill="var(--signal)"/>
+          <rect x="22" y="26" width="11" height="5" fill="var(--signal)"/>
+          <rect x="34" y="26" width="11" height="5" fill="var(--signal)"/>
+          <rect x="46" y="26" width="8" height="5" fill="var(--signal)"/>
+          <!-- ball -->
+          <circle cx="38" cy="40" r="2.5" fill="var(--accent)"/>
+          <!-- paddle -->
+          <rect x="22" y="50" width="20" height="3" fill="var(--ink)"/>
+        </svg>
+      </div>
+      <h2 class="arc-card-title">breakout</h2>
+      <p class="arc-card-desc">Bounce. Break. Don't drop the ball. Drag / arrows.</p>
+      <div class="arc-card-foot">
+        <span class="best" id="best-breakout">—</span>
+        <span class="play">play →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> arcade · canvas · vanilla js</span>
+  <span class="signoff">— the foundry</span>
+</footer>
+
+<script>
+(() => {
+  // populate best-score badges from localStorage
+  ['snake','tetris','breakout'].forEach((name) => {
+    const el = document.getElementById('best-' + name);
+    if (!el) return;
+    let high = 0;
+    try { high = parseInt(localStorage.getItem('arcade_' + name + '_high'), 10) || 0; } catch {}
+    if (high > 0) el.textContent = 'best ' + high;
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>breakout — arcade — KAL Foundry</title>
+<meta name="description" content="Breakout — KAL Foundry arcade. Classic paddle-and-bricks with mobile-friendly controls.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/breakout.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/breakout.html">
+<meta property="og:title" content="breakout — KAL Foundry arcade">
+<meta property="og:description" content="Breakout — KAL Foundry arcade. Classic paddle-and-bricks with mobile-friendly controls.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="breakout — KAL Foundry arcade">
+<meta name="twitter:description" content="Breakout — KAL Foundry arcade. Classic paddle-and-bricks with mobile-friendly controls.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for AI and product.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  html, body { height: 100%; }
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    overscroll-behavior: none;
+    touch-action: manipulation;
+  }
+  .game-shell {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    display: flex; flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    min-height: 100dvh;
+  }
+  .game-bar {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .game-bar .back { color: var(--signal); text-decoration: none; padding: 6px 0; }
+  .game-bar .name { color: var(--ink); }
+  .hud {
+    width: 100%;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 13px;
+    color: var(--ink); font-weight: 600;
+  }
+  .hud .best { color: var(--accent); }
+
+  /* canvas · 2:3 aspect ratio, constrained by viewport-derived width so the
+     board always fits inside the MacBook iframe / phone screen without
+     needing to scroll. 40dvh × 1.5 = 60dvh total height — height auto-derives
+     from width via aspect-ratio, so the aspect is never violated. */
+  .stage {
+    position: relative;
+    width: min(400px, 40dvh);
+    aspect-ratio: 2 / 3;
+  }
+  canvas {
+    width: 100%; height: 100%;
+    border: 1px solid var(--hair);
+    background: var(--surface);
+    touch-action: none;
+    display: block;
+  }
+  .banner {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    pointer-events: none;
+  }
+  .banner-inner {
+    background: rgba(245, 241, 232, 0.94);
+    border: 1px solid var(--ink);
+    padding: 14px 20px;
+    font-family: var(--font-mono);
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+  .banner-inner .t { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .banner-inner .s { font-size: 12px; color: var(--ink-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .stage[data-state="playing"] .banner { display: none; }
+
+  .pad {
+    width: 100%;
+    max-width: 360px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .pad button {
+    height: 56px;
+    background: var(--surface);
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: 10px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 80ms ease, transform 80ms ease;
+  }
+  .pad button.is-down,
+  .pad button:active {
+    background: var(--ink);
+    color: var(--surface);
+    transform: scale(0.94);
+  }
+  .pad button .lbl {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 1px;
+    color: var(--ink-muted);
+  }
+  .pad button:active .lbl,
+  .pad button.is-down .lbl { color: rgba(255,255,255,0.6); }
+
+  .ctrl-hint {
+    font-family: var(--font-mono); font-size: 10.5px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .ctrl-hint { display: none; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pad { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<section class="game-shell">
+  <div class="game-bar">
+    <a class="back" href="arcade.html">‹ arcade</a>
+    <span class="name">breakout</span>
+  </div>
+
+  <div class="hud">
+    <span>score <span id="score">0</span></span>
+    <span>lives <span id="lives">3</span></span>
+    <span class="best">best <span id="best">0</span></span>
+  </div>
+
+  <div class="stage" id="stage" data-state="menu">
+    <canvas id="game" width="360" height="540" aria-label="breakout canvas"></canvas>
+    <div class="banner">
+      <div class="banner-inner" id="banner">
+        <div class="t" id="banner-t">breakout</div>
+        <div class="s" id="banner-s">tap to play</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" aria-label="controls">
+    <button type="button" id="pad-left"  aria-label="move paddle left">←<span class="lbl">paddle</span></button>
+    <button type="button" id="pad-launch" aria-label="launch ball">●<span class="lbl">launch</span></button>
+    <button type="button" id="pad-right" aria-label="move paddle right">→<span class="lbl">paddle</span></button>
+  </div>
+
+  <div class="ctrl-hint">←→ or mouse · space</div>
+</section>
+
+<script>
+(() => {
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const stage = document.getElementById('stage');
+  const banner = document.getElementById('banner');
+  const bannerT = document.getElementById('banner-t');
+  const bannerS = document.getElementById('banner-s');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const bestEl = document.getElementById('best');
+
+  const W = canvas.width, H = canvas.height;
+  const HIGH_KEY = 'arcade_breakout_high';
+
+  const styles = getComputedStyle(document.documentElement);
+  const C_INK    = '#13141a';
+  const C_ACCENT = (styles.getPropertyValue('--accent') || '#d97757').trim();
+  const C_SIGNAL = (styles.getPropertyValue('--signal') || '#4a8de2').trim();
+  const C_HAIR   = '#cfc8b5';
+
+  const ROW_COLORS = [C_ACCENT, '#c89a3a', '#5a7a4d', C_SIGNAL, C_INK, '#a64545'];
+  const BRICK_ROWS = 6, BRICK_COLS = 8;
+  const BRICK_PAD = 4;
+  const BRICK_W = (W - BRICK_PAD * (BRICK_COLS + 1)) / BRICK_COLS;
+  const BRICK_H = 18;
+  const BRICK_TOP = 50;
+
+  const PADDLE_W = 80, PADDLE_H = 10;
+  let paddleX = (W - PADDLE_W) / 2;
+
+  let bx, by, bvx, bvy;
+  const BALL_R = 6;
+
+  let bricks, score, lives, high, state, raf;
+
+  function resetBricks() {
+    bricks = [];
+    for (let r = 0; r < BRICK_ROWS; r++) {
+      for (let c = 0; c < BRICK_COLS; c++) {
+        bricks.push({
+          x: BRICK_PAD + c * (BRICK_W + BRICK_PAD),
+          y: BRICK_TOP + r * (BRICK_H + BRICK_PAD),
+          w: BRICK_W, h: BRICK_H,
+          color: ROW_COLORS[r],
+          alive: true,
+        });
+      }
+    }
+  }
+  function resetBall() {
+    bx = W / 2;
+    by = H - 40;
+    const angle = (Math.PI / 4) + (Math.random() * Math.PI / 4);
+    const speed = 4;
+    bvx = Math.cos(angle) * speed * (Math.random() < 0.5 ? -1 : 1);
+    bvy = -Math.abs(Math.sin(angle) * speed);
+  }
+  function updateHUD() {
+    scoreEl.textContent = score;
+    livesEl.textContent = lives;
+    bestEl.textContent = high;
+  }
+  function start() {
+    if (state === 'playing') return;
+    resetBricks();
+    resetBall();
+    score = 0;
+    lives = 3;
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    updateHUD();
+    loop();
+  }
+  function gameOver(won) {
+    state = 'gameover';
+    stage.dataset.state = 'gameover';
+    cancelAnimationFrame(raf);
+    if (score > high) {
+      high = score;
+      try { localStorage.setItem(HIGH_KEY, String(high)); } catch {}
+    }
+    updateHUD();
+    bannerT.textContent = (won ? 'cleared! · ' : 'game over · ') + score;
+    bannerS.textContent = 'tap to play again';
+  }
+  function pause() {
+    if (state !== 'playing') return;
+    state = 'paused';
+    stage.dataset.state = 'paused';
+    cancelAnimationFrame(raf);
+    bannerT.textContent = 'paused';
+    bannerS.textContent = 'tap to resume';
+  }
+  function resume() {
+    if (state !== 'paused') return;
+    state = 'playing';
+    stage.dataset.state = 'playing';
+    loop();
+  }
+
+  function step() {
+    bx += bvx;
+    by += bvy;
+    if (bx - BALL_R < 0) { bx = BALL_R; bvx = Math.abs(bvx); }
+    if (bx + BALL_R > W) { bx = W - BALL_R; bvx = -Math.abs(bvx); }
+    if (by - BALL_R < 0) { by = BALL_R; bvy = Math.abs(bvy); }
+    const py = H - 24;
+    if (by + BALL_R >= py && by + BALL_R <= py + PADDLE_H + 6 && bvy > 0) {
+      if (bx >= paddleX - 4 && bx <= paddleX + PADDLE_W + 4) {
+        const rel = (bx - (paddleX + PADDLE_W / 2)) / (PADDLE_W / 2);
+        const speed = Math.min(7, Math.hypot(bvx, bvy) * 1.02);
+        const a = rel * (Math.PI / 3);
+        bvx = Math.sin(a) * speed;
+        bvy = -Math.abs(Math.cos(a) * speed);
+        by = py - BALL_R - 1;
+      }
+    }
+    for (const br of bricks) {
+      if (!br.alive) continue;
+      if (bx + BALL_R > br.x && bx - BALL_R < br.x + br.w &&
+          by + BALL_R > br.y && by - BALL_R < br.y + br.h) {
+        br.alive = false;
+        score += 10;
+        const overlapX = Math.min(bx + BALL_R - br.x, br.x + br.w - (bx - BALL_R));
+        const overlapY = Math.min(by + BALL_R - br.y, br.y + br.h - (by - BALL_R));
+        if (overlapX < overlapY) bvx = -bvx;
+        else bvy = -bvy;
+        updateHUD();
+        break;
+      }
+    }
+    if (by - BALL_R > H) {
+      lives--;
+      updateHUD();
+      if (lives <= 0) return gameOver(false);
+      resetBall();
+    }
+    if (bricks.every(b => !b.alive)) return gameOver(true);
+  }
+
+  function draw() {
+    ctx.fillStyle = '#f5f1e8';
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = C_HAIR;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
+    for (const br of bricks) {
+      if (!br.alive) continue;
+      ctx.fillStyle = br.color;
+      ctx.fillRect(br.x, br.y, br.w, br.h);
+    }
+    ctx.fillStyle = C_INK;
+    ctx.fillRect(paddleX, H - 24, PADDLE_W, PADDLE_H);
+    ctx.fillStyle = C_ACCENT;
+    ctx.beginPath();
+    ctx.arc(bx, by, BALL_R, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function loop() {
+    if (state !== 'playing') return;
+    step();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  // keyboard
+  const keys = { left: false, right: false };
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') keys.left = true;
+    if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') keys.right = true;
+    if (e.key === ' ' || e.key === 'Enter') {
+      if (state === 'menu' || state === 'gameover') start();
+      else if (state === 'playing') pause();
+      else if (state === 'paused') resume();
+      e.preventDefault();
+    }
+    if (e.key.toLowerCase() === 'p') {
+      if (state === 'playing') pause();
+      else if (state === 'paused') resume();
+    }
+  });
+  window.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') keys.left = false;
+    if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') keys.right = false;
+  });
+
+  // smooth paddle from key state
+  setInterval(() => {
+    if (state !== 'playing') return;
+    if (keys.left)  paddleX = Math.max(0, paddleX - 8);
+    if (keys.right) paddleX = Math.min(W - PADDLE_W, paddleX + 8);
+  }, 16);
+
+  // mouse on canvas
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * W;
+    paddleX = Math.max(0, Math.min(W - PADDLE_W, x - PADDLE_W / 2));
+  });
+
+  // touch · drag finger anywhere in stage to move paddle
+  function trackTouch(e) {
+    if (e.touches.length !== 1) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.touches[0].clientX - rect.left) / rect.width) * W;
+    paddleX = Math.max(0, Math.min(W - PADDLE_W, x - PADDLE_W / 2));
+  }
+  canvas.addEventListener('touchstart', trackTouch, { passive: true });
+  canvas.addEventListener('touchmove',  trackTouch, { passive: true });
+
+  // on-screen pad — held-down for continuous paddle motion
+  function holdBind(id, dir) {
+    const btn = document.getElementById(id);
+    let interval = 0;
+    const step = () => {
+      if (state !== 'playing') {
+        if (state === 'menu' || state === 'gameover') start();
+        else if (state === 'paused') resume();
+        return;
+      }
+      paddleX = Math.max(0, Math.min(W - PADDLE_W, paddleX + dir * 8));
+    };
+    const startHold = (e) => {
+      e.preventDefault();
+      btn.classList.add('is-down');
+      step();
+      interval = setInterval(step, 16);
+    };
+    const endHold = () => {
+      btn.classList.remove('is-down');
+      clearInterval(interval);
+      interval = 0;
+    };
+    btn.addEventListener('pointerdown', startHold);
+    btn.addEventListener('pointerup', endHold);
+    btn.addEventListener('pointercancel', endHold);
+    btn.addEventListener('pointerleave', endHold);
+  }
+  holdBind('pad-left',  -1);
+  holdBind('pad-right', +1);
+
+  // launch button · for clarity on mobile · same as space
+  document.getElementById('pad-launch').addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    if (state === 'menu' || state === 'gameover') start();
+    else if (state === 'paused') resume();
+    else if (state === 'playing') pause();
+  });
+
+  banner.addEventListener('click', () => {
+    if (state === 'menu' || state === 'gameover') start();
+    else if (state === 'paused') resume();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && state === 'playing') pause();
+  });
+
+  try { high = parseInt(localStorage.getItem(HIGH_KEY), 10) || 0; } catch { high = 0; }
+  state = 'menu';
+  score = 0; lives = 3;
+  resetBricks();
+  resetBall();
+  updateHUD();
+  draw();
+})();
+</script>
+
+</body>
+</html>

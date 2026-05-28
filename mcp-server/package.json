@@ -1,0 +1,19 @@
+{
+  "name": "ask-foundry-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "MCP server exposing ask_foundry tools (send_contact_email, lookup_patent, link_to_page) over stdio. Attach to Claude Desktop or any MCP-compatible client.",
+  "bin": {
+    "ask-foundry-mcp": "./server.js"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

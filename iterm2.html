@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>iterm — kal_foundry</title>
+<meta name="description" content="Terminal emulator with an interactive shell. Navigate KAL Foundry's portfolio with cd, ls, cat, open.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/iterm2.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/iterm2.html">
+<meta property="og:title" content="iterm — KAL Foundry">
+<meta property="og:description" content="Terminal emulator with an interactive shell. Navigate KAL Foundry's portfolio with cd, ls, cat, open.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — digital foundry for design, AI, and digital products.">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="iterm — KAL Foundry">
+<meta name="twitter:description" content="Terminal emulator with an interactive shell. Navigate KAL Foundry's portfolio with cd, ls, cat, open.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — digital foundry for design, AI, and digital products.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/tokens.css" />
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  .iterm-shell {
+    max-width: 1100px;
+    margin: var(--s-8) auto var(--s-12);
+    border: 1px solid var(--hair);
+    background: #0c0d12;
+    color: #ede9df;
+    display: flex; flex-direction: column;
+    min-height: 60vh;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+  }
+  .iterm-pane-chrome {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px;
+    background: #1a1c24;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  /* when embedded inside the MacBook (or iPhone) frame, the parent overlay
+     already supplies its own traffic-light chrome — hide ours so there's
+     only one top bar */
+  html.is-embedded .iterm-pane-chrome { display: none; }
+  .iterm-light {
+    width: 12px; height: 12px;
+    border-radius: 50%; display: inline-block;
+    padding: 0; border: 0;
+  }
+  .iterm-light.r { background: #ed6a5e; }
+  .iterm-light.y { background: #f5bd4f; }
+  .iterm-light.g { background: #61c554; }
+  button.iterm-light {
+    cursor: pointer;
+    transition: filter 120ms ease, transform 120ms ease;
+  }
+  button.iterm-light:hover { filter: brightness(1.15); }
+  button.iterm-light:active { transform: scale(0.92); }
+  button.iterm-light:focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+  .iterm-tab {
+    font-family: var(--font-mono); font-size: 11px;
+    color: rgba(237, 233, 223, 0.6);
+    letter-spacing: 0.04em; margin-left: 8px;
+  }
+
+  .iterm-pane {
+    margin: 0;
+    padding: var(--s-6) var(--s-6) var(--s-8);
+    font-family: var(--font-mono); font-size: 13px;
+    line-height: 1.65;
+    color: #ede9df;
+    white-space: pre-wrap;
+    flex: 1;
+    cursor: text;
+    min-height: 480px;
+  }
+  .iterm-line { margin-bottom: 14px; }
+  .iterm-prompt { color: var(--accent); }
+  .iterm-cmd { color: #ede9df; }
+  .iterm-out {
+    color: rgba(237, 233, 223, 0.75);
+    margin-top: 2px;
+  }
+  .iterm-sig { color: var(--signal); }
+  .iterm-moment {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--accent);
+    font-size: 17px;
+  }
+  .iterm-caret {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: #ede9df;
+    vertical-align: -2px;
+    animation: itermBlink 1s steps(2, end) infinite;
+  }
+  @keyframes itermBlink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .iterm-caret { animation: none; }
+  }
+
+  /* interactive-shell additions */
+  .iterm-prompt-line { cursor: text; }
+  .iterm-input { color: #ede9df; }
+  .iterm-cmd-aborted { color: rgba(237, 233, 223, 0.45); }
+  .iterm-cmd-aborted::after { content: " ^C"; color: #ed6a5e; }
+  .iterm-banner .iterm-out { color: rgba(237, 233, 223, 0.55); }
+  .iterm-help-table { display: grid; grid-template-columns: max-content 1fr; gap: 2px 18px; padding: 2px 0; }
+  .iterm-help-row { display: contents; }
+  .iterm-help-row .cmd { color: var(--accent); }
+  .iterm-help-row .desc { color: rgba(237, 233, 223, 0.7); }
+
+  /* file viewer (nano / vim) — takes over the shell pane area while active */
+  .iterm-viewer {
+    display: flex; flex-direction: column;
+    font-family: var(--font-mono); font-size: 13px;
+    line-height: 1.65;
+    color: #ede9df;
+    background: #0c0d12;
+    flex: 1;
+    min-height: 480px;
+  }
+  .iterm-viewer[hidden] { display: none; }
+  .iterm-viewer-bar {
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 11.5px;
+    color: rgba(237, 233, 223, 0.65);
+    letter-spacing: 0.02em;
+    font-weight: 500;
+  }
+  .iterm-viewer-bar .iterm-viewer-file { color: var(--accent); }
+  .iterm-viewer-bar .iterm-viewer-meta { color: rgba(237, 233, 223, 0.5); margin-left: 8px; font-style: italic; }
+  .iterm-viewer-body {
+    flex: 1;
+    margin: 0;
+    padding: var(--s-5) var(--s-6);
+    white-space: pre-wrap;
+    overflow-y: auto;
+    color: #ede9df;
+  }
+  .iterm-viewer-lineno {
+    display: inline-block;
+    width: 4ch;
+    margin-right: 14px;
+    color: rgba(237, 233, 223, 0.28);
+    user-select: none;
+    text-align: right;
+  }
+  .iterm-viewer-foot {
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 11.5px;
+    color: rgba(237, 233, 223, 0.7);
+    letter-spacing: 0.02em;
+    min-height: 14px;
+  }
+  .iterm-viewer-foot .iterm-viewer-key {
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 4px;
+  }
+  .iterm-vim-input { color: #ede9df; }
+  .iterm-vim-caret {
+    display: inline-block;
+    width: 7px; height: 12px;
+    background: #ede9df;
+    vertical-align: -1px;
+    animation: itermBlink 1s steps(2, end) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .iterm-vim-caret { animation: none; }
+  }
+
+  .iterm-foot {
+    text-align: center;
+    padding: 0 var(--gutter) var(--s-8);
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.16em; text-transform: uppercase;
+  }
+
+  /* mobile · hidden input opens iOS keyboard on pane tap; toolbar adds keys phones lack */
+  .iterm-shell { position: relative; }
+  .iterm-mobile-input {
+    position: absolute;
+    opacity: 0;
+    width: 1px; height: 1px;
+    pointer-events: none;
+    bottom: 8px; left: 8px;
+    border: 0; padding: 0; margin: 0;
+    font-size: 16px;     /* ≥16px prevents iOS auto-zoom on focus */
+    background: transparent; color: transparent;
+    -webkit-user-select: text; user-select: text;
+  }
+  .iterm-mobile-input:focus { outline: none; }
+  .iterm-mobile-toolbar { display: none; }
+
+  @media (hover: none) and (pointer: coarse) {
+    .iterm-mobile-input { pointer-events: auto; }
+    .iterm-mobile-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .iterm-mobile-toolbar::-webkit-scrollbar { display: none; }
+    .iterm-mobile-toolbar button {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ede9df;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-radius: 5px;
+      min-width: 44px;
+      min-height: 36px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .iterm-mobile-toolbar button:active { background: rgba(255, 255, 255, 0.18); }
+  }
+
+  /* terminal-specific mobile sizing */
+  @media (max-width: 640px) {
+    .iterm-shell { margin: var(--s-4) auto var(--s-6); min-height: 50vh; }
+    .iterm-pane { font-size: 13px; padding: var(--s-4); min-height: 360px; }
+    .iterm-pane-chrome { padding: 7px 10px; }
+    .iterm-tab { font-size: 10px; }
+    .iterm-viewer { min-height: 360px; }
+    .iterm-viewer-body { padding: var(--s-4); font-size: 13px; }
+    .iterm-viewer-lineno { width: 3ch; margin-right: 10px; }
+    .iterm-viewer-bar, .iterm-viewer-foot { padding: 7px 10px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<section class="iterm-shell" aria-label="simulated terminal">
+  <header class="iterm-pane-chrome">
+    <button type="button" class="iterm-light r" id="iterm-close" aria-label="close terminal" title="close"></button>
+    <span class="iterm-light y" aria-hidden="true"></span>
+    <span class="iterm-light g" aria-hidden="true"></span>
+    <span class="iterm-tab">— zsh — 80×24</span>
+  </header>
+  <pre class="iterm-pane" id="iterm-pane" aria-live="polite"></pre>
+
+  <!-- file viewer · activated by nano / vim, hidden by default -->
+  <div class="iterm-viewer" id="iterm-viewer" hidden>
+    <header class="iterm-viewer-bar" id="iterm-viewer-title"></header>
+    <pre class="iterm-viewer-body" id="iterm-viewer-body"></pre>
+    <footer class="iterm-viewer-foot" id="iterm-viewer-foot"></footer>
+  </div>
+
+  <!-- hidden input · focused on tap to summon the iOS keyboard -->
+  <input
+    type="text"
+    id="iterm-mobile-input"
+    class="iterm-mobile-input"
+    autocomplete="off"
+    autocapitalize="off"
+    autocorrect="off"
+    spellcheck="false"
+    aria-label="terminal input"
+  />
+
+  <!-- mobile-only toolbar · keys phones don't expose on their keyboard -->
+  <div class="iterm-mobile-toolbar" id="iterm-mobile-toolbar" aria-hidden="true">
+    <button type="button" data-key="Tab">Tab</button>
+    <button type="button" data-key="Escape">Esc</button>
+    <button type="button" data-key="ArrowUp">↑</button>
+    <button type="button" data-key="ArrowDown">↓</button>
+    <button type="button" data-ctrl="c">^C</button>
+    <button type="button" data-ctrl="x">^X</button>
+    <button type="button" data-ctrl="l">clear</button>
+  </div>
+</section>
+
+<div class="iterm-foot">interactive · zsh · q2 2026</div>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> digital foundry · strategy through fabrication</span>
+  <span class="signoff">— the foundry</span>
+</footer>
+
+<script>
+(() => {
+  const pane = document.getElementById('iterm-pane');
+
+  // ─── state ────────────────────────────────────────────────────────
+  let cwd = [];                  // path segments from home, empty = ~
+  let inputBuffer = '';
+  const cmdHistory = [];
+  let histIdx = -1;              // -1 = live buffer; otherwise index into cmdHistory
+  let mode = 'shell';            // 'shell' | 'nano' | 'vim'
+  let viewerBuffer = '';         // for vim's ":q" command line
+  let promptLine = null;
+  let inputEl = null;
+  let promptEl = null;
+  let viewer = null;
+  let viewerBody = null;
+  let viewerTitle = null;
+  let viewerFoot = null;
+
+  const HOME_PATH = '/Users/foundry/portfolio';
+  function pwdStr()    { return HOME_PATH + (cwd.length ? '/' + cwd.join('/') : ''); }
+  function promptTail(){ return cwd.length === 0 ? '~' : '~/' + cwd.join('/'); }
+  function promptText(){ return `team@kalfoundry ${promptTail()} %`; }
+
+  // ─── virtual filesystem · tree-of-dirs-and-files ────────────────
+  const file = (content) => ({ type: 'file', content: () => content });
+  const dir  = (children) => ({ type: 'dir', children });
+
+  const FS = dir({
+    'about.md': file([
+      '# KAL Foundry',
+      '> Digital foundry | design, AI &amp; digital products',
+      '> strategy through fabrication',
+      '',
+      'A small team that designs and ships GenAI and digital products — RAG,',
+      'agentic workflows, fine-tuned models, and the platform plumbing underneath.',
+      '',
+      'Serves the full range:',
+      '  Fortune 500 → solo founders.',
+      '',
+      'The through-line is figuring out what a client actually wants from a thing,',
+      'then building it.',
+      '',
+      '<em class="iterm-moment">strategy through fabrication.</em>',
+    ].join('\n')),
+    'resume.md': file([
+      '# TEAM / v2026.2',
+      '',
+      'WHAT WE DO',
+      '  design · AI · digital products — strategy through fabrication',
+      '  GenAI · RAG · agentic workflows · platform engineering',
+      '',
+      'HOW WE WORK',
+      '  a small team · Fortune 500 through solo founders',
+      '',
+      'SERVICES',
+      '  Design &amp; Brand · Strategy &amp; AI Consulting',
+      '  Digital Products · Production &amp; Launch',
+      '',
+      'Run: <span class="iterm-sig">open about</span> · <span class="iterm-sig">open work</span>',
+    ].join('\n')),
+    'now.md': file([
+      '# /now · q2 2026',
+      '',
+      'Designing and shipping digital products — Fortune 500 to solo founders.',
+      '',
+      'Working on:',
+      '  - RAG and agentic systems',
+      '  - product design and full-stack engineering',
+      '  - the three foundry products',
+      '',
+      'More soon.',
+    ].join('\n')),
+    'forge_architecture.md': file([
+      '# forge_architecture · ask_foundry system design',
+      '',
+      'Vercel Edge Function calling OpenAI gpt-4.1 with six function-calling tools,',
+      'defended in depth, mirrored as a local MCP server.',
+      '',
+      'Pipeline (six stages):',
+      '  1. signed session cookie  (HMAC-SHA256, HttpOnly, 30d)',
+      '  2. sanitize input          (strip control + zero-width)',
+      '  3. openai moderation       (~30ms pre-screen)',
+      '  4. rate limit              (Upstash · 10/d, 50/IP, 3/min)',
+      '  5. openai chat-completions (streaming, six tools)',
+      '  6. tool dispatch loop      (max 2 rounds · scrub output)',
+      '',
+      'Tools:',
+      '  <span class="iterm-sig">send_contact_email</span>      → Resend',
+      '  <span class="iterm-sig">lookup_services</span>         → Upstash Vector',
+      '  <span class="iterm-sig">link_to_page</span>            → closed-enum href',
+      '  <span class="iterm-sig">recommend_next_page</span>     → keyword score',
+      '  <span class="iterm-sig">describe_products</span>       → structured summary',
+      '  <span class="iterm-sig">compare_services</span>        → filter by area',
+      '',
+      'Or run: <span class="iterm-sig">open architecture</span>',
+    ].join('\n')),
+    'stack.json': file([
+      '{',
+      '  "services": <span class="iterm-sig">4</span>,',
+      '  "products": <span class="iterm-sig">3</span>',
+      '}',
+    ].join('\n')),
+    'README.md': file([
+      '# kal_foundry · portfolio',
+      '',
+      'You are in a simulated filesystem. Real shell commands work:',
+      '',
+      '  <span class="iterm-sig">ls</span>            list directory contents',
+      '  <span class="iterm-sig">cd &lt;dir&gt;</span>      change directory · cd .. · cd ~',
+      '  <span class="iterm-sig">cat &lt;file&gt;</span>    read a file',
+      '  <span class="iterm-sig">nano &lt;file&gt;</span>   open in nano viewer · ^X to exit',
+      '  <span class="iterm-sig">vim &lt;file&gt;</span>    open in vim viewer · :q to exit',
+      '  <span class="iterm-sig">tree</span>          render the directory tree',
+      '  <span class="iterm-sig">open &lt;app&gt;</span>    switch to another in-device app',
+      '  <span class="iterm-sig">help</span>          full command list',
+      '  <span class="iterm-sig">exit</span>          close terminal',
+      '',
+      'Start with: <span class="iterm-sig">tree</span> · <span class="iterm-sig">cd work</span> · <span class="iterm-sig">nano about.md</span>',
+    ].join('\n')),
+
+    work: dir({
+      'README.md': file([
+        '# work/',
+        '',
+        'The three foundry products.',
+        '',
+        '  <span class="iterm-sig">armory_hub.md</span>      security-first firearm inventory app',
+        '  <span class="iterm-sig">backgclear.md</span>      SaaS background removal',
+        '  <span class="iterm-sig">ironwork_series.md</span>  architectural metalwork',
+        '',
+        'Or run: <span class="iterm-sig">open work</span>',
+      ].join('\n')),
+      'armory_hub.md': file([
+        '# Armory Hub',
+        '',
+        'Security-first mobile app for personal firearm, ammo, and accessory',
+        'inventory. Private by design.',
+        '',
+        'Tags: mobile · product',
+      ].join('\n')),
+      'backgclear.md': file([
+        '# backgClear',
+        '',
+        'SaaS background removal. High-res image segmentation, containerized',
+        'inference, MCP-enabled workflows.',
+        '',
+        'Tags: saas · ai · product',
+      ].join('\n')),
+      'ironwork_series.md': file([
+        '# Ironwork Series',
+        '',
+        'Architectural metalwork. Design through fabrication.',
+        '',
+        'Tags: design · fabrication · product',
+      ].join('\n')),
+    }),
+
+    services: dir({
+      'README.md': file([
+        '# services/',
+        '',
+        'What the foundry does.',
+        '',
+        '  <span class="iterm-sig">design_and_brand.md</span>          identity, design systems, UI',
+        '  <span class="iterm-sig">strategy_and_ai.md</span>           strategy &amp; AI consulting',
+        '  <span class="iterm-sig">digital_products.md</span>          full-stack product engineering',
+        '  <span class="iterm-sig">production_and_launch.md</span>      deployment, infra, launch',
+      ].join('\n')),
+      'design_and_brand.md': file([
+        '# Design &amp; Brand',
+        '',
+        'Identity, design systems, and product UI — the look and feel, end to end.',
+      ].join('\n')),
+      'strategy_and_ai.md': file([
+        '# Strategy &amp; AI Consulting',
+        '',
+        'Figure out what a thing should be, then chart how AI helps build it.',
+        'RAG, agentic workflows, and the platform plumbing underneath.',
+      ].join('\n')),
+      'digital_products.md': file([
+        '# Digital Products',
+        '',
+        'Full-stack product engineering across web and mobile.',
+      ].join('\n')),
+      'production_and_launch.md': file([
+        '# Production &amp; Launch',
+        '',
+        'Deployment, infrastructure, and the work of getting a thing into the world.',
+      ].join('\n')),
+    }),
+  });
+
+  const APP_MAP = {
+    work: 'work.html', patents: 'patents.html', case: 'case.html',
+    about: 'about.html', now: 'now.html',
+    resume: 'resume.html',
+    finder: 'finder.html', files: 'files.html',
+    trello: 'trello.html', messages: 'messages.html',
+    architecture: 'architecture.html',
+    arcade: 'arcade.html', snake: 'snake.html',
+    tetris: 'tetris.html', breakout: 'breakout.html',
+  };
+
+  // ─── path resolution ─────────────────────────────────────────────
+  function resolvePath(input) {
+    if (input === undefined || input === '') return [...cwd];
+    let parts;
+    if (input === '~' || input.startsWith('~/')) {
+      parts = input === '~' ? [] : input.slice(2).split('/');
+    } else if (input.startsWith('/')) {
+      // strip leading "/Users/foundry/portfolio" if present, else treat / as home
+      const stripped = input.replace(/^\/Users\/foundry\/portfolio\/?/, '').replace(/^\/+/, '');
+      parts = stripped ? stripped.split('/') : [];
+    } else {
+      parts = [...cwd, ...input.split('/')];
+    }
+    const out = [];
+    for (const p of parts) {
+      if (!p || p === '.') continue;
+      if (p === '..') out.pop();
+      else out.push(p);
+    }
+    return out;
+  }
+
+  function getNode(pathArr) {
+    let node = FS;
+    for (const seg of pathArr) {
+      if (node.type !== 'dir') return null;
+      const child = node.children[seg];
+      if (!child) return null;
+      node = child;
+    }
+    return node;
+  }
+
+  // ─── commands ────────────────────────────────────────────────────
+  const COMMANDS = {
+    help: {
+      desc: 'list commands',
+      run: () => {
+        const rows = Object.entries(COMMANDS)
+          .map(([name, c]) => `<div class="iterm-help-row"><span class="cmd">${name}</span><span class="desc">${c.desc}</span></div>`)
+          .join('');
+        return { html: `<div class="iterm-help-table">${rows}</div>` };
+      },
+    },
+    clear:  { desc: 'clear the screen',         run: () => { clearPane(); return null; } },
+    pwd:    { desc: 'print working directory',  run: () => pwdStr() },
+    whoami: { desc: 'current user',             run: () => 'team@kalfoundry' },
+    date:   { desc: 'current date/time',        run: () => new Date().toString() },
+    uname:  { desc: 'system info',              run: () => 'portfolio-os 2026 · macbook · q2 build' },
+    echo:   { desc: 'echo args',                run: (args) => args.join(' ') },
+    cd: {
+      desc: 'change directory · cd <path | .. | ~>',
+      run: (args) => {
+        const target = args[0] || '';
+        if (!target || target === '~') { cwd = []; refreshPrompt(); return null; }
+        const newPath = resolvePath(target);
+        const node = getNode(newPath);
+        if (!node) return `cd: no such file or directory: ${target}`;
+        if (node.type !== 'dir') return `cd: not a directory: ${target}`;
+        cwd = newPath;
+        refreshPrompt();
+        return null;
+      },
+    },
+    ls: {
+      desc: 'list directory contents · ls [path]',
+      run: (args) => {
+        const target = args[0] || '.';
+        const path = resolvePath(target);
+        const node = getNode(path);
+        if (!node) return `ls: cannot access '${target}': No such file or directory`;
+        if (node.type === 'file') return target;
+        const items = Object.entries(node.children).map(([name, child]) =>
+          child.type === 'dir'
+            ? `<span class="iterm-sig">${name}/</span>`
+            : name
+        );
+        return { html: items.join('  ') };
+      },
+    },
+    cat: {
+      desc: 'print file contents · cat <file>',
+      run: (args) => {
+        if (!args[0]) return 'cat: missing file operand';
+        const path = resolvePath(args[0]);
+        const node = getNode(path);
+        if (!node) return `cat: ${args[0]}: No such file or directory`;
+        if (node.type === 'dir') return `cat: ${args[0]}: Is a directory`;
+        return { html: node.content() };
+      },
+    },
+    tree: {
+      desc: 'print directory tree · tree [path]',
+      run: (args) => {
+        const target = args[0] || '.';
+        const path = resolvePath(target);
+        const node = getNode(path);
+        if (!node) return `tree: ${target}: No such file or directory`;
+        if (node.type === 'file') return target;
+        const lines = [];
+        const rootLabel = path.length === 0 ? '~' : '~/' + path.join('/');
+        lines.push(`<span class="iterm-sig">${rootLabel}</span>`);
+        let dCount = 0, fCount = 0;
+        function walk(n, prefix) {
+          const entries = Object.entries(n.children);
+          entries.forEach(([name, child], i) => {
+            const isLast = i === entries.length - 1;
+            const branch = isLast ? '└── ' : '├── ';
+            if (child.type === 'dir') {
+              dCount++;
+              lines.push(prefix + branch + `<span class="iterm-sig">${name}/</span>`);
+              walk(child, prefix + (isLast ? '    ' : '│   '));
+            } else {
+              fCount++;
+              lines.push(prefix + branch + name);
+            }
+          });
+        }
+        walk(node, '');
+        lines.push('');
+        lines.push(`<span class="iterm-banner">${dCount} directories, ${fCount} files</span>`);
+        return { html: lines.join('\n') };
+      },
+    },
+    nano: {
+      desc: 'open file in nano viewer · nano <file>',
+      run: (args) => {
+        if (!args[0]) return 'nano: missing file operand';
+        const path = resolvePath(args[0]);
+        const node = getNode(path);
+        if (!node) return `nano: ${args[0]}: No such file or directory`;
+        if (node.type === 'dir') return `nano: ${args[0]}: Is a directory`;
+        openViewer('nano', args[0], node.content());
+        return null;
+      },
+    },
+    vim: {
+      desc: 'open file in vim viewer · vim <file>',
+      run: (args) => {
+        if (!args[0]) return 'vim: missing file operand';
+        const path = resolvePath(args[0]);
+        const node = getNode(path);
+        if (!node) return `vim: ${args[0]}: No such file or directory`;
+        if (node.type === 'dir') return `vim: ${args[0]}: Is a directory`;
+        openViewer('vim', args[0], node.content());
+        return null;
+      },
+    },
+    git: {
+      desc: 'git log · recent milestones',
+      run: (args) => {
+        if (args[0] === 'log') {
+          return { html:
+            '<span class="iterm-sig">a8c3f01</span>  founded · kal foundry\n' +
+            '<span class="iterm-sig">7d2b9e4</span>  shipped · backgClear · saas background removal\n' +
+            '<span class="iterm-sig">3f8a2c6</span>  building · armory hub · firearm inventory app\n' +
+            '<span class="iterm-sig">b14e07d</span>  launched · ironwork series · architectural metalwork\n' +
+            '<span class="iterm-sig">5e91a23</span>  shipped · strategy through fabrication'
+          };
+        }
+        return `git: '${args.join(' ')}' is not a git command we run here`;
+      },
+    },
+    jq: {
+      desc: 'mock jq queries against stack.json',
+      run: (args) => {
+        const q = args.join(' ');
+        if (q.includes('.services')) return { html: '<span class="iterm-sig">4</span>' };
+        if (q.includes('.products')) return { html: '<span class="iterm-sig">3</span>' };
+        return `jq: query not implemented: ${q}`;
+      },
+    },
+    open: {
+      desc: 'open <app> · switch apps inside the device',
+      run: (args) => {
+        const target = args[0];
+        if (!target) return 'open: usage: open &lt;' + Object.keys(APP_MAP).join(' | ') + '&gt;';
+        const href = APP_MAP[target];
+        if (!href) return `open: unknown target: ${target}`;
+        if (self !== top) {
+          parent.postMessage({ type: 'openApp', href, label: target }, '*');
+        } else {
+          setTimeout(() => location.href = href, 300);
+        }
+        return `opening ${target}...`;
+      },
+    },
+    exit: { desc: 'close the terminal', run: () => closeApp() },
+    quit: { desc: 'alias of exit',      run: () => closeApp() },
+    q:    { desc: 'alias of exit',      run: () => closeApp() },
+    mailto: {
+      desc: 'compose email to the foundry',
+      run: () => { window.open('mailto:team@kalfoundry.com', '_blank'); return 'opening mail...'; },
+    },
+    history: {
+      desc: 'show command history',
+      run: () => cmdHistory.length
+        ? cmdHistory.map((c, i) => `  ${String(i + 1).padStart(3)}  ${c}`).join('\n')
+        : '  (no commands yet)',
+    },
+    sudo:   { desc: 'attempt elevation', run: () => 'nice try.' },
+  };
+
+  function closeApp() {
+    if (self !== top) {
+      parent.postMessage({ type: 'closeApp' }, '*');
+    } else {
+      setTimeout(() => location.href = 'index.html', 200);
+    }
+    return 'closing terminal...';
+  }
+
+  // ─── viewer (nano / vim) ────────────────────────────────────────
+  function openViewer(kind, fileName, content) {
+    mode = kind;
+    viewerBuffer = '';
+    const lines = String(content).split('\n');
+    const numbered = lines.map((line, i) =>
+      `<span class="iterm-viewer-lineno">${String(i + 1).padStart(4)}</span>${line}`
+    ).join('\n');
+    viewerBody.innerHTML = numbered;
+    if (kind === 'nano') {
+      viewerTitle.innerHTML =
+        `  GNU nano 7.2          <span class="iterm-viewer-file">${esc(fileName)}</span>` +
+        `  <span class="iterm-viewer-meta">[Read Only]</span>`;
+      viewerFoot.innerHTML =
+        `<span class="iterm-viewer-key">^X</span>Exit    ` +
+        `<span class="iterm-viewer-key">^G</span>Help    ` +
+        `<span class="iterm-viewer-key">Esc</span>Exit`;
+    } else {
+      viewerTitle.innerHTML =
+        `  "<span class="iterm-viewer-file">${esc(fileName)}</span>" [readonly]  ` +
+        `<span class="iterm-viewer-meta">${lines.length}L</span>`;
+      viewerFoot.innerHTML =
+        `:<span class="iterm-vim-input" id="iterm-vim-input"></span><span class="iterm-vim-caret"></span>` +
+        `  <span class="iterm-viewer-meta">(type :q to exit)</span>`;
+    }
+    viewer.hidden = false;
+    pane.hidden = true;
+    viewerBody.scrollTop = 0;
+  }
+
+  function closeViewer() {
+    mode = 'shell';
+    viewer.hidden = true;
+    pane.hidden = false;
+    pane.scrollTop = pane.scrollHeight;
+  }
+
+  // ─── rendering ──────────────────────────────────────────────────
+  const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+  function makeLine(promptStr, cmdText, output) {
+    const div = document.createElement('div');
+    div.className = 'iterm-line';
+    let html = `<span class="iterm-prompt">${promptStr}</span> <span class="iterm-cmd">${esc(cmdText)}</span>`;
+    if (output !== null && output !== undefined && output !== '') {
+      const outHtml = (output && typeof output === 'object' && output.html != null)
+        ? output.html
+        : esc(String(output));
+      html += `<div class="iterm-out">${outHtml.replace(/\n/g, '<br/>')}</div>`;
+    }
+    div.innerHTML = html;
+    return div;
+  }
+
+  function appendBanner(html) {
+    const div = document.createElement('div');
+    div.className = 'iterm-line iterm-banner';
+    div.innerHTML = `<div class="iterm-out">${html}</div>`;
+    pane.insertBefore(div, promptLine);
+  }
+
+  function appendHistoryLine(promptStr, cmdText, output) {
+    pane.insertBefore(makeLine(promptStr, cmdText, output), promptLine);
+    pane.scrollTop = pane.scrollHeight;
+  }
+
+  function appendAbortedLine(promptStr, cmdText) {
+    const div = document.createElement('div');
+    div.className = 'iterm-line';
+    div.innerHTML = `<span class="iterm-prompt">${promptStr}</span> <span class="iterm-cmd iterm-cmd-aborted">${esc(cmdText)}</span>`;
+    pane.insertBefore(div, promptLine);
+    pane.scrollTop = pane.scrollHeight;
+  }
+
+  function renderInput() {
+    inputEl.textContent = inputBuffer;
+    pane.scrollTop = pane.scrollHeight;
+  }
+
+  function refreshPrompt() {
+    promptEl.textContent = promptText();
+  }
+
+  function clearPane() {
+    [...pane.children].forEach(ch => {
+      if (ch !== promptLine) pane.removeChild(ch);
+    });
+  }
+
+  // ─── command dispatch ───────────────────────────────────────────
+  function dispatch(line) {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    const parts = trimmed.split(/\s+/);
+    const name = parts[0];
+    const args = parts.slice(1);
+    const cmd = COMMANDS[name];
+    if (!cmd) return `zsh: command not found: ${name}`;
+    try {
+      return cmd.run(args);
+    } catch (err) {
+      return `error: ${err.message}`;
+    }
+  }
+
+  function submit() {
+    const line = inputBuffer;
+    const currentPrompt = promptText();   // capture BEFORE cd potentially changes it
+    const trimmed = line.trim();
+    if (trimmed) cmdHistory.push(line);
+    histIdx = -1;
+    // 'clear' wipes the pane and shows nothing for itself
+    if (trimmed === 'clear') {
+      dispatch(line);
+    } else {
+      const result = dispatch(line);
+      const display = result === null ? '' : result;
+      appendHistoryLine(currentPrompt, line, display);
+    }
+    inputBuffer = '';
+    renderInput();
+  }
+
+  // ─── tab completion (commands + filesystem paths) ───────────────
+  function complete() {
+    const buf = inputBuffer;
+    const parts = buf.split(/\s+/);
+    if (parts.length === 1) {
+      const prefix = parts[0];
+      const matches = Object.keys(COMMANDS).filter(c => c.startsWith(prefix));
+      if (matches.length === 1) {
+        inputBuffer = matches[0] + ' ';
+      } else if (matches.length > 1) {
+        appendHistoryLine(promptText(), buf, matches.join('  '));
+      }
+    } else if (parts.length === 2) {
+      const name = parts[0];
+      const arg = parts[1];
+      if (['cd', 'ls', 'cat', 'tree', 'nano', 'vim'].includes(name)) {
+        // path-based completion: split arg at last '/' into dir-prefix + name-prefix
+        const lastSlash = arg.lastIndexOf('/');
+        const dirPart   = lastSlash >= 0 ? arg.slice(0, lastSlash + 1) : '';
+        const namePart  = lastSlash >= 0 ? arg.slice(lastSlash + 1)    : arg;
+        const node = getNode(resolvePath(dirPart || '.'));
+        if (!node || node.type !== 'dir') { renderInput(); return; }
+        let pool = Object.keys(node.children);
+        if (name === 'cd') pool = pool.filter(k => node.children[k].type === 'dir');
+        const matches = pool.filter(k => k.startsWith(namePart));
+        if (matches.length === 1) {
+          const m = matches[0];
+          const sfx = node.children[m].type === 'dir' ? '/' : '';
+          inputBuffer = name + ' ' + dirPart + m + sfx;
+        } else if (matches.length > 1) {
+          appendHistoryLine(promptText(), buf, matches.join('  '));
+        }
+      } else if (name === 'open') {
+        const matches = Object.keys(APP_MAP).filter(x => x.startsWith(arg));
+        if (matches.length === 1) inputBuffer = name + ' ' + matches[0];
+        else if (matches.length > 1) appendHistoryLine(promptText(), buf, matches.join('  '));
+      }
+    }
+    renderInput();
+  }
+
+  // ─── keymap · shell mode ────────────────────────────────────────
+  function onKeyShell(e) {
+    if (e.ctrlKey || e.metaKey) {
+      const k = e.key.toLowerCase();
+      if (k === 'l') { e.preventDefault(); clearPane(); return; }
+      if (k === 'c') { e.preventDefault(); appendAbortedLine(promptText(), inputBuffer); inputBuffer = ''; histIdx = -1; renderInput(); return; }
+      if (k === 'u') { e.preventDefault(); inputBuffer = ''; histIdx = -1; renderInput(); return; }
+      return;
+    }
+    if (e.key === 'Enter')     { e.preventDefault(); submit(); return; }
+    if (e.key === 'Backspace') { e.preventDefault(); inputBuffer = inputBuffer.slice(0, -1); renderInput(); return; }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!cmdHistory.length) return;
+      if (histIdx === -1) histIdx = cmdHistory.length - 1;
+      else if (histIdx > 0) histIdx--;
+      inputBuffer = cmdHistory[histIdx];
+      renderInput();
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (histIdx === -1) return;
+      if (histIdx < cmdHistory.length - 1) {
+        histIdx++;
+        inputBuffer = cmdHistory[histIdx];
+      } else {
+        histIdx = -1;
+        inputBuffer = '';
+      }
+      renderInput();
+      return;
+    }
+    if (e.key === 'Tab') { e.preventDefault(); complete(); return; }
+    if (e.key.length === 1 && !e.altKey) {
+      e.preventDefault();
+      inputBuffer += e.key;
+      renderInput();
+    }
+  }
+
+  // ─── keymap · viewer mode (nano / vim) ──────────────────────────
+  function onKeyViewer(e) {
+    if (e.key === 'Escape') { e.preventDefault(); closeViewer(); return; }
+
+    if (mode === 'nano') {
+      if (e.ctrlKey && e.key.toLowerCase() === 'x') { e.preventDefault(); closeViewer(); return; }
+      if (e.ctrlKey && e.key.toLowerCase() === 'g') { e.preventDefault(); return; }
+      // read-only — swallow other input
+      if (e.key.length === 1) e.preventDefault();
+      return;
+    }
+
+    // vim · accept `:q`, `:q!`, or `:quit` typed into the command line
+    if (mode === 'vim') {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (viewerBuffer === 'q' || viewerBuffer === 'q!' || viewerBuffer === 'quit' || viewerBuffer === 'wq' || viewerBuffer === 'x') {
+          closeViewer();
+        } else {
+          viewerBuffer = '';
+          const inp = document.getElementById('iterm-vim-input');
+          if (inp) inp.textContent = '';
+        }
+        return;
+      }
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        viewerBuffer = viewerBuffer.slice(0, -1);
+        const inp = document.getElementById('iterm-vim-input');
+        if (inp) inp.textContent = viewerBuffer;
+        return;
+      }
+      if (e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        viewerBuffer += e.key;
+        const inp = document.getElementById('iterm-vim-input');
+        if (inp) inp.textContent = viewerBuffer;
+      }
+    }
+  }
+
+  function onKey(e) {
+    const tgt = e.target;
+    if (tgt && (tgt.tagName === 'INPUT' || tgt.tagName === 'TEXTAREA')) return;
+    if (mode === 'shell') onKeyShell(e);
+    else                  onKeyViewer(e);
+  }
+
+  // ─── init ──────────────────────────────────────────────────────
+  function init() {
+    promptLine = document.createElement('div');
+    promptLine.className = 'iterm-line iterm-prompt-line';
+    promptLine.id = 'iterm-prompt-line';
+    promptLine.innerHTML =
+      `<span class="iterm-prompt" id="iterm-prompt">${promptText()}</span> ` +
+      `<span class="iterm-input" id="iterm-input"></span><span class="iterm-caret"></span>`;
+    pane.appendChild(promptLine);
+    inputEl  = document.getElementById('iterm-input');
+    promptEl = document.getElementById('iterm-prompt');
+
+    viewer      = document.getElementById('iterm-viewer');
+    viewerBody  = document.getElementById('iterm-viewer-body');
+    viewerTitle = document.getElementById('iterm-viewer-title');
+    viewerFoot  = document.getElementById('iterm-viewer-foot');
+
+    appendBanner('team@kalfoundry portfolio · zsh — q2 2026');
+    appendBanner('type <span class="iterm-sig">help</span> for commands · <span class="iterm-sig">tree</span> to see the filesystem · <span class="iterm-sig">exit</span> to close');
+    appendBanner('try: <span class="iterm-sig">cd work</span> · <span class="iterm-sig">nano README.md</span> · <span class="iterm-sig">cat about.md</span>');
+
+    renderInput();
+
+    window.addEventListener('keydown', onKey);
+    pane.addEventListener('click', () => { if (mode === 'shell') pane.scrollTop = pane.scrollHeight; });
+
+    // red traffic-light button · acts like `exit`
+    document.getElementById('iterm-close')?.addEventListener('click', () => {
+      closeApp();
+    });
+
+    // ── mobile: hidden input pops the iOS keyboard; toolbar handles missing keys ──
+    const mobileInput = document.getElementById('iterm-mobile-input');
+    const mobileToolbar = document.getElementById('iterm-mobile-toolbar');
+
+    function focusMobileInput() {
+      if (!mobileInput) return;
+      // ROOT-CAUSE FIX: only steal focus on touch devices. On desktop, focusing
+      // the hidden input makes e.target.tagName === 'INPUT' for all subsequent
+      // keystrokes, which makes onKey() bail — breaking Ctrl+X, Esc, the lot.
+      if (!matchMedia('(hover: none) and (pointer: coarse)').matches) return;
+      try { mobileInput.focus({ preventScroll: true }); }
+      catch { mobileInput.focus(); }
+    }
+
+    // Tap anywhere in pane or viewer → focus the hidden input → iOS keyboard pops
+    pane.addEventListener('click', focusMobileInput);
+    viewer.addEventListener('click', focusMobileInput);
+
+    // iOS Safari sometimes fires keydown(Enter) on a text input without firing
+    // beforeinput(insertLineBreak). Catch it explicitly so submit / vim quit work
+    // regardless of which iOS keyboard variant is active.
+    mobileInput?.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (mode === 'shell') {
+        submit();
+      } else if (mode === 'vim') {
+        if (['q','q!','quit','wq','x'].includes(viewerBuffer)) closeViewer();
+        else {
+          viewerBuffer = '';
+          const inp = document.getElementById('iterm-vim-input');
+          if (inp) inp.textContent = '';
+        }
+      }
+    });
+
+    // Translate hidden-input edits into our existing buffer model
+    mobileInput?.addEventListener('beforeinput', (e) => {
+      e.preventDefault();
+      const t = e.inputType;
+      if (mode === 'shell') {
+        if (t === 'insertText' && e.data) {
+          inputBuffer += e.data;
+          renderInput();
+        } else if (t === 'deleteContentBackward') {
+          inputBuffer = inputBuffer.slice(0, -1);
+          renderInput();
+        } else if (t === 'insertLineBreak') {
+          submit();
+        }
+      } else if (mode === 'vim') {
+        const inp = document.getElementById('iterm-vim-input');
+        if (t === 'insertText' && e.data) {
+          viewerBuffer += e.data;
+          if (inp) inp.textContent = viewerBuffer;
+        } else if (t === 'deleteContentBackward') {
+          viewerBuffer = viewerBuffer.slice(0, -1);
+          if (inp) inp.textContent = viewerBuffer;
+        } else if (t === 'insertLineBreak') {
+          if (['q','q!','quit','wq','x'].includes(viewerBuffer)) closeViewer();
+          else { viewerBuffer = ''; if (inp) inp.textContent = ''; }
+        }
+      } else if (mode === 'nano') {
+        // nano is read-only — any keystroke is swallowed
+      }
+      // keep the hidden input empty so beforeinput keeps firing per character
+      mobileInput.value = '';
+    });
+
+    // Toolbar buttons synthesize the keys phones can't easily produce
+    mobileToolbar?.querySelectorAll('button').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const key = btn.dataset.key;
+        const ctrl = btn.dataset.ctrl;
+        const fake = {
+          key: ctrl ? ctrl : key,
+          ctrlKey: !!ctrl,
+          metaKey: false,
+          altKey: false,
+          preventDefault: () => {},
+        };
+        onKey(fake);
+        focusMobileInput();
+      });
+    });
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

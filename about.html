@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>about — kal_foundry</title>
+    <meta name="description" content="KAL Foundry is a digital foundry — design, AI, and digital products, from strategy to fabrication. A small team with deep enterprise-AI pedigree.">
+    <meta name="theme-color" content="#1c1c1e">
+    <link rel="canonical" href="https://www.kalfoundry.com/about.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+    <meta property="og:url" content="https://www.kalfoundry.com/about.html">
+    <meta property="og:title" content="about — KAL Foundry">
+    <meta property="og:description" content="KAL Foundry is a digital foundry — design, AI, and digital products, from strategy to fabrication. A small team with deep enterprise-AI pedigree.">
+    <meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1260">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="about — KAL Foundry">
+    <meta name="twitter:description" content="KAL Foundry is a digital foundry — design, AI, and digital products, from strategy to fabrication. A small team with deep enterprise-AI pedigree.">
+    <meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+    <script>
+      if (self !== top) {
+        document.documentElement.classList.add("is-embedded");
+        addEventListener("DOMContentLoaded", () => {
+          const b = document.querySelector(".lb-brand");
+          if (b)
+            b.addEventListener("click", (e) => {
+              e.preventDefault();
+              parent.postMessage({ type: "closeApp" }, "*");
+            });
+        });
+      }
+    </script>
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+    <style>
+      .about-hero {
+        padding: var(--s-20) var(--gutter) var(--s-10);
+        position: relative;
+      }
+      .about-hero-inner {
+        max-width: var(--container);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: var(--s-12);
+        align-items: end;
+      }
+      @media (max-width: 860px) {
+        .about-hero-inner {
+          grid-template-columns: 1fr;
+          gap: var(--s-8);
+        }
+      }
+
+      .about-hero h1 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: clamp(2.5rem, 6vw, 4.25rem);
+        letter-spacing: -0.04em;
+        line-height: 0.98;
+        margin: 18px 0 14px;
+        text-wrap: balance;
+      }
+      .about-hero h1 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+        display: block;
+      }
+      .about-hero .lede {
+        font-family: var(--font-sans);
+        font-size: 17px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        max-width: 520px;
+        margin: 0;
+      }
+
+      .portrait {
+        background: var(--surface-2);
+        border: 1px solid var(--hair);
+        aspect-ratio: 4/5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 16px;
+        overflow: hidden;
+      }
+      .portrait::before {
+        content: "";
+        position: absolute;
+        inset: 8px;
+        border: 1px solid var(--hair);
+        pointer-events: none;
+        z-index: 2;
+      }
+      .portrait img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        position: relative;
+        z-index: 1;
+      }
+
+      .about-bio {
+        padding: var(--s-12) var(--gutter);
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .about-bio p {
+        font-family: var(--font-sans);
+        font-size: 17px;
+        line-height: 1.75;
+        color: var(--ink);
+        margin: 0 0 var(--s-5);
+      }
+      .about-bio p:first-of-type::first-letter {
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--accent);
+        font-size: 3.5em;
+        line-height: 0.85;
+        float: left;
+        padding: 4px 12px 0 0;
+      }
+      .about-bio .signoff {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 26px;
+        color: var(--accent);
+        margin-top: var(--s-8);
+      }
+
+      .stack-section {
+        padding: var(--s-12) var(--gutter) var(--s-20);
+        background: var(--surface-2);
+        border-top: 1px solid var(--hair);
+        border-bottom: 1px solid var(--hair);
+      }
+      .stack-section-inner {
+        max-width: var(--container);
+        margin: 0 auto;
+      }
+      .stack-section h2 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 28px;
+        letter-spacing: -0.025em;
+        margin: 0 0 var(--s-8);
+      }
+      .stack-section h2::before {
+        content: "// ";
+        color: var(--accent);
+      }
+      .stack-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--s-5);
+      }
+      @media (max-width: 860px) {
+        .stack-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .stack {
+        background: var(--surface);
+        border: 1px solid var(--hair);
+        padding: var(--s-5);
+      }
+      .stack dt {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .stack dd {
+        margin: 0;
+      }
+      .stack ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .stack li {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        padding: 4px 10px;
+        border: 1px solid var(--hair);
+        color: var(--ink);
+      }
+      .stack li.weight {
+        background: var(--ink);
+        color: var(--surface);
+        border-color: var(--ink);
+      }
+
+      .principles {
+        padding: var(--s-12) var(--gutter);
+        max-width: 920px;
+        margin: 0 auto;
+      }
+      .principles h2 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 28px;
+        letter-spacing: -0.025em;
+        margin: 0 0 var(--s-8);
+      }
+      .principles h2::before {
+        content: "// ";
+        color: var(--accent);
+      }
+      .principles ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        counter-reset: principle;
+      }
+      .principles li {
+        counter-increment: principle;
+        padding: var(--s-5) 0;
+        border-top: 1px solid var(--hair);
+        display: grid;
+        grid-template-columns: 72px 1fr;
+        gap: var(--s-5);
+        align-items: baseline;
+      }
+      .principles li:last-child {
+        border-bottom: 1px solid var(--hair);
+      }
+      .principles li::before {
+        content: counter(principle, decimal-leading-zero);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        color: var(--accent);
+      }
+      .principles li h3 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        margin: 0 0 6px;
+      }
+      .principles li h3 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+      }
+      .principles li p {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.6;
+        color: var(--ink-2);
+      }
+
+      .colophon {
+        padding: var(--s-10) var(--gutter);
+        background: var(--ink);
+        color: var(--surface);
+      }
+      .colophon-inner {
+        max-width: var(--container);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--s-8);
+        align-items: end;
+      }
+      @media (max-width: 760px) {
+        .colophon-inner {
+          grid-template-columns: 1fr;
+        }
+      }
+      .colophon h2 {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        font-size: 38px;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin: 0;
+        color: var(--surface);
+      }
+      .colophon p {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        color: rgba(244, 241, 234, 0.7);
+        margin: 0 0 12px;
+        line-height: 1.7;
+      }
+      .colophon .lb-btn--primary {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .colophon .lb-btn--secondary {
+        color: var(--surface);
+        border-color: rgba(244, 241, 234, 0.4);
+      }
+      .colophon .lb-btn--secondary:hover {
+        background: var(--surface);
+        color: var(--ink);
+      }
+
+      /* mobile · gradient reflow + drop portrait swatch + bigger drop-cap */
+      @media (max-width: 720px) {
+        .stack-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 480px) {
+        .about-hero {
+          padding: var(--s-12) var(--gutter-sm) var(--s-6);
+        }
+        /* mobile · keep hero as 2 columns so the headshot sits inline with the
+           title block (instead of stacking below). Image shrinks to a small
+           avatar-sized frame; text takes the remaining width. */
+        .about-hero-inner {
+          grid-template-columns: 1fr 86px;
+          gap: 14px;
+          align-items: start;
+        }
+        .about-hero h1 {
+          font-size: clamp(1.6rem, 7vw, 2.4rem);
+          margin: 8px 0 10px;
+        }
+        .about-hero .lede {
+          font-size: 14.5px;
+        }
+        .portrait {
+          max-width: 86px;
+          margin: 4px 0 0;
+          padding: 5px;
+          justify-self: end;
+        }
+        .portrait::before {
+          inset: 3px;
+        }
+        .stack-grid {
+          grid-template-columns: 1fr;
+        }
+        .stack-section {
+          padding: var(--s-8) var(--gutter-sm) var(--s-12);
+        }
+        .about-bio {
+          padding: var(--s-8) var(--gutter-sm);
+        }
+        .about-bio p {
+          font-size: 15px;
+          line-height: 1.7;
+        }
+        .about-bio p:first-of-type::first-letter {
+          font-size: 2.8em;
+          padding: 4px 8px 0 0;
+        }
+        .principles {
+          padding: var(--s-8) var(--gutter-sm);
+        }
+        .principles h2 {
+          font-size: 22px;
+        }
+        .principles li {
+          grid-template-columns: 36px 1fr;
+          gap: var(--s-3);
+          padding: var(--s-4) 0;
+        }
+        .principles li h3 {
+          font-size: 16px;
+        }
+        .colophon {
+          padding: var(--s-8) var(--gutter-sm);
+        }
+        .colophon-inner {
+          gap: var(--s-4);
+        }
+        .colophon h2 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+    <header class="lb-nav">
+      <a class="lb-brand" href="index.html"
+        ><span class="br">[</span>kal_foundry<span class="br">]</span></a
+      >
+      <span class="lb-nav-spacer"></span>
+      <a href="work.html">work</a>
+      <a href="patents.html">patents</a>
+      <a href="about.html" class="is-active">about</a>
+      <a href="now.html">now</a>
+      <a href="resume.html" class="is-signal">team ↗</a>
+    </header>
+
+    <section class="about-hero">
+      <div class="about-hero-inner">
+        <div>
+          <div class="lb-eyebrow">
+            // DIGITAL FOUNDRY · AI · PRODUCT
+          </div>
+          <h1>a foundry for ideas<em>worth building.</em></h1>
+          <p class="lede">
+            KAL Foundry is a digital foundry — design, AI, and digital products,
+            from strategy to fabrication. A small team with deep enterprise-AI
+            pedigree, partnering with founders, brands, and builders to forge
+            every detail with precision and purpose.
+          </p>
+        </div>
+        <div class="portrait">
+          <img src="/assets/images/headshot.png" alt="KAL Foundry" />
+        </div>
+      </div>
+    </section>
+
+    <section class="about-bio">
+      <p>
+        KAL Foundry is a digital foundry — design, AI, and digital products,
+        from strategy to fabrication. We work the way a foundry works: take raw
+        intent, shape it under pressure, and forge something durable. The studio
+        exists because the best digital work lives at the intersection of
+        business context, technical depth, and craft — and too few teams hold
+        all three at once.
+      </p>
+      <p>
+        We architect agentic systems, analytics, and automation that survive
+        contact with production constraints — discovery to working solution. That
+        work spans agentic workflows, business automation, analytics,
+        integrations, and the platform plumbing required to make those systems
+        reliable for the people who run them on a Tuesday.
+      </p>
+      <p>
+        We serve clients from Fortune 500 enterprises to solo founders. The
+        through-line is the same regardless of scale — design &amp; brand,
+        strategy &amp; AI consulting, digital products, and production &amp;
+        launch, delivered by a small team accountable for every detail. We
+        partner with founders, brands, and builders, and we forge each
+        engagement with precision and purpose.
+      </p>
+      <p>
+        We approach the work with the mindset that built us: stay curious, keep
+        learning, and build until the answer is clear. The path is rarely
+        linear, but it keeps us adaptable, client-focused, and comfortable
+        living at the intersection of business, architecture, and hands-on
+        technology. We build things that last.
+      </p>
+      <div class="signoff">— the foundry</div>
+    </section>
+
+    <section class="stack-section">
+      <div class="stack-section-inner">
+        <h2>stack</h2>
+        <div class="stack-grid">
+          <dl class="stack">
+            <dt>generative ai &amp; ml</dt>
+            <dd>
+              <ul>
+                <li class="weight">Agentic</li>
+                <li class="weight">RAG</li>
+                <li>LangChain</li>
+                <li>LangFlow</li>
+                <li>InstructLab</li>
+                <li>LoRA</li>
+                <li>QLoRA</li>
+                <li>Multi-Modal</li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="stack">
+            <dt>ai platforms</dt>
+            <dd>
+              <ul>
+                <li class="weight">Claude</li>
+                <li class="weight">GPT</li>
+                <li>Bedrock</li>
+                <li>Databricks</li>
+                <li>Snowflake</li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="stack">
+            <dt>business automation</dt>
+            <dd>
+              <ul>
+                <li class="weight">RPA</li>
+                <li class="weight">BPMN</li>
+                <li>Decision Automation</li>
+                <li>Document Processing</li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="stack">
+            <dt>cloud &amp; infra</dt>
+            <dd>
+              <ul>
+                <li class="weight">AWS</li>
+                <li class="weight">Azure</li>
+                <li>Kubernetes</li>
+                <li>OpenShift</li>
+                <li>Docker</li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="stack">
+            <dt>data &amp; streaming</dt>
+            <dd>
+              <ul>
+                <li class="weight">PostgreSQL</li>
+                <li class="weight">OpenSearch</li>
+                <li class="weight">Redis</li>
+                <li>Pinecone</li>
+                <li>Milvus</li>
+                <li>SQL</li>
+                <li>NoSQL</li>
+                <li>Kafka</li>
+                <li>Spark</li>
+                <li>Lakehouse</li>
+              </ul>
+            </dd>
+          </dl>
+          <dl class="stack">
+            <dt>languages &amp; integration</dt>
+            <dd>
+              <ul>
+                <li class="weight">Python</li>
+                <li class="weight">TypeScript</li>
+                <li>Java</li>
+                <li>SAP</li>
+                <li>Salesforce</li>
+                <li>ServiceNow</li>
+                <li>Microsoft</li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="principles">
+      <h2>principles</h2>
+      <ol>
+        <li>
+          <div>
+            <h3>learn deeply,<em>then make it usable.</em></h3>
+            <p>
+              The best technical work makes complicated systems easier for
+              clients and teams to understand, trust, and operate.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>build to understand,<em>not just to describe.</em></h3>
+            <p>
+              The team learns fastest by making things. Demos, prototypes, and
+              pilots reveal constraints that diagrams and slide decks can miss.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>respect the business context,<em>not just the stack.</em></h3>
+            <p>
+              Architecture only matters when it helps a real person solve a real
+              problem — so we read the business before we reach for the tools.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>stay persistent<em>when the path is unclear.</em></h3>
+            <p>
+              The craft is in the follow-through: keep showing up, keep
+              debugging, keep moving until the answer is clear.
+            </p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h3>bring confidence<em> without ego.</em></h3>
+            <p>
+              Technology changes quickly. We bring enough experience to lead,
+              enough humility to listen, and enough curiosity to keep improving.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="colophon">
+      <div class="colophon-inner">
+        <h2>
+          have an idea worth building — from strategy to fabrication, at any
+          scale?
+        </h2>
+        <div>
+          <p>
+            // DESIGN · AI · DIGITAL PRODUCTS · OPEN TO
+            CONVERSATIONS
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap">
+            <a
+              class="lb-btn lb-btn--primary"
+              href="mailto:team@kalfoundry.com"
+              >mailto:foundry</a
+            >
+            <a class="lb-btn lb-btn--secondary" href="resume.html"
+              >cat team.md</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="lb-footer">
+      <span
+        ><span class="live">●</span> digital foundry · strategy →
+        fabrication</span
+      >
+      <span class="signoff">— the foundry</span>
+    </footer>
+  </body>
+</html>

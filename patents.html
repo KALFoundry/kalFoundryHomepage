@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>patents — kal_foundry</title>
+    <script>
+      if (self !== top) {
+        document.documentElement.classList.add("is-embedded");
+        addEventListener("DOMContentLoaded", () => {
+          const b = document.querySelector(".lb-brand");
+          if (b)
+            b.addEventListener("click", (e) => {
+              e.preventDefault();
+              parent.postMessage({ type: "closeApp" }, "*");
+            });
+        });
+      }
+    </script>
+    <meta name="description" content="KAL Foundry — the foundry's patent portfolio. Coming soon.">
+    <meta name="theme-color" content="#1c1c1e">
+    <link rel="canonical" href="https://www.kalfoundry.com/patents.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+    <meta property="og:url" content="https://www.kalfoundry.com/patents.html">
+    <meta property="og:title" content="patents — KAL Foundry">
+    <meta property="og:description" content="The foundry's patent portfolio. Coming soon.">
+    <meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — a digital foundry building AI and agentic systems.">
+    <meta property="og:image:width" content="2400">
+    <meta property="og:image:height" content="1260">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="patents — KAL Foundry">
+    <meta name="twitter:description" content="The foundry's patent portfolio. Coming soon.">
+    <meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — a digital foundry building AI and agentic systems.">
+    <link rel="stylesheet" href="/assets/styles/tokens.css" />
+    <link rel="stylesheet" href="/assets/styles/style.css" />
+    <style>
+      /* ─── hero ─── */
+      .pat-hero {
+        padding: var(--s-16) var(--gutter) var(--s-8);
+        position: relative;
+        overflow: hidden;
+      }
+      .pat-hero .grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.4;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--hair) 1px, transparent 1px),
+          linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 90%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse at center,
+          black 30%,
+          transparent 90%
+        );
+      }
+      .pat-hero-inner {
+        max-width: var(--container);
+        margin: 0 auto;
+        position: relative;
+      }
+      .pat-hero h1 {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: clamp(2.5rem, 6vw, 4.25rem);
+        letter-spacing: -0.04em;
+        line-height: 0.98;
+        margin: 18px 0 8px;
+        color: var(--ink);
+      }
+      .pat-hero h1 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+        display: block;
+      }
+      .pat-hero p {
+        margin: 22px 0 0;
+        max-width: 620px;
+        font-family: var(--font-sans);
+        color: var(--ink-2);
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .pat-hero .meta {
+        margin-top: var(--s-10);
+        display: grid;
+        grid-template-columns: repeat(3, auto);
+        gap: var(--s-10);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        color: var(--ink-muted);
+        text-transform: uppercase;
+      }
+      .pat-hero .meta span strong {
+        display: block;
+        font-family: var(--font-sans);
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0;
+        text-transform: none;
+        color: var(--ink);
+        margin-top: 4px;
+      }
+      @media (max-width: 720px) {
+        .pat-hero .meta {
+          grid-template-columns: 1fr 1fr;
+          gap: var(--s-5);
+        }
+      }
+
+      /* ─── sections ─── */
+      .pat-sect {
+        padding: var(--s-12) var(--gutter);
+        border-bottom: 1px solid var(--hair);
+      }
+      .pat-sect-inner {
+        max-width: var(--container);
+        margin: 0 auto;
+      }
+      .pat-sect-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: var(--s-5);
+        margin-bottom: var(--s-8);
+        flex-wrap: wrap;
+      }
+      .pat-sect-head .lb-eyebrow {
+        color: var(--accent);
+      }
+      .pat-sect-head h2 {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        margin: 8px 0 0;
+        color: var(--ink);
+      }
+      .pat-sect-head h2 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+      }
+
+      /* selected patents callout (between pipeline + collaborators) */
+      .pat-selected {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--s-4);
+      }
+      @media (max-width: 720px) {
+        .pat-selected {
+          grid-template-columns: 1fr;
+        }
+      }
+      .pat-selected-card {
+        border: 1px solid var(--hair);
+        background: var(--surface);
+        padding: var(--s-5) var(--s-6);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .pat-selected-card .lbl {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+      .pat-selected-card .ttl {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 18px;
+        line-height: 1.3;
+        color: var(--ink);
+        margin: 0;
+      }
+      .pat-selected-card .num {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        letter-spacing: 0.04em;
+      }
+      .pat-selected-card .desc {
+        font-family: var(--font-sans);
+        font-size: 13.5px;
+        color: var(--ink-2);
+        line-height: 1.55;
+        margin: 4px 0 0;
+      }
+      .pat-selected-foot {
+        margin-top: var(--s-5);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--ink-muted);
+        letter-spacing: 0.06em;
+      }
+      .pat-selected-foot a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .pat-selected-foot a:hover {
+        text-decoration: underline;
+      }
+      .pat-sect-head p {
+        max-width: 380px;
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 14.5px;
+        line-height: 1.55;
+      }
+
+      /* ─── domain explorer (master/detail) ─── */
+      .pat-explorer {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: var(--s-10);
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .pat-explorer {
+          grid-template-columns: 1fr;
+          gap: var(--s-6);
+        }
+      }
+
+      .pat-dlist {
+        border-top: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+        background: var(--surface);
+      }
+      .pat-drow {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding: 13px var(--s-4);
+        border: none;
+        border-bottom: 1px solid var(--hair);
+        background: transparent;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        transition:
+          background var(--dur-1) var(--ease),
+          padding-left var(--dur-2) var(--ease);
+        font-family: inherit;
+      }
+      .pat-drow:last-child {
+        border-bottom: none;
+      }
+      .pat-drow:hover {
+        background: var(--surface-2);
+        padding-left: calc(var(--s-4) + 6px);
+      }
+      .pat-drow.is-on {
+        background: var(--ink);
+        padding-left: calc(var(--s-4) + 6px);
+      }
+      .pat-drow.is-on .pat-dname,
+      .pat-drow.is-on .pat-dnum,
+      .pat-drow.is-on .pat-darrow {
+        color: var(--surface);
+      }
+      .pat-drow.is-on .pat-dbar-track {
+        background: rgba(244, 241, 234, 0.18);
+      }
+      .pat-dname {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: 13px;
+        color: var(--ink);
+      }
+      .pat-dnum {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: 18px;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .pat-dbar-track {
+        grid-column: 1 / -1;
+        height: 3px;
+        background: var(--surface-2);
+        margin-top: 8px;
+      }
+      .pat-dbar {
+        height: 100%;
+        background: var(--accent);
+        transform-origin: left;
+        transform: scaleX(0);
+        animation: pat-bar 900ms var(--ease) forwards;
+      }
+      @keyframes pat-bar {
+        to {
+          transform: scaleX(var(--p, 1));
+        }
+      }
+      .pat-darrow {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        opacity: 0;
+        transition: opacity var(--dur-1) var(--ease);
+      }
+      .pat-drow.is-on .pat-darrow {
+        opacity: 1;
+      }
+
+      .pat-detail {
+        border: 1px solid var(--hair);
+        background: var(--surface);
+        padding: var(--s-10);
+        position: relative;
+        min-height: 520px;
+      }
+      .pat-detail::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 80px;
+        background: var(--accent);
+      }
+      .pat-detail .lb-eyebrow {
+        color: var(--accent);
+        margin-bottom: 12px;
+      }
+      .pat-detail h3 {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: clamp(1.5rem, 3vw, 2.25rem);
+        letter-spacing: -0.025em;
+        line-height: 1.05;
+        margin: 0 0 var(--s-6);
+        color: var(--ink);
+      }
+      .pat-detail h3 em {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-weight: 400;
+        color: var(--accent);
+      }
+
+      .pat-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        border-top: 1px solid var(--hair);
+        border-bottom: 1px solid var(--hair);
+        margin: 0 0 var(--s-6);
+      }
+      .pat-stat {
+        padding: var(--s-4) 0;
+        padding-left: var(--s-5);
+        border-right: 1px solid var(--hair);
+      }
+      .pat-stat:first-child {
+        padding-left: 0;
+      }
+      .pat-stat:last-child {
+        border-right: none;
+      }
+      .pat-stat .n {
+        font-family: var(--font-mono);
+        font-weight: 500;
+        font-size: 28px;
+        line-height: 1;
+        color: var(--ink);
+        letter-spacing: -0.02em;
+      }
+      .pat-stat .n.accent {
+        color: var(--accent);
+      }
+      .pat-stat .l {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
+        margin-top: 8px;
+      }
+
+      .pat-narr {
+        font-family: var(--font-sans);
+        font-size: 15px;
+        line-height: 1.55;
+        color: var(--ink-2);
+        margin: 0 0 var(--s-8);
+        max-width: 620px;
+      }
+
+      .pat-dlist-label {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--ink-muted);
+        margin: 0 0 var(--s-3);
+        padding-bottom: var(--s-2);
+        border-bottom: 1px solid var(--ink);
+      }
+      .pat-dpatents {
+        display: flex;
+        flex-direction: column;
+      }
+      .pat-dpat {
+        display: grid;
+        grid-template-columns: 28px 1fr 80px 92px;
+        gap: var(--s-4);
+        padding: 12px 0;
+        border-bottom: 1px solid var(--hair);
+        align-items: center;
+      }
+      .pat-dpat:last-child {
+        border-bottom: none;
+      }
+      .pat-dpat .ix {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-muted);
+        letter-spacing: 0.05em;
+      }
+      .pat-dpat .ttl {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 15px;
+        line-height: 1.25;
+        color: var(--ink);
+      }
+      .pat-dpat .badge {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        padding: 3px 7px;
+        border: 1px solid var(--ink);
+        color: var(--ink);
+        justify-self: start;
+      }
+      .pat-dpat .badge.granted {
+        background: var(--ink);
+        color: var(--surface);
+      }
+      .pat-dpat .dt {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-muted);
+        text-align: right;
+        letter-spacing: 0.04em;
+      }
+      @media (max-width: 720px) {
+        .pat-dpat {
+          grid-template-columns: 24px 1fr;
+        }
+        .pat-dpat .badge,
+        .pat-dpat .dt {
+          grid-column: 2;
+          text-align: left;
+        }
+      }
+
+      /* mobile · rail becomes horizontal pill strip; detail panel renders below */
+      @media (max-width: 640px) {
+        .pat-hero {
+          padding: var(--s-12) var(--gutter-sm) var(--s-6);
+        }
+        .pat-hero h1 {
+          font-size: clamp(1.75rem, 7vw, 2.5rem);
+        }
+        .pat-hero p {
+          font-size: 15px;
+        }
+        .pat-hero .meta {
+          grid-template-columns: 1fr 1fr;
+          gap: var(--s-3);
+          margin-top: var(--s-5);
+        }
+        .pat-sect {
+          padding: var(--s-8) var(--gutter-sm);
+        }
+        .pat-sect-head {
+          margin-bottom: var(--s-5);
+        }
+        .pat-sect-head h2 {
+          font-size: 22px;
+        }
+        .pat-explorer {
+          gap: var(--s-4);
+        }
+
+        /* horizontal scrollable pill strip · replaces vertical sidebar */
+        .pat-dlist {
+          display: flex;
+          flex-direction: row;
+          overflow-x: auto;
+          overflow-y: hidden;
+          border-top: 0;
+          border-bottom: 1px solid var(--ink);
+          padding: 0 0 var(--s-3);
+          gap: 8px;
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+        }
+        .pat-dlist::-webkit-scrollbar {
+          display: none;
+        }
+        .pat-drow {
+          flex-shrink: 0;
+          grid-template-columns: auto auto;
+          grid-template-rows: auto;
+          padding: 8px 12px;
+          border: 1px solid var(--hair);
+          border-radius: 6px;
+          border-bottom: 1px solid var(--hair);
+          scroll-snap-align: start;
+          background: var(--surface);
+        }
+        .pat-drow:hover {
+          padding-left: 12px;
+        }
+        .pat-drow .pat-dbar-track {
+          display: none;
+        }
+        .pat-drow.is-on {
+          background: var(--ink);
+          border-color: var(--ink);
+          padding-left: 12px;
+        }
+        .pat-drow .pat-darrow {
+          display: none;
+        }
+
+        .pat-detail {
+          padding: var(--s-5);
+          min-height: 0;
+        }
+        .pat-detail h3 {
+          font-size: 22px;
+        }
+        .pat-stats {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .pat-stat {
+          padding-left: 12px;
+        }
+        .pat-stat .n {
+          font-size: 22px;
+        }
+
+        .pat-selected {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .pat-hero .meta {
+          grid-template-columns: 1fr;
+        }
+        .pat-stats {
+          grid-template-columns: 1fr;
+        }
+        .pat-stat {
+          padding-left: 0;
+          border-right: 0;
+        }
+        .pat-stat + .pat-stat {
+          border-top: 1px solid var(--hair);
+          padding-top: var(--s-3);
+          margin-top: var(--s-3);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+    <header class="lb-nav">
+      <a class="lb-brand" href="index.html"
+        ><span class="br">[</span>kal_foundry<span class="br">]</span></a
+      >
+      <span class="lb-nav-spacer"></span>
+      <a href="work.html">work</a>
+      <a href="patents.html" class="is-active">patents</a>
+      <a href="about.html">about</a>
+      <a href="now.html">now</a>
+      <a href="resume.html" class="is-signal">team ↗</a>
+    </header>
+
+    <!-- ─── hero ─── -->
+    <section class="pat-hero">
+      <div class="grid"></div>
+      <div class="pat-hero-inner">
+        <div class="lb-eyebrow">// patents</div>
+        <h1>patents.<em>coming soon.</em></h1>
+        <p>
+          the foundry's patent portfolio — coming soon.
+        </p>
+        <div class="meta">
+          <span>portfolio<strong>100+ patents held by the team</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── domain explorer ─── -->
+    <section class="pat-sect" id="domains">
+      <div class="pat-sect-inner">
+        <div class="pat-sect-head">
+          <div>
+            <div class="lb-eyebrow">// domains</div>
+            <h2>by <em>domain.</em></h2>
+          </div>
+        </div>
+
+        <div class="pat-explorer">
+          <div
+            class="pat-dlist"
+            id="dlist"
+            role="tablist"
+            aria-label="domains"
+          ></div>
+          <div
+            class="pat-detail"
+            id="ddetail"
+            role="tabpanel"
+            aria-live="polite"
+          ></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="lb-footer">
+      <span><span class="live">●</span> patents · coming soon</span>
+      <span class="signoff">© 2026 KAL Foundry</span>
+    </footer>
+
+    <script>
+      // ─── data ─────────────────────────────────────────────────────────────
+
+      const DOMAINS = [];
+
+      const PATENTS = [];
+
+      // ─── helpers ──────────────────────────────────────────────────────────
+
+      const $ = (s, r = document) => r.querySelector(s);
+      const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+      const esc = (s) =>
+        s.replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      const fmtDate = (iso) => {
+        const [y, m] = iso.split("-");
+        return (
+          [
+            "jan",
+            "feb",
+            "mar",
+            "apr",
+            "may",
+            "jun",
+            "jul",
+            "aug",
+            "sep",
+            "oct",
+            "nov",
+            "dec",
+          ][parseInt(m, 10) - 1] +
+          " " +
+          y
+        );
+      };
+
+      const byCat = {};
+      DOMAINS.forEach((d) => (byCat[d.slug] = []));
+      PATENTS.forEach((p) => {
+        if (byCat[p.cat]) byCat[p.cat].push(p);
+      });
+      const maxCount = Math.max(...DOMAINS.map((d) => byCat[d.slug].length));
+
+      // ─── domain list (left rail) ──────────────────────────────────────────
+
+      const dlist = $("#dlist");
+      DOMAINS.forEach((d, i) => {
+        const count = byCat[d.slug].length;
+        const p = count / maxCount;
+        const btn = document.createElement("button");
+        btn.className = "pat-drow";
+        btn.dataset.slug = d.slug;
+        btn.setAttribute("role", "tab");
+        btn.setAttribute("aria-selected", "false");
+        btn.innerHTML = `
+      <span class="pat-dname">${esc(d.label)}</span>
+      <span class="pat-dnum">${count} <span class="pat-darrow">→</span></span>
+      <span class="pat-dbar-track"><span class="pat-dbar" style="--p:${p.toFixed(3)}"></span></span>
+    `;
+        btn.addEventListener("click", () => selectDomain(d.slug));
+        dlist.appendChild(btn);
+      });
+
+      function selectDomain(slug) {
+        const d = DOMAINS.find((x) => x.slug === slug);
+        if (!d) return;
+        $$(".pat-drow", dlist).forEach((b) => {
+          const on = b.dataset.slug === slug;
+          b.classList.toggle("is-on", on);
+          b.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        const pats = byCat[slug]
+          .slice()
+          .sort((a, b) => b.date.localeCompare(a.date));
+        const granted = pats.filter((p) => p.status === "granted").length;
+        const pending = pats.length - granted;
+        $("#ddetail").innerHTML = `
+      <div class="lb-eyebrow">domain · ${esc(d.label)}</div>
+      <h3>${esc(d.title)}</h3>
+      <div class="pat-stats">
+        <div class="pat-stat"><div class="n accent">${pats.length}</div><div class="l">filings</div></div>
+        <div class="pat-stat"><div class="n">${granted}</div><div class="l">granted</div></div>
+        <div class="pat-stat"><div class="n">${pending}</div><div class="l">pending</div></div>
+      </div>
+      <p class="pat-narr">${esc(d.narrative)}</p>
+      <div class="pat-dlist-label">filings · ${pats.length}</div>
+      <div class="pat-dpatents">
+        ${pats
+          .map(
+            (p, i) => `
+          <div class="pat-dpat">
+            <span class="ix">${String(i + 1).padStart(2, "0")}</span>
+            <span class="ttl">${esc(p.title)}</span>
+            <span class="badge ${p.status}">${p.status}</span>
+            <span class="dt">${fmtDate(p.date)}</span>
+          </div>
+        `,
+          )
+          .join("")}
+      </div>
+    `;
+      }
+      if (DOMAINS.length) selectDomain(DOMAINS[0].slug);
+    </script>
+  </body>
+</html>

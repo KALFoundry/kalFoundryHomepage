@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <rect x="0" y="0" width="32" height="32" rx="6" fill="#1c1c1e"/>
+  <text x="4" y="22" font-family="JetBrains Mono, ui-monospace, monospace" font-weight="700" font-size="16" fill="#d97757" letter-spacing="-1">[</text>
+  <text x="11" y="22" font-family="JetBrains Mono, ui-monospace, monospace" font-weight="700" font-size="14" fill="#f4efe6" letter-spacing="-0.6">kf</text>
+  <text x="24" y="22" font-family="JetBrains Mono, ui-monospace, monospace" font-weight="700" font-size="16" fill="#d97757" letter-spacing="-1">]</text>
+</svg>

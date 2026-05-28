@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>work — kal_foundry</title>
+<meta name="description" content="Selected work from KAL Foundry: digital products, brand and design, and AI strategy — from strategy to fabrication.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="canonical" href="https://www.kalfoundry.com/work.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
+<meta property="og:url" content="https://www.kalfoundry.com/work.html">
+<meta property="og:title" content="work — KAL Foundry">
+<meta property="og:description" content="Selected work from KAL Foundry: digital products, brand and design, and AI strategy — from strategy to fabrication.">
+<meta property="og:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+<meta property="og:image:width" content="2400">
+<meta property="og:image:height" content="1260">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="work — KAL Foundry">
+<meta name="twitter:description" content="Selected work from KAL Foundry: digital products, brand and design, and AI strategy — from strategy to fabrication.">
+<meta name="twitter:image" content="https://www.kalfoundry.com/assets/images/og.png?v=4">
+<meta name="twitter:image:alt" content="KAL Foundry — design, AI, and digital products, from strategy to fabrication.">
+<script>if(self!==top){document.documentElement.classList.add('is-embedded');addEventListener('DOMContentLoaded',()=>{const b=document.querySelector('.lb-brand');if(b)b.addEventListener('click',e=>{e.preventDefault();parent.postMessage({type:'closeApp'},'*')})})}</script>
+<link rel="stylesheet" href="/assets/styles/style.css" />
+<style>
+  .hero-strip { padding: var(--s-20) var(--gutter) var(--s-12); position: relative; overflow: hidden; }
+  .hero-strip .grid { position: absolute; inset: 0; opacity: .4; pointer-events: none;
+    background-image: linear-gradient(var(--hair) 1px, transparent 1px), linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+    background-size: 48px 48px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%); -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%); }
+  .hero-strip-inner { max-width: var(--container); margin: 0 auto; position: relative; }
+  .hero-strip h1 { font-family: var(--font-mono); font-weight: 600; font-size: clamp(2.5rem, 6vw, 4.25rem); letter-spacing: -0.04em; line-height: 0.98; margin: 18px 0 8px; }
+  .hero-strip h1 em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); }
+  .hero-strip p { margin: 0; max-width: 580px; font-family: var(--font-sans); color: var(--ink-2); font-size: 16px; line-height: 1.6; }
+
+  .case-grid { padding: 0 var(--gutter) var(--s-20); }
+  .case-grid-inner { max-width: var(--container); margin: 0 auto; display: grid; gap: var(--s-5); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 760px) { .case-grid-inner { grid-template-columns: minmax(0, 1fr); } }
+  .case-grid .lb-card { padding: var(--s-6); min-height: 220px; min-width: 0; }
+  .case-grid .lb-card-title { font-size: 22px; overflow-wrap: anywhere; }
+  .case-grid .lb-card-title em { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: var(--accent); display: block; }
+  .case-grid .lb-card-tags { flex-wrap: wrap; row-gap: 4px; }
+
+  .filter-row {
+    max-width: var(--container); margin: 0 auto;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    padding: 0 var(--gutter) var(--s-6);
+  }
+  .filter-row .lb { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.16em; color: var(--ink-muted); text-transform: uppercase; margin-right: 4px; }
+  .chip { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.04em; padding: 6px 10px; border: 1px solid var(--hair); color: var(--ink-2); cursor: pointer; background: transparent; }
+  .chip.is-on { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+
+  /* principles strip · sits between filter row and card grid */
+  .principles {
+    max-width: var(--container); margin: 0 auto;
+    padding: 0 var(--gutter) var(--s-6);
+    display: flex; flex-wrap: wrap; gap: 8px 10px;
+    align-items: center;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.06em; color: var(--ink-2);
+  }
+  .principles .lb { font-size: 10px; letter-spacing: 0.16em; color: var(--ink-muted); text-transform: uppercase; margin-right: 4px; }
+  .principles .pip { color: var(--ink); }
+  .principles .sep { color: var(--ink-muted); }
+
+  /* mobile · bigger chip tap targets, tighter hero/grid padding */
+  @media (max-width: 640px) {
+    .hero-strip { padding: var(--s-12) var(--gutter-sm) var(--s-6); }
+    .hero-strip h1 { font-size: clamp(2rem, 8vw, 2.75rem); margin: 12px 0 8px; }
+    .hero-strip p { font-size: 15px; }
+    .filter-row { padding: 0 var(--gutter-sm) var(--s-4); gap: 8px; }
+    .chip { padding: 10px 14px; font-size: 12px; }
+    .principles { padding: 0 var(--gutter-sm) var(--s-4); font-size: 10.5px; gap: 6px 8px; }
+    .case-grid { padding: 0 var(--gutter-sm) var(--s-12); }
+    .case-grid .lb-card { padding: var(--s-5); min-height: 0; }
+    .case-grid .lb-card-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+<header class="lb-nav">
+  <a class="lb-brand" href="index.html"><span class="br">[</span>kal_foundry<span class="br">]</span></a>
+  <span class="lb-nav-spacer"></span>
+  <a href="work.html" class="is-active">work</a>
+  <a href="patents.html">patents</a>
+  <a href="about.html">about</a>
+  <a href="now.html">now</a>
+  <a href="resume.html" class="is-signal">team ↗</a>
+</header>
+
+<section class="hero-strip">
+  <div class="grid"></div>
+  <div class="hero-strip-inner">
+    <div class="lb-eyebrow">// SELECTED WORK · DIGITAL FOUNDRY · DESIGN · AI · PRODUCT</div>
+    <h1>selected work<br/><em>from strategy to fabrication.</em></h1>
+    <p>Digital products, brand and design, and AI strategy — built by a small team. The foundry's own products, from positioning through interface to shipped builds.</p>
+  </div>
+</section>
+
+<div class="filter-row">
+  <span class="lb">// FILTER</span>
+  <button class="chip is-on" data-tag="all">all (2)</button>
+  <button class="chip" data-tag="products">products</button>
+  <button class="chip" data-tag="design">design</button>
+  <button class="chip" data-tag="strategy">strategy</button>
+  <button class="chip" data-tag="architecture">architecture</button>
+</div>
+
+<section class="principles" aria-label="principles">
+  <span class="lb">// PRINCIPLES</span>
+  <span class="pip">design-led</span>
+  <span class="sep">·</span>
+  <span class="pip">governed AI</span>
+  <span class="sep">·</span>
+  <span class="pip">human-in-the-loop</span>
+  <span class="sep">·</span>
+  <span class="pip">prototype-driven</span>
+  <span class="sep">·</span>
+  <span class="pip">strategy to fabrication</span>
+</section>
+
+<section class="case-grid">
+  <div class="case-grid-inner">
+
+    <div class="lb-card" data-tags="products design architecture">
+      <div class="lb-card-head"><span class="lb-meta">PROD / 001</span><span class="lb-meta">2024 → now</span></div>
+      <div class="lb-card-title">armory hub<em>security-first inventory, in your pocket.</em></div>
+      <div class="lb-body">A security-first mobile app for tracking personal firearm, ammunition, and accessory inventory. Designed and built end to end — brand, product design, and engineering — with privacy and on-device security as first principles. Owners catalog what they own, track configurations and accessories, and keep records that stay theirs. From strategy through fabrication: positioning, interface system, and a shipped product.</div>
+      <div class="lb-card-tags"><span>PRODUCT</span><span>·</span><span>MOBILE</span><span>·</span><span>SECURITY</span><span>·</span><span>DESIGN</span></div>
+    </div>
+
+    <div class="lb-card" data-tags="products design strategy">
+      <div class="lb-card-head"><span class="lb-meta">PROD / 002</span><span class="lb-meta">2024 → now</span></div>
+      <div class="lb-card-title">backgClear<em>background removal, made simple.</em></div>
+      <div class="lb-body">A simple SaaS for background removal — upload an image, get a clean cutout. The foundry shaped the product strategy, brand, and interface around one job done well: fast, reliable results without the usual editing friction. A focused tool built to ship, with room to grow into adjacent image workflows.</div>
+      <div class="lb-card-tags"><span>PRODUCT</span><span>·</span><span>SAAS</span><span>·</span><span>IMAGING</span><span>·</span><span>DESIGN</span></div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> digital foundry · design · ai · product</span>
+  <span class="signoff">— KAL Foundry</span>
+</footer>
+
+<script>
+  // simple client-side filter
+  const chips = document.querySelectorAll('.chip');
+  const cards = document.querySelectorAll('.case-grid .lb-card');
+  chips.forEach(c => c.addEventListener('click', () => {
+    chips.forEach(x => x.classList.remove('is-on'));
+    c.classList.add('is-on');
+    const tag = c.dataset.tag;
+    cards.forEach(card => {
+      const tags = (card.dataset.tags || '').split(' ');
+      card.style.display = (tag === 'all' || tags.includes(tag)) ? '' : 'none';
+    });
+  }));
+</script>
+
+</body>
+</html>
