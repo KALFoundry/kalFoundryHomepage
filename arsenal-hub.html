@@ -1,0 +1,407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>arsenal hub — kal_foundry</title>
+  <meta name="description" content="Arsenal Hub — a security-first mobile app for personal firearm, ammunition, and accessory inventory. Built by KAL Foundry.">
+  <meta name="theme-color" content="#1c1c1e">
+  <link rel="canonical" href="https://www.kalfoundry.com/arsenal-hub.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script>
+    if (self !== top) {
+      document.documentElement.classList.add('is-embedded');
+      addEventListener('DOMContentLoaded', () => {
+        const b = document.querySelector('.lb-brand');
+        if (b) b.addEventListener('click', e => {
+          e.preventDefault();
+          parent.postMessage({ type: 'closeApp' }, '*');
+        });
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="/assets/styles/style.css" />
+  <style>
+    /* ─── hero ─── */
+    .ah-hero {
+      padding: var(--s-20) var(--gutter) var(--s-12);
+      position: relative;
+      overflow: hidden;
+    }
+    .ah-hero .grid {
+      position: absolute; inset: 0; opacity: .4; pointer-events: none;
+      background-image: linear-gradient(var(--hair) 1px, transparent 1px), linear-gradient(90deg, var(--hair) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%);
+    }
+    .ah-hero-inner {
+      max-width: var(--container);
+      margin: 0 auto;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--s-10);
+      align-items: center;
+    }
+    .ah-hero-logo {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
+    .ah-hero h1 {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: clamp(2.5rem, 6vw, 4.25rem);
+      letter-spacing: -0.04em;
+      line-height: 0.98;
+      margin: 18px 0 8px;
+    }
+    .ah-hero h1 em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      display: block;
+    }
+    .ah-hero p {
+      margin: 16px 0 0;
+      max-width: 580px;
+      font-family: var(--font-sans);
+      color: var(--ink-2);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .ah-hero .meta {
+      margin-top: var(--s-8);
+      display: flex;
+      gap: var(--s-8);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+    }
+    .ah-hero .meta span strong {
+      display: block;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--ink);
+      margin-top: 4px;
+    }
+    @media (max-width: 640px) {
+      .ah-hero { padding: var(--s-12) var(--gutter-sm) var(--s-6); }
+      .ah-hero-inner { grid-template-columns: 1fr; }
+      .ah-hero-logo { width: 80px; height: 80px; order: -1; }
+      .ah-hero h1 { font-size: clamp(2rem, 8vw, 2.75rem); }
+      .ah-hero .meta { flex-wrap: wrap; gap: var(--s-4); }
+    }
+
+    /* ─── sections ─── */
+    .ah-sect {
+      padding: var(--s-12) var(--gutter);
+      border-bottom: 1px solid var(--hair);
+    }
+    .ah-sect-inner { max-width: var(--container); margin: 0 auto; }
+    .ah-sect-head { margin-bottom: var(--s-8); }
+    .ah-sect-head h2 {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      margin: 8px 0 0;
+      color: var(--ink);
+    }
+    .ah-sect-head h2 em {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .ah-sect-head p {
+      margin: 12px 0 0;
+      max-width: 580px;
+      color: var(--ink-2);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── demo gif ─── */
+    .ah-demo {
+      border: 1px solid var(--hair);
+      background: var(--surface);
+      overflow: hidden;
+      position: relative;
+    }
+    .ah-demo img {
+      width: 100%;
+      display: block;
+      max-height: 540px;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    /* ─── features grid ─── */
+    .ah-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-4);
+    }
+    @media (max-width: 760px) { .ah-features { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .ah-features { grid-template-columns: 1fr; } }
+
+    .ah-feature {
+      border: 1px solid var(--hair);
+      background: var(--surface);
+      padding: var(--s-5) var(--s-6);
+    }
+    .ah-feature .lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .ah-feature .ttl {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      font-size: 15px;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+    .ah-feature .desc {
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      color: var(--ink-2);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* ─── tags strip ─── */
+    .ah-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: var(--s-6);
+    }
+    .ah-tags span {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--hair);
+      color: var(--ink-2);
+    }
+
+    /* ─── privacy policy ─── */
+    .ah-privacy-body {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--ink);
+    }
+    .ah-privacy-block {
+      padding: var(--s-6) 0;
+      border-bottom: 1px solid var(--hair);
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--s-8);
+      align-items: baseline;
+    }
+    .ah-privacy-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      flex-shrink: 0;
+    }
+    .ah-privacy-block p {
+      font-family: var(--font-sans);
+      font-size: 14.5px;
+      color: var(--ink-2);
+      line-height: 1.65;
+      margin: 0;
+    }
+    @media (max-width: 720px) {
+      .ah-privacy-block {
+        grid-template-columns: 1fr;
+        gap: var(--s-3);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .ah-sect { padding: var(--s-8) var(--gutter-sm); }
+    }
+  </style>
+</head>
+<body>
+
+<a class="lb-back" href="index.html"><span class="dot"></span> HOME</a>
+
+<header class="lb-nav">
+  <a class="lb-brand" href="index.html"><span class="br">[</span>kal_foundry<span class="br">]</span></a>
+  <span class="lb-nav-spacer"></span>
+  <a href="work.html">work</a>
+  <a href="patents.html">patents</a>
+  <a href="about.html">about</a>
+  <a href="now.html">now</a>
+  <a href="resume.html" class="is-signal">team ↗</a>
+</header>
+
+<!-- ─── hero ─── -->
+<section class="ah-hero">
+  <div class="grid"></div>
+  <div class="ah-hero-inner">
+    <div>
+      <div class="lb-eyebrow">// PROD / 001 · MOBILE APP · 2024 → NOW</div>
+      <h1>arsenal hub<em>security-first inventory,<br>in your pocket.</em></h1>
+      <p>A security-first mobile app for tracking personal firearm, ammunition, and accessory inventory. Designed and built end to end — brand, product design, and engineering — with privacy and on-device security as first principles.</p>
+      <div class="meta">
+        <span>category<strong>Mobile App</strong></span>
+        <span>focus<strong>Security · Privacy</strong></span>
+        <span>status<strong>Shipped</strong></span>
+      </div>
+    </div>
+    <img src="assets/AHClear.png" alt="Arsenal Hub" class="ah-hero-logo" />
+  </div>
+</section>
+
+<!-- ─── demo ─── -->
+<section class="ah-sect">
+  <div class="ah-sect-inner">
+    <div class="ah-sect-head">
+      <div class="lb-eyebrow" style="color:var(--accent);">// IN ACTION</div>
+      <h2>the app, <em>live.</em></h2>
+    </div>
+    <div class="ah-demo">
+      <img src="assets/arsenalHubGif.gif" alt="Arsenal Hub app walkthrough" />
+    </div>
+  </div>
+</section>
+
+<!-- ─── features ─── -->
+<section class="ah-sect">
+  <div class="ah-sect-inner">
+    <div class="ah-sect-head">
+      <div class="lb-eyebrow" style="color:var(--accent);">// CAPABILITIES</div>
+      <h2>built from <em>first principles.</em></h2>
+      <p>Every feature starts with the question: does this belong to the user? Inventory, records, and data stay on-device and under owner control.</p>
+    </div>
+    <div class="ah-features">
+      <div class="ah-feature">
+        <div class="lbl">01</div>
+        <div class="ttl">Firearm Inventory</div>
+        <p class="desc">Catalog every firearm with make, model, serial, caliber, and configuration — all stored locally.</p>
+      </div>
+      <div class="ah-feature">
+        <div class="lbl">02</div>
+        <div class="ttl">Ammo Tracking</div>
+        <p class="desc">Track ammunition by caliber, brand, grain, and round count. Know exactly what you have on hand.</p>
+      </div>
+      <div class="ah-feature">
+        <div class="lbl">03</div>
+        <div class="ttl">Accessory Log</div>
+        <p class="desc">Log optics, suppressors, magazines, and accessories linked to the firearms they belong to.</p>
+      </div>
+      <div class="ah-feature">
+        <div class="lbl">04</div>
+        <div class="ttl">On-Device Security</div>
+        <p class="desc">No cloud sync required. Data lives on your device, protected by biometric and passcode lock.</p>
+      </div>
+      <div class="ah-feature">
+        <div class="lbl">05</div>
+        <div class="ttl">Record Keeping</div>
+        <p class="desc">Maintain ownership records, purchase history, and maintenance logs that stay yours.</p>
+      </div>
+      <div class="ah-feature">
+        <div class="lbl">06</div>
+        <div class="ttl">Privacy First</div>
+        <p class="desc">No accounts. No tracking. No data leaves your device unless you explicitly choose to export it.</p>
+      </div>
+    </div>
+    <div class="ah-tags">
+      <span>Product</span>
+      <span>Mobile</span>
+      <span>Security</span>
+      <span>Privacy</span>
+      <span>Design</span>
+      <span>Engineering</span>
+      <span>iOS</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── privacy policy ─── -->
+<section class="ah-sect" id="privacy">
+  <div class="ah-sect-inner">
+    <div class="ah-sect-head">
+      <div class="lb-eyebrow" style="color:var(--accent);">// PRIVACY POLICY</div>
+      <h2>your data, <em>stays yours.</em></h2>
+      <p>Effective date: 2024-01-01 · Arsenal Hub by KAL Foundry</p>
+    </div>
+
+    <div class="ah-privacy-body">
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">01 · Overview</div>
+        <p>Arsenal Hub does not collect, transmit, or store any personal information on external servers. All data you enter — firearms, ammunition, accessories, and records — is stored exclusively on your device and is never sent to KAL Foundry or any third party.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">02 · Data We Do Not Collect</div>
+        <p>We do not collect your name, email address, location, IP address, device identifiers, usage analytics, crash reports, or any inventory data you enter into the app. There are no accounts, no sign-up, and no cloud sync.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">03 · On-Device Storage</div>
+        <p>All app data is stored locally using encrypted on-device storage. Access is protected by your device's biometric authentication or passcode. KAL Foundry has no technical ability to access your data.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">04 · No Third-Party SDKs</div>
+        <p>Arsenal Hub does not include third-party advertising, analytics, or tracking SDKs. There are no cookies, trackers, or fingerprinting mechanisms of any kind.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">05 · Data Export</div>
+        <p>If you choose to export your data, that action is performed entirely on your device. Any file you export is transferred only by you, through the sharing mechanism you select. KAL Foundry does not receive a copy.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">06 · Data Deletion</div>
+        <p>To delete all app data, uninstall Arsenal Hub from your device. All locally stored data is removed with the app. There is no server-side data to request deletion of.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">07 · Children</div>
+        <p>Arsenal Hub is not directed at children under 13. We do not knowingly collect information from children.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">08 · Changes</div>
+        <p>If this policy changes, the updated version will be posted here with a revised effective date. Continued use of the app constitutes acceptance of the updated policy.</p>
+      </div>
+
+      <div class="ah-privacy-block">
+        <div class="ah-privacy-label">09 · Contact</div>
+        <p>Questions about this policy: <a href="mailto:team@kalfoundry.com" style="color:var(--accent);text-decoration:none;">team@kalfoundry.com</a></p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="lb-footer">
+  <span><span class="live">●</span> arsenal hub · kal foundry product</span>
+  <span class="signoff">— KAL Foundry</span>
+</footer>
+
+</body>
+</html>
