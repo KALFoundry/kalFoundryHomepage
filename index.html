@@ -674,9 +674,10 @@
         top: 28px;
         right: 22px;
         display: grid;
+        grid-template-columns: repeat(2, 86px);
         gap: 18px;
         z-index: 2;
-        width: 86px;
+        width: auto;
       }
       .mac-icon {
         display: grid;
@@ -702,6 +703,13 @@
       .mac-icon:active {
         transform: scale(0.96);
       }
+      .mac-icon-arsenal {
+        grid-column: 1;
+        grid-row: 1;
+      }
+      .mac-icon-arsenal ~ .mac-icon {
+        grid-column: 2;
+      }
       .mac-icon-img {
         width: 56px;
         height: 56px;
@@ -719,6 +727,16 @@
         text-shadow:
           0 1px 3px rgba(0, 0, 0, 0.75),
           0 0 1px rgba(0, 0, 0, 0.5);
+      }
+
+      .mac-desktop-logo {
+        width: 56px;
+        aspect-ratio: 1;
+        object-fit: contain;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.28));
       }
 
       /* MacBook dock */
@@ -1343,6 +1361,18 @@
                   </video>
                   <!-- desktop icons · right column, real macOS arrangement -->
                   <div class="mac-icons">
+                    <a
+                      class="mac-icon mac-icon-arsenal"
+                      href="arsenal-hub.html"
+                      aria-label="arsenal_hub"
+                    >
+                      <img
+                        class="mac-desktop-logo"
+                        src="assets/AHClear.png"
+                        alt="Arsenal Hub"
+                      />
+                      <span class="mac-icon-label">arsenal hub</span>
+                    </a>
                     <a
                       class="mac-icon"
                       href="work.html"
