@@ -7,6 +7,9 @@
 - Use inline SVG for iconography instead of image files.
 - Avoid extra JavaScript libraries. The only JS is small inline `<script>` per page.
 - Defer expensive animation until after the initial paint.
+- Preload first-screen device wallpapers from `index.html`; desktop uses `assets/images/wallpaper.webp`, mobile uses `assets/images/ios_wallpaper.webp`.
+- Keep mobile wallpaper payloads under 350 KB; keep the desktop MP4 wallpaper under 2.5 MB and load it only after `window.load`/idle on desktop.
+- Keep Google Fonts discovery early through `vercel.json` `Link` headers plus a homepage `fonts.gstatic.com` preconnect.
 
 ## Patent-page performance
 
@@ -43,10 +46,11 @@ Before considering a change shipped:
 
 - [ ] Validate at desktop (`≥ 768px`) and mobile (`< 768px`) widths.
 - [ ] App icons are tappable on touch and accept keyboard focus.
-- [ ] Fixed mini-nav appears after the parallax transition.
+- [ ] Mac dock auto-hides while an app window is open and reveals from hover, bottom hot-zone, or keyboard focus.
 - [ ] External links use `target="_blank" rel="noopener noreferrer"`.
 - [ ] Keyboard focus is visible and follows reading order.
 - [ ] `prefers-reduced-motion` honored on homepage parallax.
+- [ ] Desktop video wallpaper is not requested on mobile or with reduced motion enabled.
 - [ ] Patent filter + search work with keyboard only.
 - [ ] Patent domain explorer cycles correctly when clicking rows in any order.
 - [ ] No console errors on any page.
@@ -56,4 +60,4 @@ Before considering a change shipped:
 - Pure static HTML/CSS/JS. Host on any static provider (Vercel, Netlify, GitHub Pages, Cloudflare Pages).
 - No build or bundling step.
 - Set `Cache-Control` headers on the host if available; otherwise nothing to configure.
-- Keep `_source/` (any non-deployed source assets) out of the deploy or block it via host rules — it is excluded via `.vercelignore`.
+- Keep `_source/`, ignored macOS metadata, and other non-deployed source assets out of the deploy via `.vercelignore`.

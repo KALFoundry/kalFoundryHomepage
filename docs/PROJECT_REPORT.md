@@ -184,10 +184,10 @@ Activation flow (documented in `mcp-server/README.md`):
 ## 6 · SEO + distribution
 
 - **Per-page OG / Twitter meta** with `og:image:type`, `og:image:width/height`, `og:image:alt`, `twitter:card`, and a canonical URL
-- **Brand OG image:** 2400×1260 (2× for Retina sharpness), 137 KB, served at `/backgrounds/og.png?v=3`. Three-pillar tagline (`agentic AI · automation · analytics`). Authored as SVG, rendered to PNG via Chrome headless.
+- **Brand OG image:** 2400×1260 (2× for Retina sharpness), served at `/assets/images/og.png?v=4`. Authored as SVG, rendered to PNG via Chrome headless.
 - **JSON-LD schema** on `/resume.html` (team / capabilities page) — feeds Google Knowledge Graph
 - **`/robots.txt`** allows everything, points to `/sitemap.xml`, disallows `/api/`
-- **`/sitemap.xml`** — all 17 deployed pages with `lastmod` + priority
+- **`/sitemap.xml`** — deployed pages with `lastmod` + priority
 - **Favicon set:** `favicon.svg` + `apple-touch-icon.png` (180×180) + `site.webmanifest`
 - **`cv.html` → resume.html** permanent redirect (308)
 - **Google Search Console** registered with sitemap submitted *(user task — pending)*
@@ -213,11 +213,12 @@ Activation flow (documented in `mcp-server/README.md`):
 - `scripts/ingest-patents.mjs` (189) — patent-ingest template (extract + embed); no source data wired in yet
 
 ### Assets
-- `backgrounds/og.png` — 2400×1260 brand OG image
-- `backgrounds/og.svg` — source SVG
-- `backgrounds/wallpaper.webp` — MacBook desktop wallpaper
-- `backgrounds/ios_wallpaper.jpg` — iPhone home wallpaper
-- `icons/*.png` — Mac dock + iPhone home grid icons (extracted from `.icns` via `sips`)
+- `assets/images/og.png` — 2400×1260 brand OG image
+- `assets/images/og.svg` — source SVG
+- `assets/images/wallpaper.webp` — MacBook desktop wallpaper poster/fallback
+- `assets/backgroundDrive.mp4` — idle-loaded desktop-only MacBook video wallpaper enhancement
+- `assets/images/ios_wallpaper.webp` + `assets/images/ios_wallpaper.jpg` — iPhone home wallpaper
+- `assets/icons/*.png` — Mac dock + iPhone home grid icons (extracted from `.icns` via `sips`)
 - `favicon.svg`, `apple-touch-icon.png`, `site.webmanifest`
 
 ### Config + manifests

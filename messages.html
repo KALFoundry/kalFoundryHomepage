@@ -1895,7 +1895,7 @@
               fences.push(
                 `<pre><code>${body.replace(/\n+$/, "")}</code></pre>`,
               );
-              return ` F${fences.length - 1} `;
+              return `\uE000F${fences.length - 1}\uE000`;
             },
           );
 
@@ -1903,7 +1903,7 @@
           const inlines = [];
           s = s.replace(/`([^`\n]+)`/g, (_, body) => {
             inlines.push(`<code>${body}</code>`);
-            return ` I${inlines.length - 1} `;
+            return `\uE000I${inlines.length - 1}\uE000`;
           });
 
           // Inline links: [text](href)
@@ -1942,8 +1942,8 @@
           });
 
           // Restore protected segments.
-          s = s.replace(/ I(\d+) /g, (_, i) => inlines[+i]);
-          s = s.replace(/ F(\d+) /g, (_, i) => fences[+i]);
+          s = s.replace(/\uE000I(\d+)\uE000/g, (_, i) => inlines[+i]);
+          s = s.replace(/\uE000F(\d+)\uE000/g, (_, i) => fences[+i]);
 
           return s;
         }
