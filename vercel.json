@@ -4,6 +4,16 @@
   "outputDirectory": ".",
   "cleanUrls": false,
   "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/:slug([aA][hH][tT][eE][rR][mM][sS])",
+      "destination": "/ahTerms"
+    },
+    {
+      "source": "/:slug([aA][hH][tT][eE][rR][mM][sS])/",
+      "destination": "/ahTerms"
+    }
+  ],
   "redirects": [
     { "source": "/cv.html", "destination": "/resume.html", "permanent": true }
   ],
