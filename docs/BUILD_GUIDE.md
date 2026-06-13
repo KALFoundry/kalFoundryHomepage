@@ -8,7 +8,7 @@
 - Mobile users see an iPhone home screen; desktop users see a MacBook desktop.
 - Iconography is intentionally familiar: app tiles on mobile, window cards + dock on desktop.
 - All click targets are app-like UI elements with `aria-label`s.
-- After the parallax completes, a fixed mini-nav slides in from the bottom for fast access.
+- After the parallax completes, the device homescreen itself becomes the navigation surface.
 
 ## Homepage architecture
 
@@ -19,16 +19,16 @@
 5. Two device variants are present in the DOM but only one is visible at a time:
    - `.device-mobile` for `max-width: 767px`
    - `.device-desktop` for `min-width: 768px`
-6. `.home-postscript` fades in late (75% → 95%).
-7. `.home-fixed-nav` reveals once parallax is fully done (`> 92%`).
-8. `prefers-reduced-motion`: collapse to end-state immediately; hide hero; show fixed nav.
+6. The device homescreen remains visible at the end of the parallax.
+7. On mobile, the phone locks at the end of the parallax and supports tap-to-snap plus swipe-up-to-close app gestures.
+8. `prefers-reduced-motion`: collapse to end-state immediately and skip motion-heavy wallpaper/video effects.
 
 ## Devices: contents
 
 ### iPhone (`.device-mobile`)
 
 - Dynamic island + iOS status bar (white-on-shadow over the wallpaper).
-- Background: real wallpaper image (`backgrounds/ios_wallpaper.jpg`).
+- Background: real wallpaper image via `image-set()` (`assets/images/ios_wallpaper.webp` with `assets/images/ios_wallpaper.jpg` fallback).
 - Lockup: `[ kal_foundry ]` + meta line (`tap an app · or scroll`).
 - One italic-serif moment line (`that survive production.`).
 - 4-column app grid (8 items): **work · patents · about · now · team · github · finder · trello**.
@@ -38,9 +38,10 @@
 
 - Frame: bezel, lip, camera dot, menu bar.
 - Menu bar: brand + File/View/Window/Help, status, clock. Dark-translucent over the pixel-art wallpaper so text stays readable.
-- Desktop: real wallpaper image (`backgrounds/wallpaper.webp`, rendered crisp via `image-rendering: pixelated` on a `::before` pseudo-element so dock PNGs aren't affected). **No on-desktop folder icons** — Finder is the navigation hub for browsing internal pages.
+- Desktop: static wallpaper (`assets/images/wallpaper.webp`) paints first, with an idle-loaded desktop-only MP4 enhancement (`assets/backgroundDrive.mp4`) layered above it when motion is allowed.
+- Desktop icons expose primary internal pages and products; Finder remains the full navigation hub.
 - Dock (real Mac app icons throughout): **finder · trello · iterm2 · messages** + separator + **github · linkedin · mail**.
-- Internal pages (work / case / patents / about / now / team) reachable via the **finder** app.
+- While a Mac app window is open, the dock auto-hides below the screen, the app window expands into the dock area, and the dock reveals from the bottom hot-zone, hover, or keyboard focus.
 
 ## The four device-only "apps"
 
@@ -67,16 +68,16 @@ For a **first-class portfolio page** (appears in nav):
 
 1. Create `new-page.html` mirroring the chrome of `work.html` or `patents.html`. Include the embed-detection `<script>` in `<head>`.
 2. Add the link to `.lb-nav` on every existing page (work, patents, about, now, team, case + each device-only app).
-3. Add the link to `.home-fixed-nav` in `index.html`.
+3. Add the link to the appropriate homepage device surface in `index.html` if it should be launcher-visible.
 4. Add a row to `finder.html` (since Finder is the nav hub).
-5. Update `claude.md` and `README.md` file maps.
+5. Update `CLAUDE.md` and `README.md` file maps.
 
 For a **device-only app** (in dock only, not in nav):
 
 1. Create `new-app.html` with the standard chrome + embed-detection script.
 2. Add a dock entry in `index.html` (icon under `icons/` if you have one).
-3. Update `claude.md`, `README.md`, and the table above.
-4. **Do not** add to `lb-nav`. Do not add to `.home-fixed-nav`. Do not add to the existing pages' navs.
+3. Update `CLAUDE.md`, `README.md`, and the table above.
+4. **Do not** add to `lb-nav`. Do not add to the existing pages' navs.
 
 The cost of skipping any of these steps: a dead or asymmetric page that doesn't appear in one of the navigation surfaces. Always update all six.
 
@@ -116,7 +117,7 @@ Inventors as `[{name, self?}]` so the foundry's team members can be highlighted 
 ## Interaction details
 
 - Scroll position drives a normalized progress `p` in `[0, 1]` of `(scrollY / range)`.
-- Hero opacity/translation, device scale/lift, postscript fade, and fixed-nav reveal are all derived from `p`.
+- Hero opacity/translation and device scale/lift are derived from `p`.
 - Keep animation logic small; avoid layout thrashing (no offsetHeight reads in the rAF loop).
 - Honor `prefers-reduced-motion` by jumping to the end state.
 
@@ -130,6 +131,6 @@ Inventors as `[{name, self?}]` so the foundry's team members can be highlighted 
 
 - [x] Parallax entrance animation on iPhone + MacBook.
 - [x] Reduced-motion fallback collapses to end state.
-- [x] Click-through to all pages from at least 2 surfaces (icon, dock, fixed nav).
+- [x] Click-through to priority pages from at least 2 surfaces (desktop icons, dock, Finder, or mobile apps).
 - [x] Patent page reads as ranked information, not a marketing brochure.
 - [x] Governing docs (`claude.md`, this guide, `OPTIMIZATION_GUIDE.md`, `CONTENT_GUIDE.md`, `DESIGN_SYSTEM.md`) reflect actual project state.

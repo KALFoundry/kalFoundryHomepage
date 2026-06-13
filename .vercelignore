@@ -13,6 +13,10 @@ loganlabs-ai-main/
 node_modules/
 **/node_modules/
 
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
 # Internal documentation (lives on GitHub, not the live site)
 PROJECT_REPORT.md
 CLAUDE.md

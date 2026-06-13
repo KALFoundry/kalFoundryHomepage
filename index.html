@@ -10,6 +10,9 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="/assets/images/wallpaper.webp" media="(min-width:768px)" fetchpriority="high">
+<link rel="preload" as="image" href="/assets/images/ios_wallpaper.webp" type="image/webp" media="(max-width:767px)" fetchpriority="high">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="KAL Foundry · kalfoundry.com">
 <meta property="og:url" content="https://www.kalfoundry.com/">
@@ -224,6 +227,13 @@
         height: 100%;
         background:
           url("assets/images/ios_wallpaper.jpg") center/cover no-repeat,
+          linear-gradient(180deg, #ebe7dd 0%, #f4f1ea 100%);
+        background:
+          image-set(
+              url("assets/images/ios_wallpaper.webp") type("image/webp"),
+              url("assets/images/ios_wallpaper.jpg") type("image/jpeg")
+            )
+            center/cover no-repeat,
           linear-gradient(180deg, #ebe7dd 0%, #f4f1ea 100%);
         border-radius: 32px;
         position: relative;
@@ -751,6 +761,11 @@
         gap: 8px;
         align-items: center;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        z-index: 6;
+        transition:
+          transform 280ms var(--ease),
+          opacity 200ms var(--ease);
+        will-change: transform;
       }
       [data-theme="dark"] .mac-dock {
         background: rgba(40, 42, 52, 0.55);
@@ -784,6 +799,37 @@
         height: 34px;
         background: var(--hair);
         margin: 0 6px;
+      }
+
+      /* ── macOS-style auto-hide dock (only while an app window is open) ── */
+      .dock-hotzone {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 18px;
+        z-index: 6;
+        pointer-events: none;
+      }
+      .macbook.is-app-open .dock-hotzone {
+        pointer-events: auto;
+      }
+      .macbook.is-app-open .mac-dock {
+        transform: translateY(calc(100% + 18px));
+        opacity: 0;
+        pointer-events: none;
+      }
+      .macbook.is-app-open .dock-hotzone:hover ~ .mac-dock,
+      .macbook.is-app-open .mac-dock:hover,
+      .macbook.is-app-open .mac-dock:focus-within {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mac-dock {
+          transition: none;
+        }
       }
 
       /* ── in-device app overlay · iPhone (full-screen) ── */
@@ -919,7 +965,7 @@
         border-radius: 8px;
       }
 
-      /* ── in-device app window · MacBook (inset, dock stays visible) ── */
+      /* ── in-device app window · MacBook (fills dock area while dock is hidden) ── */
       .mac-app {
         position: absolute;
         top: 10px;
@@ -939,12 +985,14 @@
         transform-origin: 50% 100%;
         transition:
           opacity 220ms var(--ease),
-          transform 240ms var(--ease);
+          transform 240ms var(--ease),
+          bottom 240ms var(--ease);
         box-shadow:
           0 12px 36px rgba(0, 0, 0, 0.18),
           0 2px 8px rgba(0, 0, 0, 0.08);
       }
       .macbook.is-app-open .mac-app {
+        bottom: 0;
         opacity: 1;
         pointer-events: auto;
         transform: translateY(0) scale(1);
@@ -1350,14 +1398,13 @@
                   <!-- video wallpaper · poster + ::before fall back to the static webp -->
                   <video
                     class="mac-wallpaper"
-                    autoplay
                     loop
                     muted
                     playsinline
+                    preload="none"
                     poster="assets/images/wallpaper.webp"
-                  >
-                    <source src="assets/backgroundDrive.mp4" type="video/mp4" />
-                  </video>
+                    data-src="assets/backgroundDrive.mp4"
+                  ></video>
                   <!-- desktop icons · right column, real macOS arrangement -->
                   <div class="mac-icons">
                     <a
@@ -1526,6 +1573,9 @@
                     ></iframe>
                   </div>
 
+                  <!-- bottom hot-zone · reveals the auto-hidden dock when an app is open -->
+                  <div class="dock-hotzone" aria-hidden="true"></div>
+
                   <!-- dock · real macOS icons. Finder = nav hub. Messages = emulated chat app. -->
                   <div class="mac-dock">
                     <a
@@ -1613,7 +1663,7 @@
       </div>
     </main>
 
-    <!-- fixed mini nav, slides in once parallax completes -->
+    <!-- homepage animation + deferred device media -->
     <script>
       (() => {
         const stage = document.getElementById("stage");
@@ -1621,6 +1671,46 @@
         const dMobile = document.getElementById("device-mobile");
         const dDesktop = document.getElementById("device-desktop");
         const ticks = document.querySelectorAll(".home-ticks .lb-tick");
+
+        // Defer the heavy desktop video wallpaper so the static poster can paint
+        // first. Mobile and reduced-motion visitors never request the MP4.
+        (() => {
+          const wp = document.querySelector("video.mac-wallpaper");
+          if (!wp || !wp.dataset.src) return;
+
+          const desktop = window.matchMedia("(min-width: 768px)");
+          const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+          let loaded = false;
+
+          const loadWp = () => {
+            if (loaded || !desktop.matches || reduce.matches) return;
+            loaded = true;
+            wp.src = wp.dataset.src;
+            wp.load();
+            const play = wp.play();
+            if (play) play.catch(() => {});
+          };
+
+          const schedule = () =>
+            "requestIdleCallback" in window
+              ? requestIdleCallback(loadWp, { timeout: 2000 })
+              : setTimeout(loadWp, 200);
+
+          const handleEnvironmentChange = () => {
+            if (reduce.matches) {
+              wp.pause();
+              if (!loaded) wp.removeAttribute("src");
+              return;
+            }
+            if (desktop.matches) schedule();
+          };
+
+          if (document.readyState === "complete") schedule();
+          else addEventListener("load", schedule, { once: true });
+
+          desktop.addEventListener?.("change", handleEnvironmentChange);
+          reduce.addEventListener?.("change", handleEnvironmentChange);
+        })();
 
         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
         const lerp = (a, b, t) => a + (b - a) * t;
